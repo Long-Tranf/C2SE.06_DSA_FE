@@ -6,7 +6,6 @@
 .search {
     position: relative;
     height: var(--search-height);
-    padding-left: 16px;
     display: flex;
     border-radius: var(--search-border-radius);
     border: 1.5px solid transparent;
@@ -48,10 +47,11 @@
 .clear,
 .loading {
     position: absolute;
-    right: calc(var(--search-buutton-width) + 16px);
+    right: 65px;
     top: 50%;
     transform: translateY(-50%);
     color: rgba(22, 24, 35, 0.34);
+    background-color: transparent;
 }
 
 .loading {

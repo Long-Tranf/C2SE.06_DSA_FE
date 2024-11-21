@@ -1,0 +1,72 @@
+/* Container for the entire headline section */
+.headline-container {
+    background-color: white;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-wrap: wrap;
+}
+
+/* Left section of the headline */
+.headline-left {
+    background-color: #dddddd;
+    position: relative;
+    width: 170px;
+    background-color: #fcbe21;
+}
+
+.headline-left::after {
+    content: '';
+    position: absolute;
+    background-color: #dddddd;
+    width: 20px;
+    left: 160px;
+    top: 0;
+    bottom: 0;
+    z-index: 2;
+    transform: skewX(20deg);
+    background-color: #fcbe21;
+}
+
+.headline-left-content {
+    padding-left: 8px;
+    padding-right: 4px;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.headline-title {
+    color: #333333;
+    font-weight: 600;
+    font-size: 1.125rem;
+    margin-left: 8px;
+}
+
+/* Right section of the headline with Marquee */
+.headline-right {
+    width: calc(100% - 170px);
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.marquee-container {
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+/* Style for the links inside Marquee */
+.marquee-container a {
+    color: #333333;
+    font-size: 16px;
+    margin-right: 30px;
+    text-decoration: none;
+}
+
+.marquee-container a:hover {
+    color: #fcbe21;
+}

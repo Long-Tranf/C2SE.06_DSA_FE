@@ -49,12 +49,12 @@ function Search() {
     const handleHideResult = () => {
         setShowResult(false);
     };
-    console.log(showResult);
 
     return (
         <HeadlessTippy
             visible={showResult && searchResult.length > 0}
             interactive
+            placement="bottom"
             render={(attrs) => (
                 <div className={cx('search-result')} tabIndex="-1" {...attrs}>
                     <PopperWrapper>

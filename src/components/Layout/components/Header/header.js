@@ -3,11 +3,28 @@ import './header.css';
 import moment from 'moment';
 import banner from '~/assets/image/banner.png';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faGlobe } from '@fortawesome/free-solid-svg-icons';
+import {
+    faAngleDown,
+    faArrowDown,
+    faGlobe,
+    faSignOut,
+    faUser,
+} from '@fortawesome/free-solid-svg-icons';
 import Search from '~/components/Layout/components/Search/index';
+import avatar from '~/assets/image/no-img.png';
+import Tippy from '@tippyjs/react';
+import 'tippy.js/themes/light.css';
+import { Link } from 'react-router-dom';
 
 function Header() {
     const [curr, setCurr] = useState(moment());
+    const [currentUser, setCurrentUser] = useState(true);
+    const formattedDate = curr.format('DD MMMM YYYY HH:mm:ss');
+
+    const user = {
+        name: 'Đình Long',
+        avatar: 'https://p16-sign-va.tiktokcdn.com/tos-maliva-avt-0068/a5d6f67a025f7175ebb766f2532aa4de~c5_720x720.jpeg?lk3s=a5d48078&nonce=95564&refresh_token=4bf0525411d3c50613a1e0867085791e&x-expires=1732348800&x-signature=xHkbbt0z3tj99p0NeA91H3h97hc%3D&shp=a5d48078&shcp=81f88b70&quot;);',
+    };
 
     useEffect(() => {
         const time = setInterval(() => {
@@ -16,10 +33,6 @@ function Header() {
         return () => clearInterval(time);
     }, []);
 
-    const formattedDate = curr.format('DD MMMM YYYY HH:mm:ss');
-
-    const [currentUser, setCurrentUser] = useState(true);
-
     return (
         <div className="header-container">
             <div className="top-header">
@@ -27,18 +40,39 @@ function Header() {
                 <div className="info">
                     {currentUser ? (
                         <>
-                            <a className="info-item">Profile</a>
-                            <a
-                                className="info-item"
-                                onClick={() => setCurrentUser(false)}
+                            <h4 className="user-name">Xin Chào, {user.name}</h4>
+                            <Tippy
+                                content={
+                                    <div className="profile">
+                                        <a className="profile-item">
+                                            <FontAwesomeIcon icon={faUser} />
+                                            <h4>Profile</h4>
+                                        </a>
+                                        <a
+                                            className="profile-item"
+                                            onClick={() =>
+                                                setCurrentUser(false)
+                                            }
+                                        >
+                                            <FontAwesomeIcon icon={faSignOut} />
+                                            <h4>Logout</h4>
+                                        </a>
+                                    </div>
+                                }
+                                interactive={true}
+                                placement="bottom-start"
+                                offset={[20, 10]}
+                                delay={[0, 200]}
+                                theme="light"
                             >
-                                Logout
-                            </a>
+                                <img
+                                    src={user.avatar || avatar}
+                                    className="avatar"
+                                ></img>
+                            </Tippy>
                         </>
                     ) : (
                         <>
-                            <a className="info-item">Information</a>
-                            <a className="info-item">Contact</a>
                             <div className="info-item language">
                                 <a className="icon youtube" href="">
                                     <FontAwesomeIcon icon={faGlobe} />
@@ -47,6 +81,12 @@ function Header() {
                                     English
                                 </span>
                             </div>
+                            <Link to="/signup" className="info-item authen">
+                                Signup
+                            </Link>
+                            <Link to="/login" className="info-item authen">
+                                Login
+                            </Link>
                         </>
                     )}
                 </div>
@@ -55,10 +95,13 @@ function Header() {
                 <img src={banner} alt="banner" className="banner-img" />
             </div>
             <div className="navigation">
-                {/* <ul className="menu-list">
+                <ul className="menu-list">
                     <li className="menu-list-item">
                         <h2>Sự kiện</h2>
-                        <FaAngleDown className="menu-item-icon" />
+                        <FontAwesomeIcon
+                            icon={faAngleDown}
+                            className="menu-item-icon"
+                        />
                         <ul className="sub-menu-list">
                             <li className="sub-menu-item">
                                 <Link to="/category" className="menu-link">
@@ -75,7 +118,10 @@ function Header() {
                     </li>
                     <li className="menu-list-item">
                         <h2>Cộng đồng chúng ta</h2>
-                        <FaAngleDown className="menu-item-icon" />
+                        <FontAwesomeIcon
+                            icon={faAngleDown}
+                            className="menu-item-icon"
+                        />
                         <ul className="sub-menu-list">
                             <li className="sub-menu-item">Mái nhà chung</li>
                             <li className="sub-menu-item">Gia nhập DSA</li>
@@ -87,7 +133,10 @@ function Header() {
                     </li>
                     <li className="menu-list-item">
                         <h2>Nguồn nhân lực IT</h2>
-                        <FaAngleDown className="menu-item-icon" />
+                        <FontAwesomeIcon
+                            icon={faAngleDown}
+                            className="menu-item-icon"
+                        />
                         <ul className="sub-menu-list">
                             <li className="sub-menu-item">
                                 Đào tạo nguồn nhân lực
@@ -97,7 +146,10 @@ function Header() {
                     </li>
                     <li className="menu-list-item">
                         <h2>Góc nhìn DSA</h2>
-                        <FaAngleDown className="menu-item-icon" />
+                        <FontAwesomeIcon
+                            icon={faAngleDown}
+                            className="menu-item-icon"
+                        />
                         <ul className="sub-menu-list">
                             <li className="sub-menu-item">Đà Nẵng 24h</li>
                             <li className="sub-menu-item">Du Lịch</li>
@@ -107,7 +159,7 @@ function Header() {
                             </li>
                         </ul>
                     </li>
-                </ul> */}
+                </ul>
 
                 <Search className="search" />
             </div>
