@@ -1,0 +1,26 @@
+.contentHomePage {
+    margin: 14px 0;
+    background-color: #f6f6f6;
+}
+
+.contentHomePage .news {
+    display: flex;
+    width: 100%;
+    gap: 20px;
+}
+
+.contentHomePage .news .newsMain {
+    width: 60%;
+}
+
+.contentHomePage .news .newSidebar {
+    width: 20%;
+}
+
+.contentHomePage .news .logoSidebar {
+    display: flex;
+    flex-wrap: wrap;
+    height: min-content;
+    gap: 10px;
+    width: 20%;
+}

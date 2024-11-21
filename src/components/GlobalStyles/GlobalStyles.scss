@@ -1,0 +1,75 @@
+@import 'normalize.css';
+:root {
+    --primary: #ef893b;
+    --black: #000;
+    --white: #fff;
+    --text-color: #333;
+    //Default layout
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    font-size: 62.5%;
+}
+
+body {
+    font-family: 'TikTokFont', sans-serif;
+    font-size: 1.6rem;
+    line-height: 1.5;
+    text-rendering: optimizeSpeed;
+    color: var(--text-color);
+}
+//Font emebed
+@font-face {
+    font-family: TikTokFont;
+    src: url('/assets/fonts/TikTokFont-Bold.woff2');
+    font-weight: 700;
+}
+
+@font-face {
+    font-family: TikTokFont;
+    src: url('/assets/fonts/TikTokFont-Semibold.woff2');
+    font-weight: 600;
+}
+
+@font-face {
+    font-family: TikTokFont;
+    src: url('/assets/fonts/TikTokFont-Regular.woff2');
+    font-weight: 400;
+}
+
+button,
+input,
+[tabindex] {
+    outline: none;
+    border: none;
+}
+
+a[href] {
+    color: var(--text-color);
+    text-decoration: none;
+}
+
+//Custom tippy tooltip
+body {
+    padding: 0 32px;
+    .tippy-box {
+        background-color: rgba(84, 84, 84, 0.992);
+        font-size: 1.6rem;
+        line-height: 2.2rem;
+        border-radius: 8px;
+    }
+
+    .tippy-arrow {
+        color: rgba(84, 84, 84, 0.992);
+    }
+
+    .tippy-content {
+        padding: 8px 9px;
+    }
+}

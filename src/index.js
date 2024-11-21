@@ -1,14 +1,15 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import './index.css';
-import Login from '~/pages/Login/Login';
-
+import App from '~/App';
+import GlobalStyle from './components/GlobalStyles';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  <React.StrictMode>
-    <Login />
-  </React.StrictMode>
+    <React.StrictMode>
+        <GlobalStyle>
+            <App />
+        </GlobalStyle>
+    </React.StrictMode>,
 );
 
 // If you want to start measuring performance in your app, pass a function

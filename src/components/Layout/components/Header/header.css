@@ -1,0 +1,158 @@
+/* Tổng quát */
+.top-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #f3f3f3;
+    color: #333;
+    padding: 5px 20px;
+}
+
+/* Định dạng thời gian */
+.current-date-time {
+    font-size: 13px;
+    font-weight: 500;
+}
+
+/* Vùng chứa các icon mạng xã hội */
+.info {
+    display: flex;
+    gap: 16px;
+    /* Khoảng cách ngang giữa các icon */
+    justify-content: space-around;
+    height: 30px;
+}
+
+.info-item {
+    display: inline-block;
+    line-height: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-decoration: none;
+    color: #333333;
+    cursor: pointer;
+}
+
+.info-item.language {
+    border: 1px solid rgb(142, 142, 142);
+    border-radius: 20px;
+}
+
+.language-selected {
+    padding-right: 10px;
+}
+
+.icon {
+    width: 37px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(255, 255, 255, 0.17);
+    color: #0e0e0e;
+    text-decoration: none;
+}
+
+.icon i {
+    font-size: 16px;
+}
+
+/* Đổi màu icon khi hover */
+.icon:hover {
+    background-color: rgba(255, 255, 255, 0.3);
+}
+
+/* Banner */
+.banner {
+    height: 250px;
+}
+
+.banner-img {
+    width: 100%;
+}
+
+/* Navigation */
+.navigation {
+    background-color: #ececec;
+    display: flex;
+    justify-content: space-between;
+    height: 42px;
+}
+
+.menu-list {
+    display: flex;
+    list-style: none;
+    height: 42px;
+    flex: 1;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.menu-item-icon {
+    transform: translateY(13px);
+}
+
+.menu-list-item {
+    display: flex;
+    font-size: 16px;
+    position: relative;
+    width: 200px;
+    justify-content: center;
+    cursor: pointer;
+    height: auto;
+    flex: 1;
+    line-height: 42px;
+}
+
+.menu-list-item:hover .sub-menu-list {
+    display: block;
+}
+
+/* Sub Menu*/
+.sub-menu-list {
+    position: absolute;
+    top: 42px;
+    left: 0;
+    right: 0;
+    padding: 0;
+    background-color: #ececec;
+    list-style: none;
+    display: none;
+    padding-top: 10px;
+    z-index: 10;
+}
+
+.sub-menu-item {
+    padding-left: 8px;
+}
+
+.menu-link {
+    text-decoration: none;
+    color: #333;
+}
+
+.sub-menu-item:hover {
+    background-color: #9c9a9a;
+}
+
+/*Search*/
+.search {
+    padding-right: 10px;
+}
+
+.search-input {
+    height: 40px;
+    border-radius: 2px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+    border: none;
+    outline: none;
+}
+
+.search-btn {
+    background-color: #ececec;
+    border: none;
+    height: 42px;
+    width: 42px;
+    line-height: 42px;
+    cursor: pointer;
+}

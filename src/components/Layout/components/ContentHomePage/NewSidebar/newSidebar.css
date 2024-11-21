@@ -1,0 +1,41 @@
+.innerNewSidebar {
+    margin-bottom: 20px;
+    background-color: #fff;
+}
+
+.innerNewSidebar .heading {
+    font-size: 20px;
+    padding: 8px 0 8px 14px;
+}
+
+.innerNewSidebar .image {
+    width: 100%;
+    height: 170px;
+}
+
+.innerNewSidebar .image img {
+    width: 100%;
+    height: 100%;
+}
+
+.innerNewSidebar .title {
+    font-size: 16px;
+    font-weight: 600;
+    margin: 10px 0 10px 14px;
+}
+
+.innerNewSidebar .title:hover {
+    color: #337ab7;
+    transition: color 0.3s ease;
+    cursor: pointer;
+}
+
+.innerNewSidebar .desc {
+    margin-left: 14px;
+    font-size: 14px;
+    color: #333;
+    display: -webkit-box;
+    -webkit-line-clamp: 6;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
