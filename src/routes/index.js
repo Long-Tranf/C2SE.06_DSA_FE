@@ -4,6 +4,7 @@ import Login from '~/pages/Login/Login';
 import Signup from '~/pages/Signup/Signup';
 import Search from '~/pages/Search/Search';
 import Profile from '~/pages/Profile/Profile';
+import CategoryDetail from '~/pages/CategoryDetail/CategoryDetail';
 
 //Public routes
 const publicRoutes = [
@@ -26,6 +27,10 @@ const publicRoutes = [
     {
         path: '/profile',
         component: Profile,
+    },
+    {
+        path: '/categorydetail',
+        component: CategoryDetail,
     },
 ];
 

@@ -58,7 +58,7 @@ function Search() {
             render={(attrs) => (
                 <div className={cx('search-result')} tabIndex="-1" {...attrs}>
                     <PopperWrapper>
-                        <h4 className={cx('search-title')}>Acount</h4>
+                        <h4 className={cx('search-title')}>Title</h4>
                         {searchResult.map((result) => (
                             <PostItem key={result.id} data={result} />
                         ))}
@@ -71,7 +71,7 @@ function Search() {
                 <input
                     ref={inputRef}
                     value={searchValue}
-                    placeholder="Search accounts and videos"
+                    placeholder="Search posts and association"
                     spellCheck={false}
                     onChange={(e) => setSearchValue(e.target.value)}
                     onFocus={() => setShowResult(true)}

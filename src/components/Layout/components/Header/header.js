@@ -9,6 +9,7 @@ import {
     faGlobe,
     faSignOut,
     faUser,
+    faBell, // Thêm icon chuông
 } from '@fortawesome/free-solid-svg-icons';
 import Search from '~/components/Layout/components/Search/index';
 import avatar from '~/assets/image/no-img.png';
@@ -19,6 +20,7 @@ import { Link } from 'react-router-dom';
 function Header() {
     const [curr, setCurr] = useState(moment());
     const [currentUser, setCurrentUser] = useState(true);
+    const [notifications, setNotifications] = useState([]);
     const formattedDate = curr.format('DD MMMM YYYY HH:mm:ss');
 
     const user = {
@@ -26,7 +28,28 @@ function Header() {
         avatar: 'https://p16-sign-va.tiktokcdn.com/tos-maliva-avt-0068/a5d6f67a025f7175ebb766f2532aa4de~c5_720x720.jpeg?lk3s=a5d48078&nonce=95564&refresh_token=4bf0525411d3c50613a1e0867085791e&x-expires=1732348800&x-signature=xHkbbt0z3tj99p0NeA91H3h97hc%3D&shp=a5d48078&shcp=81f88b70&quot;);',
     };
 
+    const posts = [
+        {
+            author: 'Hội viên 1',
+            title: 'Tiêu đề bài viết 1',
+        },
+        {
+            author: 'Hội viên 2',
+            title: 'Tiêu đề bài viết 2',
+        },
+        {
+            author: 'Hội viên 3',
+            title: 'Tiêu đề bài viết 3',
+        },
+    ];
+
     useEffect(() => {
+        // Chuyển dữ liệu bài viết thành thông báo cho popper
+        const postNotifications = posts.map((post) => {
+            return `${post.author} đã đăng bài viết "${post.title}"`;
+        });
+        setNotifications(postNotifications);
+
         const time = setInterval(() => {
             setCurr(moment());
         }, 1000);
@@ -68,7 +91,33 @@ function Header() {
                                 <img
                                     src={user.avatar || avatar}
                                     className="avatar"
-                                ></img>
+                                    alt="User Avatar"
+                                />
+                            </Tippy>
+
+                            {/* Thêm icon chuông và render thông báo bài viết */}
+                            <Tippy
+                                content={
+                                    <div className="notification-popover">
+                                        <ul>
+                                            {notifications.map(
+                                                (notif, index) => (
+                                                    <li key={index}>{notif}</li>
+                                                ),
+                                            )}
+                                        </ul>
+                                    </div>
+                                }
+                                interactive={true}
+                                placement="bottom-start"
+                                offset={[20, 10]}
+                                delay={[0, 200]}
+                                theme="light"
+                            >
+                                <FontAwesomeIcon
+                                    icon={faBell}
+                                    className="bell-icon"
+                                />
                             </Tippy>
                         </>
                     ) : (

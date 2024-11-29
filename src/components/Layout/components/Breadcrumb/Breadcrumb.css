@@ -1,0 +1,9 @@
+.breadcrumb-container {
+    background-color: #f1f1f1;
+    padding: 10px 0 10px 10px;
+    margin-bottom: 20px;
+}
+
+.breadcrumb-content {
+    margin: 0;
+}

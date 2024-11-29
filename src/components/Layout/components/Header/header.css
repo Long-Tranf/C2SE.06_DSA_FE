@@ -210,3 +210,41 @@
     line-height: 42px;
     cursor: pointer;
 }
+
+/*Bell*/
+.bell-icon {
+    font-size: 24px;
+    cursor: pointer;
+    margin-left: 20px; /* Căn lề cho chuông */
+    color: #333;
+}
+
+.notification-popover {
+    background-color: #fff;
+    border-radius: 8px;
+    padding: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 250px;
+}
+
+.notification-popover ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.notification-popover ul li {
+    padding: 8px 0;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.notification-popover ul li:last-child {
+    border-bottom: none;
+}
+
+.avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+}

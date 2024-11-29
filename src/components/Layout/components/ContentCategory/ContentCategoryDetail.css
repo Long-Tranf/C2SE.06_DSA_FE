@@ -1,0 +1,50 @@
+/* Flexbox để bố trí sidebar và content */
+.d-flex {
+    display: flex;
+    align-items: flex-start; /* Đảm bảo các phần tử trong flex không bị giãn đều */
+}
+
+/* Sidebar chỉ chiều cao tự động theo nội dung */
+.sidebar {
+    border: 1px solid var(--primary);
+    border-radius: 2px;
+    width: 250px; /* Bạn có thể điều chỉnh lại kích thước của sidebar */
+}
+
+/* Nội dung sidebar */
+.category-heading {
+    padding: 8px 10px;
+    margin: 0;
+    font-size: 1.6rem;
+    line-height: 1.6rem;
+    border-bottom: 1px solid var(--primary);
+    color: var(--white);
+    background-color: var(--primary);
+}
+
+.category-list {
+    padding: 0;
+    margin: 0;
+}
+
+.list-item {
+    padding: 6px 10px;
+    cursor: pointer;
+}
+
+.list-item a {
+    display: block;
+}
+
+/* Nội dung chính */
+.main-content {
+    flex-grow: 1; /* Content chiếm phần còn lại */
+    padding: 20px;
+}
+
+/* Pagination */
+.pagination-wrapper {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
