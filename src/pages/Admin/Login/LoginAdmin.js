@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import './Login.css';
+import './LoginAdmin.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-function Login() {
+function LoginAdmin() {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
@@ -65,24 +65,10 @@ function Login() {
                     <div className="row align-items-center justify-content-center h-100 g-0 px-4 px-sm-0">
                         <div className="col col-sm-6 col-lg-7 col-xl-6">
                             <div className="text-center mb-5">
-                                <h3 className="fw-bold">Log In</h3>
+                                <h3 className="fw-bold">Log In For Admin</h3>
                                 <p className="text-secondary">
                                     Get access to your account
                                 </p>
-                            </div>
-                            <button className="btn btn-lg btn-outline-secondary btn-online-custom w-100 mb-3">
-                                <i className="bx bxl-google text-danger fs-200 me-1"></i>{' '}
-                                Login with Google
-                            </button>
-                            <button className="btn btn-lg btn-outline-secondary btn-online-custom w-100 ">
-                                <i className="bx bxl-facebook-circle text-primary fs-200 me-1 mt-2000"></i>{' '}
-                                Login with Facebook
-                            </button>
-
-                            {/* Divider */}
-                            <div className="position-relative">
-                                <hr className="text-secondary divider"></hr>
-                                <div className="divider-content-center">Or</div>
                             </div>
 
                             {/* Form */}
@@ -129,15 +115,6 @@ function Login() {
                                 </button>
                             </form>
                             {/* Form */}
-
-                            <div className="text-center">
-                                <small>
-                                    Don't have an account?{' '}
-                                    <a href="#" className="fw-bold">
-                                        Sign Up
-                                    </a>
-                                </small>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -147,4 +124,4 @@ function Login() {
     );
 }
 
-export default Login;
+export default LoginAdmin;

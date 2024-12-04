@@ -1,0 +1,104 @@
+/* Cấu trúc bảng */
+.content-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    font-size: 14px;
+}
+
+.content-table th,
+.content-table td {
+    padding: 12px;
+    text-align: left;
+    border: 1px solid #ddd;
+}
+
+/* Căn chỉnh tiêu đề bảng */
+.content-table th {
+    background-color: #f4f4f4;
+    font-weight: bold;
+}
+
+/* Các ô trong bảng với nội dung bị cắt nếu quá dài */
+.content-table td {
+    max-width: 200px; /* Đặt chiều rộng tối đa cho các ô */
+    white-space: nowrap; /* Nội dung sẽ không xuống dòng */
+    overflow: hidden; /* Ẩn phần vượt ra ngoài */
+    text-overflow: ellipsis; /* Hiển thị dấu ba chấm khi nội dung bị cắt */
+    padding: 10px;
+}
+
+/* Cấu hình chiều rộng cho cột tiêu đề */
+.content-table td.title {
+    max-width: 300px;
+}
+
+/* Hiển thị trong modal cho nội dung dài */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    width: 80%;
+    max-width: 600px;
+}
+
+.modal-content h3 {
+    margin-bottom: 15px;
+    font-size: 18px;
+}
+
+/* Textarea cho chỉnh sửa nội dung dài */
+.modal-content textarea {
+    width: 100%;
+    height: 150px; /* Cho phép chỉnh sửa nội dung dài */
+    white-space: normal; /* Cho phép xuống dòng trong modal */
+    overflow-y: auto; /* Thêm thanh cuộn dọc nếu nội dung dài */
+    padding: 10px;
+    font-size: 14px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+/* Nút lưu thay đổi */
+.modal-content button {
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    margin-top: 10px;
+}
+
+.modal-content button:hover {
+    background-color: #45a049;
+}
+
+/* Cấu hình nút đóng (thường là ngoài modal) */
+.modal-overlay .close-btn {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background-color: transparent;
+    border: none;
+    font-size: 20px;
+    color: #fff;
+    cursor: pointer;
+}
+
+.modal-overlay .close-btn:hover {
+    color: #ddd;
+}
