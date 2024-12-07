@@ -1,0 +1,74 @@
+.account-settings-container { 
+    margin-top: 20px; /* Thêm margin-top */ 
+}
+.account-settings-tittle{
+    font-size: 2rem;
+    font-weight: bold;
+}
+.account-settings-avatar-image {
+    width: 125px;
+    height: 125px;
+    object-fit: cover;
+    margin: 0 auto;
+  }
+  
+  .account-settings-avatar {
+    display: block;
+    margin: 10px auto 0;
+    width: 250px;
+    font-size: 1.5rem;
+  }
+  
+  .account-settings-save-button, .account-settings-change-password-button {
+    font-size: 1.25rem; /* Tăng kích thước chữ */
+    padding: 0.5rem 0.75rem; /* Tăng kích thước padding */
+    margin-top: 20px;
+  }
+  
+  .account-settings-avatar-image {
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+    margin: 0 auto;
+  }
+  
+  .account-settings-avatar {
+    display: block;
+    margin: 10px auto 0;
+  }
+  
+  .account-settings-form-control {
+    width: 80%;
+    margin: 0 auto;
+  }
+  
+  .account-settings-avatar-image {
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+    margin: 0 auto;
+  }
+  
+  .account-settings-avatar {
+    display: block;
+    margin: 10px auto 0;
+  }
+  
+  .account-settings-form-control {
+    width: 80%;
+    margin: 0 auto;
+  }
+  
+  .account-settings-username, 
+  .account-settings-full-name, 
+  .account-settings-email, 
+  .account-settings-bio, 
+  .account-settings-birthdate, 
+  .account-settings-country,
+  .account-settings-confirm-password,
+  .account-settings-change-password-button,
+  .account-settings-new-password { 
+    font-size: 1.5rem; /* Tăng kích thước chữ */ }
+  
+    .account-settings-form-control-label { font-weight: bold; /* In đậm chữ */ }
+  
