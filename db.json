@@ -1,0 +1,40 @@
+{
+    "posts": [
+        {
+            "id": 1,
+            "title": "Chương trình Nói chuyện chuyên đề: Giải phóng thủ đô - Vang mãi khúc khải hoàn",
+            "image": "https://storage.googleapis.com/a1aa/image/tIRgHJcr5AahE1nb25EoeXo7i4EbrPjUR8mxfvIZC645AZ4TA.jpg",
+            "date": "03/10/2024",
+            "time": "11:15",
+            "views": 291,
+            "description": "Nhân kỷ niệm 70 năm Ngày Giải phóng Thủ đô kỷ niệm 70 năm Ngày Giải phóng Thủ đô kỷ niệm 70 năm Ngày Giải phóng Thủ đô kỷ niệm 70 năm Ngày Giải phóng Thủ đô..."
+        },
+        {
+            "id": 2,
+            "title": "AI, Blockchain giúp kiến tạo thành phố thông minh ở Đà Nẵng",
+            "image": "",
+            "date": "01/10/2024",
+            "time": "10:00",
+            "views": 150,
+            "description": "Ứng dụng công nghệ giúp xây dựng thành phố thông minh..."
+        },
+        {
+            "id": 3,
+            "title": "Đại học Đông Á chính thức tuyển sinh và đào tạo ngành Y khoa",
+            "image": "",
+            "date": "15/09/2024",
+            "time": "09:00",
+            "views": 180,
+            "description": "Trường Đại học Đông Á công bố thông tin tuyển sinh..."
+        },
+        {
+            "id": 4,
+            "title": "Đại học Đông Á chính thức tuyển sinh và đào tạo ngành Y khoa",
+            "image": "",
+            "date": "15/09/2024",
+            "time": "09:00",
+            "views": 180,
+            "description": "Trường Đại học Đông Á công bố thông tin tuyển sinh..."
+        }
+    ]
+}

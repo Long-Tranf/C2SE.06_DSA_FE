@@ -1,18 +1,15 @@
+import { Outlet } from 'react-router-dom'; // Import Outlet
 import { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import logo from '~/assets/image/logoadmin.png';
 import './AdminDashboard.css';
-import UserManagement from '~/pages/Admin/UserManagement/UserManagement';
-import PostManagement from '~/pages/Admin/PostManagement/PostManagement';
-import CategoryManagement from '~/pages/Admin/CategoryManagement/CategoryManagement';
-import AssociationManagement from '~/pages/Admin/AssociationManagement/AssociationManagement';
-import ContantManagement from '~/pages/Admin/ContantManagement/ContantManagement';
-import LibraryManagement from '~/pages/Admin/LibraryManagement/LibraryManagement';
 
 function AdminDashboard() {
-    const admin = {
+    const user = {
         name: 'admin123',
+        isMaster: JSON.parse(localStorage.getItem('is_master')) || false, // Lấy giá trị `is_master` từ localStorage
     };
+
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -29,8 +26,24 @@ function AdminDashboard() {
         // Xóa thông tin đăng nhập và chuyển hướng đến trang login
         localStorage.removeItem('userRole');
         localStorage.removeItem('userToken');
+        localStorage.removeItem('is_master');
         navigate('/loginadmin');
     };
+
+    // Sidebar menu tùy theo quyền
+    const sidebarMenu = user.isMaster
+        ? [
+              { path: '/dashboardadmin/user', label: 'User' },
+              { path: '/dashboardadmin/association', label: 'Association' },
+              { path: '/dashboardadmin/post', label: 'Post' },
+              { path: '/dashboardadmin/category', label: 'Category' },
+              { path: '/dashboardadmin/library', label: 'Library' },
+              { path: '/dashboardadmin/contact', label: 'Contact' },
+          ]
+        : [
+              { path: '/dashboardadmin/post', label: 'Post' },
+              { path: '/dashboardadmin/post/add', label: 'Add New Post' },
+          ];
 
     return (
         <div className="admin-container">
@@ -39,7 +52,7 @@ function AdminDashboard() {
                     <img className="logo-img" src={logo} alt="Logo" />
                 </div>
                 <div className="admin-info">
-                    <h4 className="admin-name">Xin Chào, {admin.name}</h4>
+                    <h4 className="admin-name">Xin Chào, {user.name}</h4>
                     <img
                         className="admin-avatar"
                         src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ9z2IpZagy0I6RWL80m6dFmz60PsauqPR9Bw&s"
@@ -51,19 +64,20 @@ function AdminDashboard() {
             <div className="dashboard-content">
                 <div className="sidebar">
                     <ul className="sidebar-menu">
-                        <li className="menu-item">User</li>
-                        <li className="menu-item">Association</li>
-                        <li className="menu-item">Post</li>
-                        <li className="menu-item">Category</li>
-                        <li className="menu-item">Library</li>
-                        <li className="menu-item">Contact</li>
+                        {sidebarMenu.map((item, index) => (
+                            <li key={index} className="menu-item">
+                                <Link to={item.path}>{item.label}</Link>
+                            </li>
+                        ))}
                     </ul>
                     <div className="logout-btn" onClick={handleLogout}>
                         Đăng xuất
                     </div>
                 </div>
+
                 <div className="content">
-                    <LibraryManagement />
+                    {/* Render các route con */}
+                    <Outlet /> {/* Thêm Outlet để hiển thị các component con */}
                 </div>
             </div>
         </div>

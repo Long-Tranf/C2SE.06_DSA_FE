@@ -1,57 +1,74 @@
-//Pages
 import Home from '~/pages/Home/Home';
 import Login from '~/pages/Login/Login';
 import Signup from '~/pages/Signup/Signup';
 import Search from '~/pages/Search/Search';
 import Profile from '~/pages/Profile/Profile';
 import CategoryDetail from '~/pages/CategoryDetail/CategoryDetail';
+import Post from '~/pages/Post/Post';
 import LoginAdmin from '~/pages/Admin/Login/LoginAdmin';
 import AdminDashboard from '~/pages/Admin/Dashboard/AdminDashboard';
+import UserManagement from '~/pages/Admin/UserManagement/UserManagement';
+import PostManagement from '~/pages/Admin/PostManagement/PostManagement';
+import AddPost from '~/pages/Admin/AddPost/AddPost';
+import CategoryManagement from '~/pages/Admin/CategoryManagement/CategoryManagement';
+import AssociationManagement from '~/pages/Admin/AssociationManagement/AssociationManagement';
+import ContantManagement from '~/pages/Admin/ContantManagement/ContantManagement';
+import LibraryManagement from '~/pages/Admin/LibraryManagement/LibraryManagement';
 
-//Public routes
+// Public routes
 const publicRoutes = [
     {
         path: '/',
-        component: Home,
+        element: <Home />,
     },
     {
         path: '/login',
-        component: Login,
+        element: <Login />,
     },
     {
         path: '/signup',
-        component: Signup,
+        element: <Signup />,
     },
     {
         path: '/search',
-        component: Search,
+        element: <Search />,
     },
     {
         path: '/categorydetail',
-        component: CategoryDetail,
+        element: <CategoryDetail />,
+    },
+    {
+        path: '/post',
+        element: <Post />,
     },
     {
         path: '/loginadmin',
-        component: LoginAdmin,
+        element: <LoginAdmin />,
     },
     {
         path: '/dashboardadmin',
-        component: AdminDashboard,
-    },
-    {
-        path: '/dashboardadmin/user',
-        component: AdminDashboard,
-    },
-    {
-        path: '/dashboardadmin/post',
-        component: AdminDashboard,
+        element: <AdminDashboard />,
+        children: [
+            { path: 'user', element: <UserManagement /> },
+            { path: 'association', element: <AssociationManagement /> },
+            { path: 'post', element: <PostManagement /> },
+            { path: 'post/add', element: <AddPost /> },
+            {
+                path: '/dashboardadmin/post/edit/:postId',
+                element: <AddPost />,
+            },
+            { path: 'category', element: <CategoryManagement /> },
+            { path: 'library', element: <LibraryManagement /> },
+            { path: 'contact', element: <ContantManagement /> },
+        ],
     },
 ];
 
+// Private routes
 const privateRoutes = [
     {
         path: '/profile',
-        component: Profile,
+        element: <Profile />,
     },
 ];
 

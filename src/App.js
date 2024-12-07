@@ -1,40 +1,38 @@
-import {
-    BrowserRouter as Router,
-    Routes,
-    Route,
-    Navigate,
-} from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { publicRoutes, privateRoutes } from '~/routes';
 
 function App() {
-    const isAdmin = () => {
-        // Kiểm tra quyền (ví dụ: role lưu trong localStorage)
-        return localStorage.getItem('userRole') === 'admin';
-    };
-
     return (
         <Router>
             <div className="App">
                 <Routes>
+                    {/* Public routes */}
                     {publicRoutes.map((route, index) => {
-                        const Page = route.component;
                         return (
                             <Route
                                 key={index}
                                 path={route.path}
-                                element={<Page />}
-                            />
+                                element={route.element}
+                            >
+                                {route.children &&
+                                    route.children.map((child, idx) => (
+                                        <Route
+                                            key={idx}
+                                            path={child.path}
+                                            element={child.element}
+                                        />
+                                    ))}
+                            </Route>
                         );
                     })}
+
+                    {/* Private routes */}
                     {privateRoutes.map((route, index) => {
-                        const Page = route.component;
                         return (
                             <Route
                                 key={index}
                                 path={route.path}
-                                element={
-                                    isAdmin() ? <Page /> : <Navigate to="/" />
-                                }
+                                element={route.element} // Hiển thị trực tiếp
                             />
                         );
                     })}

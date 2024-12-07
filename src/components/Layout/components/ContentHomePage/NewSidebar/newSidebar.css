@@ -6,6 +6,7 @@
 .innerNewSidebar .heading {
     font-size: 20px;
     padding: 8px 0 8px 14px;
+    margin: 0;
 }
 
 .innerNewSidebar .image {
@@ -38,4 +39,36 @@
     -webkit-line-clamp: 6;
     -webkit-box-orient: vertical;
     overflow: hidden;
+}
+
+.related-posts {
+    margin-top: 15px;
+    padding: 0 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px; /* Tạo khoảng cách giữa các bài viết */
+}
+
+.related-post {
+    font-size: 14px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* Đảm bảo các phần tử con có không gian đều */
+    padding-bottom: 8px; /* Thêm khoảng cách dưới mỗi tiêu đề */
+    border-bottom: 1px solid #ddd; /* Gạch dưới giữa các bài viết */
+    height: 40px; /* Đặt chiều cao cố định cho mỗi bài viết */
+}
+
+.related-post:last-child {
+    border-bottom: none; /* Bỏ gạch dưới cho bài viết cuối cùng */
+}
+
+.related-post-link {
+    text-decoration: none;
+    color: #333;
+    display: block; /* Đảm bảo liên kết chiếm toàn bộ không gian của phần tử */
+}
+
+.related-post-link:hover {
+    color: #337ab7;
 }

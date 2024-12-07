@@ -5,7 +5,7 @@
 }
 
 /* Sidebar chỉ chiều cao tự động theo nội dung */
-.sidebar {
+.sidebar-category {
     border: 1px solid var(--primary);
     border-radius: 2px;
     width: 250px; /* Bạn có thể điều chỉnh lại kích thước của sidebar */

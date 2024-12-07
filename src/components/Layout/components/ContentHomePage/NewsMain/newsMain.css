@@ -3,6 +3,7 @@
     column-gap: 20px;
     margin-bottom: 30px;
     background-color: #fff;
+    padding: 16px;
 }
 
 .innerNewMain:first-child {
@@ -34,7 +35,7 @@
     font-weight: 700;
 }
 
-.heading-link{
+.heading-link {
     font-size: 20px;
     font-weight: 700;
     text-decoration: none;
@@ -68,4 +69,19 @@
 
 .innerNewMain:first-child .descNewMain {
     font-size: 16px;
+}
+
+.meta {
+    display: flex;
+    gap: 10px; /* Khoảng cách giữa các icon */
+    margin: 10px 0;
+}
+
+.meta span {
+    display: flex;
+    align-items: center;
+}
+
+.meta i {
+    margin-right: 5px; /* Khoảng cách giữa icon và text */
 }

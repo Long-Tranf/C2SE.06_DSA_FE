@@ -77,6 +77,10 @@
     transition: background-color 0.3s ease;
 }
 
+.menu-item a {
+    color: #fff !important;
+}
+
 .menu-item:hover {
     background-color: #34495e;
 }

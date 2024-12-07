@@ -1,7 +1,8 @@
-import "./contentHomePage.css";
-import LogoSidebar from "./LogoSidebar/LogoSideBar";
-import NewSidebar from "./NewSidebar/NewSidebar";
-import NewsMain from "./NewsMain/NewsMain";
+import './contentHomePage.css';
+import LogoSidebar from './LogoSidebar/LogoSideBar';
+import NewSidebar from './NewSidebar/NewSidebar';
+import NewsMain from './NewsMain/NewsMain';
+import NewsLayout from './NewsLayout/NewsLayout';
 
 const ContentHomePage = () => {
     return (
@@ -10,8 +11,8 @@ const ContentHomePage = () => {
                 <div className="news">
                     <div className="newsMain">
                         <NewsMain />
-                        <NewsMain />
-                        <NewsMain />
+                        <NewsLayout />
+                        <NewsLayout />
                     </div>
                     <div className="newSidebar">
                         <NewSidebar />

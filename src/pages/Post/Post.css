@@ -1,0 +1,187 @@
+.breadcrumb-container {
+    margin-top: 20px;
+}
+
+.breadcrumb-container a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+.breadcrumb-container a:hover {
+    text-decoration: underline;
+}
+
+.content-container {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 30px;
+    background-color: #f4f4f4;
+}
+
+.post-content {
+    width: 80%;
+    background-color: #fff;
+    padding: 0 10px;
+}
+
+.sidebar-post {
+    width: 20%;
+    padding: 20px;
+    border-radius: 8px;
+}
+
+h1 {
+    font-size: 2rem;
+    margin-bottom: 15px;
+}
+
+.post-meta {
+    display: flex;
+    justify-content: flex-start;
+    gap: 20px; /* Thêm khoảng cách giữa ngày giờ và lượt xem */
+    margin-bottom: 20px;
+}
+
+.post-meta span {
+    font-size: 0.9rem;
+    color: #555;
+}
+
+.post-meta i {
+    margin-right: 5px;
+}
+
+.post-body {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    color: #333;
+}
+
+.author {
+    margin-top: 30px;
+    text-align: right;
+}
+
+.related-posts-news {
+    margin-top: 30px;
+}
+
+.related-posts-news h3 {
+    font-size: 1.5rem;
+    margin-bottom: 15px;
+    color: #333;
+}
+
+.related-post-list {
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+}
+
+.related-post-new-item {
+    width: 30%;
+    text-align: center;
+    border: 1px solid #ddd;
+    padding: 10px;
+    border-radius: 8px;
+    background-color: #fff;
+}
+
+.related-posts-news img {
+    width: 100%;
+    height: auto;
+    border-radius: 5px;
+}
+
+.related-posts-news p {
+    font-size: 1rem;
+    color: #007bff;
+    margin-top: 10px;
+    text-decoration: none;
+}
+
+@media (max-width: 768px) {
+    .content-container {
+        flex-direction: column;
+    }
+
+    .post-content {
+        width: 100%;
+    }
+
+    .sidebar {
+        width: 100%;
+        margin-top: 20px;
+    }
+
+    .related-post-list {
+        flex-direction: column;
+    }
+
+    .related-posts-news {
+        width: 80%;
+        margin-bottom: 15px;
+    }
+}
+
+/* Giống như các class đã được định nghĩa trong ReactQuill */
+
+.content-output {
+    padding: 10px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    margin-top: 20px;
+    color: #333;
+    word-wrap: break-word;
+}
+
+.content-output p {
+    margin: 10px 0;
+    text-align: left;
+}
+
+.content-output .ql-align-center {
+    text-align: center !important;
+}
+
+.content-output .ql-align-right {
+    text-align: right !important;
+}
+
+.content-output .ql-align-justify {
+    text-align: justify !important;
+}
+
+.content-output img {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 100%;
+    height: auto;
+}
+
+.content-output h1,
+.content-output h2 {
+    margin-bottom: 10px;
+}
+
+.content-output ul,
+.content-output ol {
+    margin-left: 20px;
+}
+
+.ql-font-Times-New-Roman {
+    font-family: 'Times New Roman', Times, serif;
+}
+
+.ql-font-sans-serif {
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.ql-font-serif {
+    font-family: 'Times New Roman', Times, serif;
+}
+
+.ql-font-monospace {
+    font-family: 'Courier New', Courier, monospace;
+}

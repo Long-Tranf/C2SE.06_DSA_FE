@@ -102,7 +102,7 @@ function ContentCategoryDetail() {
 
             <div className="d-flex">
                 {/* Sidebar */}
-                <div className="sidebar" style={{ width: '250px' }}>
+                <div className="sidebar-category" style={{ width: '250px' }}>
                     <h3 className="category-heading">Giới thiệu</h3>
                     <ul className="list-unstyled category-list">
                         <li className="list-item">
