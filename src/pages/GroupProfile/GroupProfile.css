@@ -1,0 +1,62 @@
+
+  .container{
+    background-color: #ffffff;
+    margin-bottom: 20px;
+  }
+
+  .channel {
+    margin-top: 20px;
+    font-size: 2.5rem; /* Tăng kích thước chữ */
+  }
+  
+  p.lead {
+    font-size: 1.5rem; /* Tăng kích thước chữ mô tả kênh */
+  }
+  
+  .card {
+    flex-direction: row;
+    transition: background-color 0.2s; /* Hiệu ứng chuyển màu */
+  }
+  
+  .card img {
+    width: 200px; 
+    object-fit: cover;
+  }
+  
+  .card-title {
+    font-size: 1.5rem; /* Tăng kích thước tiêu đề bài viết */
+    font-weight: bold; /* In đậm tiêu đề bài viết */
+  }
+  
+  .card-text {
+    font-size: 1.2rem; /* Giảm kích thước mô tả bài viết */
+  }
+  
+  .btn-outline-primary.btn-xl {
+    font-size: 1rem; /* Tăng kích thước nút Subscribe */
+    padding: 5px 10px; /* Thêm padding để nút lớn hơn */
+    border: 2px solid #0d6efd; /* Viền xanh */
+    background-color: #ffffff; /* Nền trắng */
+    color: #0d6efd; /* Màu chữ xanh */
+    transition: background-color 0.2s, color 0.2s; /* Thêm hiệu ứng chuyển màu */
+  }
+
+  .btn-outline-primary.btn-xl:hover { 
+    background-color: #0d6efd; /* Đổi nền thành màu xanh khi di chuột vào */ 
+    color: #ffffff; /* Đổi màu chữ thành trắng khi di chuột vào */ }
+  
+  /* Thêm các thuộc tính cho liên kết */
+  .article-link {
+    text-decoration: none;
+    color: inherit; /* Giữ nguyên màu chữ */
+  }
+  
+  .article-link:hover {
+    text-decoration: none;
+    color: inherit; /* Giữ nguyên màu chữ khi hover */
+  }
+  
+  .article-link:hover .card {
+    background-color: #d3d3d3; /* Màu xám khi di chuột vào */
+  }
+  
