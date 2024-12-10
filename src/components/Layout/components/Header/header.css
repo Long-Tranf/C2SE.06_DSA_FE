@@ -108,7 +108,7 @@
 }
 
 /* Banner */
-.banner {
+.banner-header {
     height: 250px;
 }
 
@@ -149,6 +149,7 @@
     flex: 1;
     line-height: 30px;
     width: 100%;
+    padding: 10px;
 }
 
 .sub-menu-list .menu-list-item a {

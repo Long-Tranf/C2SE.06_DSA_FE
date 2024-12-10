@@ -115,7 +115,7 @@ function UserManagement() {
 
     return (
         <div className="user-management">
-            <h2>Quản lý User</h2>
+            <h2 className="user-management-title">Quản lý User</h2>
             <button
                 onClick={openAddModal}
                 className="btn btn-success mb-3"

@@ -2,47 +2,46 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Login.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import axios from 'axios';
 
 function Login() {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
+    const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
 
-    // Giả lập hàm xác thực người dùng (từ API)
-    const authenticateUser = async (username, password) => {
-        // Đây là ví dụ mô phỏng API
-        // Bạn sẽ thay thế nó bằng gọi API thực tế để lấy dữ liệu người dùng
-        const users = [
-            { username: 'john_doe', password: '1234', role: 'admin' },
-            { username: 'member_user', password: '5678', role: 'member' },
-            { username: 'regular_user', password: 'abcd', role: 'user' },
-        ];
-
-        // Tìm người dùng trong mảng giả lập
-        const user = users.find(
-            (u) => u.username === username && u.password === password,
-        );
-        return user;
-    };
-
     const handleLogin = async () => {
-        const user = await authenticateUser(username, password);
+        if (!username || !password) {
+            setErrorMessage('Vui lòng nhập username và password.');
+            return;
+        }
 
-        if (user) {
-            // Lưu thông tin người dùng vào localStorage hoặc context nếu cần thiết
-            localStorage.setItem('userRole', user.role);
+        setLoading(true); // Bắt đầu quá trình đăng nhập
+        try {
+            // Tìm người dùng từ JSONPlaceholder (giả lập đăng nhập)
+            const response = await axios.get(
+                'https://jsonplaceholder.typicode.com/users',
+            );
 
-            // Chuyển hướng theo vai trò
-            if (user.role === 'admin') {
-                navigate('/admin-dashboard');
-            } else if (user.role === 'member') {
-                navigate('/member-dashboard');
+            // Kiểm tra xem người dùng có tồn tại không
+            const user = response.data.find(
+                (user) => user.username === username,
+            );
+            if (user) {
+                // Nếu tìm thấy người dùng, bạn có thể giả lập token và lưu nó
+                localStorage.setItem('accessToken', 'dummyToken'); // Lưu token giả
+                console.log('Đăng nhập thành công với người dùng:', user);
+                navigate('/'); // Điều hướng đến trang chủ sau khi đăng nhập thành công
             } else {
-                navigate('/');
+                throw new Error('Người dùng không tồn tại.');
             }
-        } else {
-            setErrorMessage('Invalid username or password');
+        } catch (error) {
+            // Xử lý lỗi khi đăng nhập thất bại
+            setErrorMessage(error.message || 'Đăng nhập thất bại!');
+            console.error('Đăng nhập thất bại:', error.message);
+        } finally {
+            setLoading(false); // Kết thúc quá trình đăng nhập
         }
     };
 
@@ -71,11 +70,11 @@ function Login() {
                                 </p>
                             </div>
                             <button className="btn btn-lg btn-outline-secondary btn-online-custom w-100 mb-3">
-                                <i className="bx bxl-google text-danger fs-200 me-1"></i>{' '}
+                                <i className="bx bxl-google text-danger fs-200 me-1"></i>
                                 Login with Google
                             </button>
-                            <button className="btn btn-lg btn-outline-secondary btn-online-custom w-100 ">
-                                <i className="bx bxl-facebook-circle text-primary fs-200 me-1 mt-2000"></i>{' '}
+                            <button className="btn btn-lg btn-outline-secondary btn-online-custom w-100">
+                                <i className="bx bxl-facebook-circle text-primary fs-200 me-1 mt-2000"></i>
                                 Login with Facebook
                             </button>
 
@@ -124,8 +123,9 @@ function Login() {
                                     type="button"
                                     className="btn btn-primary btn-lg w-100 mb-3"
                                     onClick={handleLogin}
+                                    disabled={loading}
                                 >
-                                    Login
+                                    {loading ? 'Đang đăng nhập...' : 'Login'}
                                 </button>
                             </form>
                             {/* Form */}

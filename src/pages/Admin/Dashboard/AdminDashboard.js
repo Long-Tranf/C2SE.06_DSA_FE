@@ -7,7 +7,7 @@ import './AdminDashboard.css';
 function AdminDashboard() {
     const user = {
         name: 'admin123',
-        isMaster: JSON.parse(localStorage.getItem('is_master')) || false, // Lấy giá trị `is_master` từ localStorage
+        isMaster: JSON.parse(localStorage.getItem('is_master')) || true, // Lấy giá trị `is_master` từ localStorage
     };
 
     const navigate = useNavigate();
@@ -39,10 +39,13 @@ function AdminDashboard() {
               { path: '/dashboardadmin/category', label: 'Category' },
               { path: '/dashboardadmin/library', label: 'Library' },
               { path: '/dashboardadmin/contact', label: 'Contact' },
+              { path: '/dashboardadmin/banner', label: 'Banner' },
+              { path: '/dashboardadmin/event', label: 'Event' },
           ]
         : [
               { path: '/dashboardadmin/post', label: 'Post' },
               { path: '/dashboardadmin/post/add', label: 'Add New Post' },
+              { path: '/dashboardadmin/event', label: 'Event' },
           ];
 
     return (

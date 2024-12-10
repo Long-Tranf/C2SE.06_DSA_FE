@@ -1,123 +1,98 @@
 import { useState, useEffect } from 'react';
-import Breadcrumb from '~/components/Layout/components/Breadcrumb/Breadcumb';
+import { useParams } from 'react-router-dom';
+import Breadcrumb from '~/components/Layout/components/Breadcrumb/Breadcumb'; // Sửa lỗi chính tả
 import './ContentCategoryDetail.css';
 
 function ContentCategoryDetail() {
-    const categoryName = 'Library'; // Giả sử tên danh mục hiện tại
+    const { categoryId } = useParams(); // Lấy categoryId từ URL
+    const [categoryName, setCategoryName] = useState('');
+    const [parentCategoryName, setParentCategoryName] = useState('');
+    const [subCategories, setSubCategories] = useState([]);
     const breadcrumbItems = [
         { name: 'Home', link: '/' },
-        { name: 'Category', link: '/category' },
+        { name: parentCategoryName, link: `/category/${categoryId}` },
         { name: categoryName, active: true },
     ];
 
-    // Giả sử API trả về danh sách bài viết
-    const allPosts = [
-        {
-            id: 1,
-            title: 'Bài viết 1',
-            content: 'Nội dung bài viết 1... Đây là một bài viết dài',
-            image: 'https://via.placeholder.com/150',
-        },
-        {
-            id: 2,
-            title: 'Bài viết 2',
-            content: 'Nội dung bài viết 2... Đây là một bài viết dài',
-            image: 'https://via.placeholder.com/150',
-        },
-        {
-            id: 3,
-            title: 'Bài viết 3',
-            content: 'Nội dung bài viết 3... Đây là một bài viết dài',
-            image: 'https://via.placeholder.com/150',
-        },
-        {
-            id: 4,
-            title: 'Bài viết 4',
-            content: 'Nội dung bài viết 4... Đây là một bài viết dài',
-            image: 'https://via.placeholder.com/150',
-        },
-        {
-            id: 5,
-            title: 'Bài viết 5',
-            content: 'Nội dung bài viết 5... Đây là một bài viết dài',
-            image: 'https://via.placeholder.com/150',
-        },
-        {
-            id: 6,
-            title: 'Bài viết 6',
-            content: 'Nội dung bài viết 6... Đây là một bài viết dài',
-            image: 'https://via.placeholder.com/150',
-        },
-        {
-            id: 7,
-            title: 'Bài viết 7',
-            content: 'Nội dung bài viết 7... Đây là một bài viết dài',
-            image: 'https://via.placeholder.com/150',
-        },
-        {
-            id: 8,
-            title: 'Bài viết 8',
-            content: 'Nội dung bài viết 8... Đây là một bài viết dài',
-            image: 'https://via.placeholder.com/150',
-        },
-        {
-            id: 9,
-            title: 'Bài viết 9',
-            content: 'Nội dung bài viết 9... Đây là một bài viết dài',
-            image: 'https://via.placeholder.com/150',
-        },
-        {
-            id: 10,
-            title: 'Bài viết 10',
-            content: 'Nội dung bài viết 10... Đây là một bài viết dài',
-            image: 'https://via.placeholder.com/150',
-        },
-    ];
-
+    const [posts, setPosts] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [postsPerPage] = useState(5);
 
-    // Logic để phân trang
     const indexOfLastPost = currentPage * postsPerPage;
     const indexOfFirstPost = indexOfLastPost - postsPerPage;
-    const currentPosts = allPosts.slice(indexOfFirstPost, indexOfLastPost);
+    const currentPosts = posts.slice(indexOfFirstPost, indexOfLastPost);
+    const totalPages = Math.ceil(posts.length / postsPerPage);
 
-    const totalPages = Math.ceil(allPosts.length / postsPerPage);
-
-    // Hàm để giới hạn nội dung bài viết
     const limitContent = (content, length = 100) => {
         return content.length > length
             ? content.substring(0, length) + '...'
             : content;
     };
 
+    useEffect(() => {
+        const fetchCategory = async () => {
+            const categoryResponse = await fetch(
+                `http://127.0.0.1:8000/api/categories/${categoryId}`,
+            );
+            const categoryData = await categoryResponse.json();
+            setCategoryName(categoryData.category.category_name);
+            const parentCategoryId = categoryData.category.parent_category_id;
+
+            if (parentCategoryId !== 0) {
+                const parentCategoryResponse = await fetch(
+                    `http://127.0.0.1:8000/api/categories/${parentCategoryId}`,
+                );
+                const parentCategoryData = await parentCategoryResponse.json();
+                setParentCategoryName(
+                    parentCategoryData.category.category_name,
+                );
+            }
+
+            const subCategoryResponse = await fetch(
+                `http://127.0.0.1:8000/api/categories/children/${parentCategoryId}`,
+            );
+            const subCategoryData = await subCategoryResponse.json();
+            setSubCategories(subCategoryData.child_categories);
+        };
+
+        const fetchPosts = async () => {
+            const response = await fetch(
+                `http://127.0.0.1:8000/api/categories/${categoryId}/posts`,
+            );
+            const data = await response.json();
+            setPosts(data);
+        };
+
+        fetchCategory();
+        fetchPosts();
+    }, [categoryId]);
+
     return (
         <div className="wrapper-category">
             <h3 className="title-category">{categoryName}</h3>
 
-            {/* Breadcrumb nằm ở trên cùng của trang */}
             <div className="breadcrumb-container">
                 <Breadcrumb items={breadcrumbItems} />
             </div>
 
             <div className="d-flex">
-                {/* Sidebar */}
                 <div className="sidebar-category" style={{ width: '250px' }}>
-                    <h3 className="category-heading">Giới thiệu</h3>
+                    <h3 className="category-heading">{parentCategoryName}</h3>
                     <ul className="list-unstyled category-list">
-                        <li className="list-item">
-                            <a href="#">Link 1</a>
-                        </li>
-                        <li className="list-item">
-                            <a href="#">Link 2</a>
-                        </li>
-                        <li className="list-item">
-                            <a href="#">Link 3</a>
-                        </li>
+                        {subCategories.length > 0 ? (
+                            subCategories.map((subCategory) => (
+                                <li key={subCategory.id} className="list-item">
+                                    <a href={`/category/${subCategory.id}`}>
+                                        {subCategory.category_name}
+                                    </a>
+                                </li>
+                            ))
+                        ) : (
+                            <li className="list-item">Không có danh mục con</li>
+                        )}
                     </ul>
                 </div>
 
-                {/* Main Content */}
                 <div className="main-content p-4" style={{ flexGrow: 1 }}>
                     <h1>Main Content Area</h1>
                     <div className="posts-list">
@@ -149,7 +124,6 @@ function ContentCategoryDetail() {
                 </div>
             </div>
 
-            {/* Pagination sẽ được di chuyển xuống dưới content */}
             <div className="pagination-wrapper">
                 <nav aria-label="...">
                     <ul className="pagination justify-content-center">

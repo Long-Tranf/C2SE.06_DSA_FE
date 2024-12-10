@@ -1,15 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import './CategoryManagement.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 function CategoryManagement() {
-    const [categories, setCategories] = useState([
-        { id: 1, name: 'Electronics', parentId: null, isOpen: true },
-        { id: 2, name: 'Laptops', parentId: 1, isOpen: true },
-        { id: 3, name: 'Smartphones', parentId: 1, isOpen: true },
-        { id: 4, name: 'Furniture', parentId: null, isOpen: false },
-    ]);
-
+    const [categories, setCategories] = useState([]);
     const [showModal, setShowModal] = useState(false);
     const [currentCategory, setCurrentCategory] = useState(null);
     const [formData, setFormData] = useState({
@@ -18,22 +13,45 @@ function CategoryManagement() {
         isOpen: true,
     });
 
-    const openEditModal = (category) => {
-        setCurrentCategory(category);
-        setFormData({
-            name: category.name,
-            parentId: category.parentId === null ? '' : category.parentId,
-            isOpen: category.isOpen,
-        });
-        setShowModal(true);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [isLoading, setIsLoading] = useState(false);
+    const categoriesPerPage = 6;
+
+    useEffect(() => {
+        fetchCategories();
+    }, []);
+
+    // Lấy danh sách danh mục
+    const fetchCategories = async () => {
+        setIsLoading(true);
+        try {
+            const response = await axios.get(
+                'http://127.0.0.1:8000/api/Categories/data',
+            );
+            const apiCategories = response.data.categories.map((cat) => ({
+                id: cat.id,
+                name: cat.category_name,
+                parentId:
+                    cat.parent_category_id === 0
+                        ? null
+                        : cat.parent_category_id,
+                isOpen: cat.is_open === 1,
+            }));
+            setCategories(apiCategories);
+        } catch (error) {
+            console.error('Lỗi khi tải danh mục:', error);
+            alert('Không thể tải danh mục. Vui lòng thử lại sau!');
+        } finally {
+            setIsLoading(false);
+        }
     };
 
-    const openAddModal = () => {
-        setCurrentCategory(null);
+    const openModal = (category = null) => {
+        setCurrentCategory(category);
         setFormData({
-            name: '',
-            parentId: '',
-            isOpen: true,
+            name: category?.name || '',
+            parentId: category?.parentId || '',
+            isOpen: category?.isOpen || true,
         });
         setShowModal(true);
     };
@@ -58,35 +76,63 @@ function CategoryManagement() {
         }));
     };
 
-    const handleUpdateCategory = () => {
-        setCategories(
-            categories.map((category) =>
-                category.id === currentCategory.id
-                    ? { ...category, ...formData }
-                    : category,
-            ),
-        );
-        closeModal();
+    const handleSaveCategory = async () => {
+        setIsLoading(true);
+        try {
+            if (currentCategory) {
+                // Update category
+                await axios.put(`http://127.0.0.1:8000/api/Categories/update`, {
+                    id: currentCategory.id,
+                    category_name: formData.name,
+                    parent_category_id: formData.parentId || 0,
+                    is_open: formData.isOpen ? 1 : 0,
+                });
+            } else {
+                // Add new category
+                await axios.post(
+                    'http://127.0.0.1:8000/api/Categories/create',
+                    {
+                        category_name: formData.name,
+                        parent_category_id: formData.parentId || 0,
+                        is_open: formData.isOpen ? 1 : 0,
+                    },
+                );
+            }
+            fetchCategories();
+            closeModal();
+        } catch (error) {
+            console.error(
+                `Lỗi khi ${currentCategory ? 'cập nhật' : 'thêm'} danh mục:`,
+                error,
+            );
+            alert(
+                `Không thể ${
+                    currentCategory ? 'cập nhật' : 'thêm'
+                } danh mục. Vui lòng thử lại!`,
+            );
+        } finally {
+            setIsLoading(false);
+        }
     };
 
-    const handleAddCategory = () => {
-        const newCategory = {
-            id: categories.length + 1,
-            ...formData,
-        };
-        setCategories([...categories, newCategory]);
-        closeModal();
+    const handleDeleteCategory = async (id) => {
+        if (!window.confirm('Bạn có chắc chắn muốn xóa danh mục này?')) return;
+
+        setIsLoading(true);
+        try {
+            await axios.delete(
+                `http://127.0.0.1:8000/api/Categories/delete${id}`,
+            );
+            fetchCategories();
+        } catch (error) {
+            console.error('Lỗi khi xóa danh mục:', error);
+            alert('Không thể xóa danh mục. Vui lòng thử lại!');
+        } finally {
+            setIsLoading(false);
+        }
     };
 
-    const handleDeleteCategory = (id) => {
-        const updatedCategories = categories.filter(
-            (category) => category.id !== id && category.parentId !== id,
-        );
-        setCategories(updatedCategories);
-    };
-
-    const [currentPage, setCurrentPage] = useState(1);
-    const categoriesPerPage = 6;
+    // Phân trang
     const indexOfLastCategory = currentPage * categoriesPerPage;
     const indexOfFirstCategory = indexOfLastCategory - categoriesPerPage;
     const currentCategories = categories.slice(
@@ -95,69 +141,66 @@ function CategoryManagement() {
     );
     const totalPages = Math.ceil(categories.length / categoriesPerPage);
 
-    const handlePageChange = (page) => {
-        if (page < 1 || page > totalPages) return;
-        setCurrentPage(page);
-    };
-
     const getParentName = (parentId) => {
         const parent = categories.find((cat) => cat.id === parentId);
         return parent ? parent.name : 'N/A';
     };
 
     return (
-        <div className="user-management">
-            <h2>Quản lý Danh mục</h2>
+        <div className="category-management">
+            <h2 className="category-management-title">Quản lý Danh mục</h2>
             <button
-                onClick={openAddModal}
+                onClick={() => openModal()}
                 className="btn btn-success mb-3"
                 style={{ float: 'right' }}
             >
                 Thêm mới
             </button>
-            <table className="user-table">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Tên danh mục</th>
-                        <th>Danh mục cha</th>
-                        <th>Trạng thái</th>
-                        <th>Hành động</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {currentCategories.map((category) => (
-                        <tr key={category.id}>
-                            <td>{category.id}</td>
-                            <td>{category.name}</td>
-                            <td>{getParentName(category.parentId)}</td>
-                            <td>{category.isOpen ? 'Mở' : 'Khóa'}</td>
-                            <td>
-                                <button
-                                    onClick={() => openEditModal(category)}
-                                    className="btn btn-warning mr-2"
-                                >
-                                    Chỉnh sửa
-                                </button>
-                                <button
-                                    onClick={() =>
-                                        handleDeleteCategory(category.id)
-                                    }
-                                    className="btn btn-danger"
-                                >
-                                    Xóa
-                                </button>
-                            </td>
+
+            {isLoading ? (
+                <div className="loading">Đang tải...</div>
+            ) : (
+                <table className="user-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Tên danh mục</th>
+                            <th>Danh mục cha</th>
+                            <th>Trạng thái</th>
+                            <th>Hành động</th>
                         </tr>
-                    ))}
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        {currentCategories.map((category) => (
+                            <tr key={category.id}>
+                                <td>{category.id}</td>
+                                <td>{category.name}</td>
+                                <td>{getParentName(category.parentId)}</td>
+                                <td>{category.isOpen ? 'Mở' : 'Khóa'}</td>
+                                <td>
+                                    <button
+                                        onClick={() => openModal(category)}
+                                        className="btn btn-warning mr-2"
+                                    >
+                                        Chỉnh sửa
+                                    </button>
+                                    <button
+                                        onClick={() =>
+                                            handleDeleteCategory(category.id)
+                                        }
+                                        className="btn btn-danger"
+                                    >
+                                        Xóa
+                                    </button>
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            )}
 
             {/* Pagination */}
-            <nav
-                aria-label="Page navigation example"
-                className="d-flex justify-content-center mt-3"
-            >
+            <nav className="d-flex justify-content-center mt-3">
                 <ul className="pagination">
                     <li
                         className={`page-item ${
@@ -166,7 +209,7 @@ function CategoryManagement() {
                     >
                         <button
                             className="page-link"
-                            onClick={() => handlePageChange(currentPage - 1)}
+                            onClick={() => setCurrentPage((prev) => prev - 1)}
                         >
                             Previous
                         </button>
@@ -180,7 +223,7 @@ function CategoryManagement() {
                         >
                             <button
                                 className="page-link"
-                                onClick={() => handlePageChange(index + 1)}
+                                onClick={() => setCurrentPage(index + 1)}
                             >
                                 {index + 1}
                             </button>
@@ -193,7 +236,7 @@ function CategoryManagement() {
                     >
                         <button
                             className="page-link"
-                            onClick={() => handlePageChange(currentPage + 1)}
+                            onClick={() => setCurrentPage((prev) => prev + 1)}
                         >
                             Next
                         </button>
@@ -234,7 +277,9 @@ function CategoryManagement() {
                                 <option value="">Không có</option>
                                 {categories
                                     .filter(
-                                        (cat) => cat.id !== currentCategory?.id,
+                                        (cat) =>
+                                            cat.parentId === null ||
+                                            cat.parentId === 0,
                                     )
                                     .map((cat) => (
                                         <option key={cat.id} value={cat.id}>
@@ -243,6 +288,7 @@ function CategoryManagement() {
                                     ))}
                             </select>
                         </div>
+
                         <div className="form-group">
                             <label>Trạng thái</label>
                             <select
@@ -251,25 +297,22 @@ function CategoryManagement() {
                                 value={formData.isOpen.toString()}
                                 onChange={handleInputChange}
                             >
-                                <option value={true}>Mở</option>
-                                <option value={false}>Khóa</option>
+                                <option value="true">Mở</option>
+                                <option value="false">Khóa</option>
                             </select>
                         </div>
                         <button
-                            onClick={
-                                currentCategory
-                                    ? handleUpdateCategory
-                                    : handleAddCategory
-                            }
-                            className="btn btn-primary"
+                            className="btn btn-primary mt-3"
+                            onClick={handleSaveCategory}
+                            disabled={isLoading}
                         >
-                            {currentCategory ? 'Cập nhật' : 'Thêm mới'}
+                            Lưu
                         </button>
                         <button
+                            className="btn btn-secondary mt-3 ml-2"
                             onClick={closeModal}
-                            className="btn btn-secondary ml-2"
                         >
-                            Hủy
+                            Đóng
                         </button>
                     </div>
                 </div>

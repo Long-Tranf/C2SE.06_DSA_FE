@@ -137,8 +137,8 @@ function AssociationManagement() {
     };
 
     return (
-        <div className="user-management">
-            <h2>Quản lý Hiệp hội</h2>
+        <div className="association-management">
+            <h2 className="title-association">Quản lý Hiệp hội</h2>
             <button
                 onClick={openAddModal}
                 className="btn btn-success mb-3"

@@ -5,6 +5,8 @@ import Search from '~/pages/Search/Search';
 import Profile from '~/pages/Profile/Profile';
 import CategoryDetail from '~/pages/CategoryDetail/CategoryDetail';
 import Post from '~/pages/Post/Post';
+import Library from '~/pages/LibraryPage/Library';
+import GroupProfile from '~/pages/GroupProfile/GroupProfile';
 import LoginAdmin from '~/pages/Admin/Login/LoginAdmin';
 import AdminDashboard from '~/pages/Admin/Dashboard/AdminDashboard';
 import UserManagement from '~/pages/Admin/UserManagement/UserManagement';
@@ -14,6 +16,7 @@ import CategoryManagement from '~/pages/Admin/CategoryManagement/CategoryManagem
 import AssociationManagement from '~/pages/Admin/AssociationManagement/AssociationManagement';
 import ContantManagement from '~/pages/Admin/ContantManagement/ContantManagement';
 import LibraryManagement from '~/pages/Admin/LibraryManagement/LibraryManagement';
+import EventManagement from '~/pages/Admin/EventManagament/EventManagement';
 
 // Public routes
 const publicRoutes = [
@@ -34,7 +37,7 @@ const publicRoutes = [
         element: <Search />,
     },
     {
-        path: '/categorydetail',
+        path: '/category/:categoryId', // Đảm bảo sử dụng categoryId đúng trong URL
         element: <CategoryDetail />,
     },
     {
@@ -60,16 +63,24 @@ const publicRoutes = [
             { path: 'category', element: <CategoryManagement /> },
             { path: 'library', element: <LibraryManagement /> },
             { path: 'contact', element: <ContantManagement /> },
+            { path: 'event', element: <EventManagement /> },
         ],
     },
-];
-
-// Private routes
-const privateRoutes = [
     {
         path: '/profile',
         element: <Profile />,
     },
+    {
+        path: '/association',
+        element: <GroupProfile />,
+    },
+    {
+        path: '/library',
+        element: <Library />,
+    },
 ];
+
+// Private routes
+const privateRoutes = [];
 
 export { publicRoutes, privateRoutes };

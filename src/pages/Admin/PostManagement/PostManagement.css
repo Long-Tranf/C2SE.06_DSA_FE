@@ -4,6 +4,11 @@
     margin-bottom: 20px;
 }
 
+.post-management-title {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
 /* Nút Add New */
 .btn-add-new {
     padding: 10px 15px; /* Kích thước nút */
@@ -34,6 +39,13 @@
     border: 1px solid #dee2e6; /* Đường viền nhạt */
     padding: 10px; /* Khoảng cách bên trong ô */
     font-size: 14px; /* Cỡ chữ */
+}
+
+.post-table td.title-column {
+    max-width: 150px; /* Chiều ngang tối đa */
+    white-space: nowrap; /* Không cho xuống dòng */
+    overflow: hidden; /* Ẩn phần dư */
+    text-overflow: ellipsis; /* Hiển thị dấu "..." khi bị tràn */
 }
 
 .post-table th {

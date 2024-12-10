@@ -1,0 +1,108 @@
+/* Đặt lại một số thuộc tính cho thư viện */
+.library-container {
+    padding: 20px;
+    text-align: center;
+}
+
+/* Bố trí các hình ảnh bằng CSS Grid */
+.image-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); /* 4 cột */
+    gap: 3px; /* Khoảng cách giữa các hình ảnh */
+    justify-items: center;
+    margin-top: 20px;
+}
+
+/* Định dạng cho mỗi hình ảnh */
+.image-item {
+    position: relative;
+    overflow: hidden;
+    border-radius: 8px; /* Thêm bo góc cho hình ảnh */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease-in-out; /* Chuyển động mượt mà khi hover */
+    cursor: pointer;
+}
+
+/* Cố định kích thước hình ảnh và đảm bảo chúng có tỷ lệ phù hợp */
+.image-item img {
+    width: 100%; /* Chiều rộng hình ảnh chiếm hết không gian của div */
+    height: 230px; /* Chiều cao cố định, tạo tỷ lệ hình chữ nhật */
+    object-fit: cover; /* Cắt hình ảnh nếu cần để vừa với kích thước */
+    transition: transform 0.3s ease;
+}
+
+.image-item:hover img {
+    transform: scale(1.1); /* Phóng to hình ảnh khi hover */
+}
+
+/* Tiêu đề trang */
+.library-container h2 {
+    font-size: 2em;
+    margin-bottom: 20px;
+}
+
+/* Modal - Lớp phủ */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7); /* Lớp phủ đen */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+/* Modal nội dung */
+.modal-content {
+    position: relative;
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    max-width: 70%; /* Chiếm 70% màn hình */
+    max-height: 70%; /* Chiếm 70% chiều cao màn hình */
+    overflow: hidden;
+}
+
+/* Các nút chuyển ảnh */
+.modal-prev,
+.modal-next {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    z-index: 100;
+}
+
+.modal-prev {
+    left: 10px;
+}
+
+.modal-next {
+    right: 10px;
+}
+
+/* Nút đóng modal */
+.modal-close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+}
+
+/* Hình ảnh trong modal */
+.modal-image {
+    width: 100%; /* Chiếm hết chiều rộng của modal */
+    height: auto; /* Giữ tỷ lệ gốc của ảnh */
+    object-fit: contain; /* Giữ nguyên tỷ lệ của ảnh, không bị cắt */
+}

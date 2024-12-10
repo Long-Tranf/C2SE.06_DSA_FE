@@ -6,7 +6,7 @@ import './PostManagement.css';
 function PostManagement() {
     const [posts, setPosts] = useState([]); // Danh sách bài viết (ban đầu là mảng rỗng)
     const navigate = useNavigate(); // Khởi tạo useNavigate để điều hướng đến route khác
-    const isMaster = JSON.parse(localStorage.getItem('is_master')) || false; // Kiểm tra quyền admin từ localStorage
+    const isMaster = JSON.parse(localStorage.getItem('is_master')) || true; // Kiểm tra quyền admin từ localStorage
 
     // Gọi API khi component được render
     useEffect(() => {
@@ -49,7 +49,7 @@ function PostManagement() {
 
     return (
         <div className="post-management">
-            <h2>Quản lý Bài Viết</h2>
+            <h2 className="post-management-title">Quản lý Bài Viết</h2>
 
             {/* Nút thêm bài viết chỉ hiển thị nếu is_master === true */}
             {isMaster && (
@@ -84,7 +84,7 @@ function PostManagement() {
                         posts.map((post) => (
                             <tr key={post.id}>
                                 <td>{post.id}</td>
-                                <td>{post.title}</td>
+                                <td className="title-column">{post.title}</td>
                                 <td>{post.content.slice(0, 30)}...</td>
                                 <td>{post.author}</td>
                                 <td>{post.category}</td>

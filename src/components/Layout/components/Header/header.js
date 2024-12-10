@@ -9,7 +9,7 @@ import {
     faGlobe,
     faSignOut,
     faUser,
-    faBell, // Thêm icon chuông
+    faBell,
 } from '@fortawesome/free-solid-svg-icons';
 import Search from '~/components/Layout/components/Search/index';
 import avatar from '~/assets/image/no-img.png';
@@ -21,35 +21,50 @@ function Header() {
     const [curr, setCurr] = useState(moment());
     const [currentUser, setCurrentUser] = useState(true);
     const [notifications, setNotifications] = useState([]);
+    const [categories, setCategories] = useState([]);
     const formattedDate = curr.format('DD MMMM YYYY HH:mm:ss');
-
     const user = {
         name: 'Đình Long',
         avatar: 'https://p16-sign-va.tiktokcdn.com/tos-maliva-avt-0068/a5d6f67a025f7175ebb766f2532aa4de~c5_720x720.jpeg?lk3s=a5d48078&nonce=95564&refresh_token=4bf0525411d3c50613a1e0867085791e&x-expires=1732348800&x-signature=xHkbbt0z3tj99p0NeA91H3h97hc%3D&shp=a5d48078&shcp=81f88b70&quot;);',
     };
 
-    const posts = [
-        {
-            author: 'Hội viên 1',
-            title: 'Tiêu đề bài viết 1',
-        },
-        {
-            author: 'Hội viên 2',
-            title: 'Tiêu đề bài viết 2',
-        },
-        {
-            author: 'Hội viên 3',
-            title: 'Tiêu đề bài viết 3',
-        },
-    ];
-
     useEffect(() => {
-        // Chuyển dữ liệu bài viết thành thông báo cho popper
-        const postNotifications = posts.map((post) => {
-            return `${post.author} đã đăng bài viết "${post.title}"`;
-        });
+        // Fetch categories from API
+        fetch('http://127.0.0.1:8000/api/Categories/data')
+            .then((response) => response.json())
+            .then((data) => {
+                const categoryData = data.categories;
+                // Organize categories into parent and sub-categories
+                const topLevelCategories = categoryData.filter(
+                    (cat) => cat.parent_category_id === 0 && cat.is_open,
+                );
+                const subCategories = categoryData.filter(
+                    (cat) => cat.parent_category_id !== 0 && cat.is_open,
+                );
+                const categoryMap = topLevelCategories.map((category) => {
+                    const subMenu = subCategories.filter(
+                        (sub) => sub.parent_category_id === category.id,
+                    );
+                    return {
+                        ...category,
+                        subMenu,
+                    };
+                });
+                setCategories(categoryMap);
+            })
+            .catch((error) =>
+                console.error('Error fetching categories:', error),
+            );
+
+        // Simulating notifications
+        const postNotifications = [
+            'Hội viên 1 đã đăng bài viết "Tiêu đề bài viết 1"',
+            'Hội viên 2 đã đăng bài viết "Tiêu đề bài viết 2"',
+            'Hội viên 3 đã đăng bài viết "Tiêu đề bài viết 3"',
+        ];
         setNotifications(postNotifications);
 
+        // Update current time every second
         const time = setInterval(() => {
             setCurr(moment());
         }, 1000);
@@ -95,7 +110,6 @@ function Header() {
                                 />
                             </Tippy>
 
-                            {/* Thêm icon chuông và render thông báo bài viết */}
                             <Tippy
                                 content={
                                     <div className="notification-popover">
@@ -140,76 +154,38 @@ function Header() {
                     )}
                 </div>
             </div>
-            <div className="banner">
+            <div className="banner-header">
                 <img src={banner} alt="banner" className="banner-img" />
             </div>
             <div className="navigation">
                 <ul className="menu-list">
-                    <li className="menu-list-item">
-                        <h2>Sự kiện</h2>
-                        <FontAwesomeIcon
-                            icon={faAngleDown}
-                            className="menu-item-icon"
-                        />
-                        <ul className="sub-menu-list">
-                            <li className="sub-menu-item">
-                                <Link to="/category" className="menu-link">
-                                    Tài nguyên – Chính sách mới
-                                </Link>
-                            </li>
-                            <li className="sub-menu-item">
-                                Từ suy nghĩ đến bàn phím
-                            </li>
-                            <li className="sub-menu-item">
-                                Chia sẻ giải pháp, thành tựu
-                            </li>
-                        </ul>
-                    </li>
-                    <li className="menu-list-item">
-                        <h2>Cộng đồng chúng ta</h2>
-                        <FontAwesomeIcon
-                            icon={faAngleDown}
-                            className="menu-item-icon"
-                        />
-                        <ul className="sub-menu-list">
-                            <li className="sub-menu-item">Mái nhà chung</li>
-                            <li className="sub-menu-item">Gia nhập DSA</li>
-                            <li className="sub-menu-item">Sự kiện sắp đến</li>
-                            <li className="sub-menu-item">
-                                Hội viên kể chuyện
-                            </li>
-                        </ul>
-                    </li>
-                    <li className="menu-list-item">
-                        <h2>Nguồn nhân lực IT</h2>
-                        <FontAwesomeIcon
-                            icon={faAngleDown}
-                            className="menu-item-icon"
-                        />
-                        <ul className="sub-menu-list">
-                            <li className="sub-menu-item">
-                                Đào tạo nguồn nhân lực
-                            </li>
-                            <li className="sub-menu-item">Tuyển Dụng</li>
-                        </ul>
-                    </li>
-                    <li className="menu-list-item">
-                        <h2>Góc nhìn DSA</h2>
-                        <FontAwesomeIcon
-                            icon={faAngleDown}
-                            className="menu-item-icon"
-                        />
-                        <ul className="sub-menu-list">
-                            <li className="sub-menu-item">Đà Nẵng 24h</li>
-                            <li className="sub-menu-item">Du Lịch</li>
-                            <li className="sub-menu-item">Kỹ năng sống</li>
-                            <li className="sub-menu-item">
-                                Văn hóa - Nghệ thu
-                            </li>
-                        </ul>
-                    </li>
+                    {categories.map((category) => (
+                        <li key={category.id} className="menu-list-item">
+                            <h2>{category.category_name}</h2>
+                            <FontAwesomeIcon
+                                icon={faAngleDown}
+                                className="menu-item-icon"
+                            />
+                            {category.subMenu.length > 0 && (
+                                <ul className="sub-menu-list">
+                                    {category.subMenu.map((subCategory) => (
+                                        <li
+                                            key={subCategory.id}
+                                            className="sub-menu-item"
+                                        >
+                                            <Link
+                                                to={`/category/${subCategory.id}`}
+                                                className="menu-link"
+                                            >
+                                                {subCategory.category_name}
+                                            </Link>
+                                        </li>
+                                    ))}
+                                </ul>
+                            )}
+                        </li>
+                    ))}
                 </ul>
-
                 <Search className="search" />
             </div>
         </div>
