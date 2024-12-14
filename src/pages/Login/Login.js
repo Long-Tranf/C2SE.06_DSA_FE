@@ -17,31 +17,27 @@ function Login() {
             return;
         }
 
-        setLoading(true); // Bắt đầu quá trình đăng nhập
+        setLoading(true);
         try {
-            // Tìm người dùng từ JSONPlaceholder (giả lập đăng nhập)
-            const response = await axios.get(
-                'https://jsonplaceholder.typicode.com/users',
+            const response = await axios.post(
+                'http://localhost:8000/api/member/dang-nhap',
+                {
+                    user_name: username,
+                    password: password,
+                },
             );
 
-            // Kiểm tra xem người dùng có tồn tại không
-            const user = response.data.find(
-                (user) => user.username === username,
-            );
-            if (user) {
-                // Nếu tìm thấy người dùng, bạn có thể giả lập token và lưu nó
-                localStorage.setItem('accessToken', 'dummyToken'); // Lưu token giả
-                console.log('Đăng nhập thành công với người dùng:', user);
-                navigate('/'); // Điều hướng đến trang chủ sau khi đăng nhập thành công
+            if (response.data.status === true) {
+                localStorage.setItem('accessToken', response.data.token);
+                navigate('/');
             } else {
-                throw new Error('Người dùng không tồn tại.');
+                setErrorMessage(response.data.message || 'Đăng nhập thất bại!');
             }
         } catch (error) {
-            // Xử lý lỗi khi đăng nhập thất bại
             setErrorMessage(error.message || 'Đăng nhập thất bại!');
             console.error('Đăng nhập thất bại:', error.message);
         } finally {
-            setLoading(false); // Kết thúc quá trình đăng nhập
+            setLoading(false);
         }
     };
 
@@ -68,20 +64,6 @@ function Login() {
                                 <p className="text-secondary">
                                     Get access to your account
                                 </p>
-                            </div>
-                            <button className="btn btn-lg btn-outline-secondary btn-online-custom w-100 mb-3">
-                                <i className="bx bxl-google text-danger fs-200 me-1"></i>
-                                Login with Google
-                            </button>
-                            <button className="btn btn-lg btn-outline-secondary btn-online-custom w-100">
-                                <i className="bx bxl-facebook-circle text-primary fs-200 me-1 mt-2000"></i>
-                                Login with Facebook
-                            </button>
-
-                            {/* Divider */}
-                            <div className="position-relative">
-                                <hr className="text-secondary divider"></hr>
-                                <div className="divider-content-center">Or</div>
                             </div>
 
                             {/* Form */}

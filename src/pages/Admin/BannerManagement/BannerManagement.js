@@ -1,49 +1,49 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import './LibraryManagement.css';
+import './BannerManagement.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-function PhotoLibraryManagement() {
-    const [photos, setPhotos] = useState([]);
+function BannerManagement() {
+    const [banners, setBanners] = useState([]);
     const [showModal, setShowModal] = useState(false);
-    const [currentPhoto, setCurrentPhoto] = useState(null);
+    const [currentBanner, setCurrentBanner] = useState(null);
     const [formData, setFormData] = useState({
-        title: '',
+        priority: 0, // Mặc định là 0
         is_open: 1, // Sử dụng 1 thay vì true
         image: '', // Hình ảnh chỉ là URL
     });
 
     // Fetch dữ liệu từ API
     useEffect(() => {
-        fetchPhotos();
+        fetchBanners();
     }, []);
 
-    const fetchPhotos = async () => {
+    const fetchBanners = async () => {
         try {
             const response = await axios.get(
-                'http://127.0.0.1:8000/api/PhotoLibrary/data',
+                'http://127.0.0.1:8000/api/ConfigBanners/data',
             );
-            setPhotos(response.data.photo_librarys);
+            setBanners(response.data.configbanners);
         } catch (error) {
-            console.error('Error fetching photos:', error);
+            console.error('Error fetching banners:', error);
         }
     };
 
-    const openEditModal = (photo) => {
-        setCurrentPhoto(photo);
+    const openEditModal = (banner) => {
+        setCurrentBanner(banner);
         setFormData({
-            title: photo.title,
-            is_open: photo.is_open, // Đảm bảo nhận giá trị là 0 hoặc 1
-            image: photo.image, // Hình ảnh là URL
+            priority: banner.priority,
+            is_open: banner.is_open,
+            image: banner.image,
         });
         setShowModal(true);
     };
 
     const openAddModal = () => {
-        setCurrentPhoto(null);
+        setCurrentBanner(null);
         setFormData({
-            title: '',
-            is_open: 1, // Mặc định là mở
+            priority: 0,
+            is_open: 1,
             image: '',
         });
         setShowModal(true);
@@ -51,7 +51,7 @@ function PhotoLibraryManagement() {
 
     const closeModal = () => {
         setShowModal(false);
-        setCurrentPhoto(null);
+        setCurrentBanner(null);
     };
 
     const handleInputChange = (e) => {
@@ -63,36 +63,36 @@ function PhotoLibraryManagement() {
     };
 
     const handleSave = async () => {
-        if (currentPhoto) {
-            // Cập nhật ảnh
+        if (currentBanner) {
+            // Cập nhật banner
             try {
                 await axios.put(
-                    'http://127.0.0.1:8000/api/PhotoLibrary/update',
+                    'http://127.0.0.1:8000/api/ConfigBanners/update',
                     {
-                        id: currentPhoto.id,
+                        id: currentBanner.id,
                         ...formData,
-                        is_open: formData.is_open, // Chuyển thành 1 hoặc 0
+                        is_open: formData.is_open,
                     },
                 );
-                fetchPhotos();
+                fetchBanners();
                 closeModal();
             } catch (error) {
-                console.error('Error updating photo:', error);
+                console.error('Error updating banner:', error);
             }
         } else {
-            // Tạo mới ảnh
+            // Tạo mới banner
             try {
                 await axios.post(
-                    'http://127.0.0.1:8000/api/PhotoLibrary/create',
+                    'http://127.0.0.1:8000/api/ConfigBanners/create',
                     {
                         ...formData,
-                        is_open: formData.is_open, // Chuyển thành 1 hoặc 0
+                        is_open: formData.is_open,
                     },
                 );
-                fetchPhotos();
+                fetchBanners();
                 closeModal();
             } catch (error) {
-                console.error('Error creating photo:', error);
+                console.error('Error creating banner:', error);
             }
         }
     };
@@ -100,56 +100,56 @@ function PhotoLibraryManagement() {
     const handleDelete = async (id) => {
         try {
             await axios.delete(
-                `http://127.0.0.1:8000/api/PhotoLibrary/delete/${id}`,
+                `http://127.0.0.1:8000/api/ConfigBanners/delete/${id}`,
             );
-            fetchPhotos();
+            fetchBanners();
         } catch (error) {
-            console.error('Error deleting photo:', error);
+            console.error('Error deleting banner:', error);
         }
     };
 
     return (
-        <div className="photo-library-management">
-            <h2>Thư viện ảnh</h2>
+        <div className="banner-management">
+            <h2>Quản lý Banner</h2>
             <button
                 onClick={openAddModal}
                 className="btn btn-success mb-3"
                 style={{ float: 'right' }}
             >
-                Thêm ảnh mới
+                Thêm banner mới
             </button>
             <table className="table">
                 <thead>
                     <tr>
                         <th>ID</th>
                         <th>Hình ảnh</th>
-                        <th>Tiêu đề</th>
+                        <th>Ưu tiên</th>
                         <th>Trạng thái</th>
                         <th>Hành động</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {photos.map((photo) => (
-                        <tr key={photo.id}>
-                            <td>{photo.id}</td>
+                    {banners.map((banner) => (
+                        <tr key={banner.id}>
+                            <td>{banner.id}</td>
                             <td>
                                 <img
-                                    src={photo.image}
+                                    src={banner.image}
                                     alt="thumbnail"
                                     style={{ width: '50px', height: '50px' }}
                                 />
                             </td>
-                            <td>{photo.title}</td>
-                            <td>{photo.is_open === 1 ? 'Mở' : 'Khóa'}</td>
+                            <td>{banner.priority}</td>
+                            <td>{banner.is_open === 1 ? 'Mở' : 'Khóa'}</td>
                             <td>
                                 <button
-                                    onClick={() => openEditModal(photo)}
+                                    onClick={() => openEditModal(banner)}
                                     className="btn btn-warning mr-2"
                                 >
                                     Chỉnh sửa
                                 </button>
                                 <button
-                                    onClick={() => handleDelete(photo.id)}
+                                    onClick={() => handleDelete(banner.id)}
                                     className="btn btn-danger"
                                 >
                                     Xóa
@@ -168,17 +168,24 @@ function PhotoLibraryManagement() {
                         onClick={(e) => e.stopPropagation()}
                     >
                         <h3>
-                            {currentPhoto ? 'Chỉnh sửa ảnh' : 'Thêm ảnh mới'}
+                            {currentBanner
+                                ? 'Chỉnh sửa banner'
+                                : 'Thêm banner mới'}
                         </h3>
                         <div className="form-group">
-                            <label>Tiêu đề</label>
-                            <input
-                                type="text"
+                            <label>Ưu tiên</label>
+                            <select
                                 className="form-control"
-                                name="title"
-                                value={formData.title}
+                                name="priority"
+                                value={formData.priority}
                                 onChange={handleInputChange}
-                            />
+                            >
+                                {[0, 1, 2, 3].map((value) => (
+                                    <option key={value} value={value}>
+                                        {value}
+                                    </option>
+                                ))}
+                            </select>
                         </div>
                         <div className="form-group">
                             <label>Trạng thái</label>
@@ -201,7 +208,7 @@ function PhotoLibraryManagement() {
                                 value={formData.image}
                                 onChange={handleInputChange}
                             />
-                            {formData.imageUrl && (
+                            {formData.image && (
                                 <div className="mt-2">
                                     <img
                                         src={formData.image}
@@ -218,7 +225,7 @@ function PhotoLibraryManagement() {
                             onClick={handleSave}
                             className="btn btn-primary"
                         >
-                            {currentPhoto ? 'Cập nhật' : 'Thêm mới'}
+                            {currentBanner ? 'Cập nhật' : 'Thêm mới'}
                         </button>
                         <button
                             onClick={closeModal}
@@ -233,4 +240,4 @@ function PhotoLibraryManagement() {
     );
 }
 
-export default PhotoLibraryManagement;
+export default BannerManagement;

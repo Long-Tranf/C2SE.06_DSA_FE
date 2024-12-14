@@ -1,59 +1,58 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './UserManagement.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import axios from 'axios';
 
 function UserManagement() {
-    const [users, setUsers] = useState([
-        {
-            id: 1,
-            username: 'user123',
-            password: '********',
-            email: 'user123@example.com',
-            phone: '0123456789',
-            address: '123 Main St, City',
-            isOpen: true,
-        },
-        {
-            id: 2,
-            username: 'admin123',
-            password: '********',
-            email: 'admin123@example.com',
-            phone: '0987654321',
-            address: '456 Elm St, City',
-            isOpen: false,
-        },
-    ]);
-
+    const [users, setUsers] = useState([]);
     const [showModal, setShowModal] = useState(false);
     const [currentUser, setCurrentUser] = useState(null);
     const [formData, setFormData] = useState({
-        username: '',
+        user_name: '',
+        full_name: '',
         email: '',
         phone: '',
         address: '',
-        isOpen: true,
+        avatar: '',
+        is_open: 1,
     });
+
+    useEffect(() => {
+        // Fetching users from API
+        axios
+            .get('http://127.0.0.1:8000/api/member/data')
+            .then((response) => {
+                setUsers(response.data.members);
+            })
+            .catch((error) => {
+                console.error('There was an error fetching the users!', error);
+            });
+    }, []);
 
     const openEditModal = (user) => {
         setCurrentUser(user);
         setFormData({
-            username: user.username,
-            email: user.email,
-            phone: user.phone,
+            user_name: user.user_name,
+            full_name: user.full_name,
+            email: user.subscriber_email,
+            phone: user.phone_number,
             address: user.address,
-            isOpen: user.isOpen,
+            avatar: user.avatar,
+            is_open: user.is_open,
         });
         setShowModal(true);
     };
 
     const openAddModal = () => {
-        setCurrentUser(null); // Đảm bảo không có user nào được chọn
+        setCurrentUser(null);
         setFormData({
-            username: '',
+            user_name: '',
+            full_name: '',
             email: '',
             phone: '',
             address: '',
-            isOpen: true,
+            avatar: '',
+            is_open: 1,
         });
         setShowModal(true);
     };
@@ -65,10 +64,10 @@ function UserManagement() {
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
-        if (name === 'isOpen') {
+        if (name === 'is_open') {
             setFormData((prevState) => ({
                 ...prevState,
-                [name]: value === 'true',
+                [name]: value === '1' ? 1 : 0,
             }));
         } else {
             setFormData((prevState) => ({
@@ -79,26 +78,47 @@ function UserManagement() {
     };
 
     const handleUpdateUser = () => {
-        setUsers(
-            users.map((user) =>
-                user.id === currentUser.id ? { ...user, ...formData } : user,
-            ),
-        );
-        closeModal();
+        axios
+            .put('http://127.0.0.1:8000/api/member/update', {
+                id: currentUser.id,
+                ...formData,
+            })
+            .then(() => {
+                setUsers(
+                    users.map((user) =>
+                        user.id === currentUser.id
+                            ? { ...user, ...formData }
+                            : user,
+                    ),
+                );
+                closeModal();
+            })
+            .catch((error) => {
+                console.error('Error updating user:', error);
+            });
     };
 
     const handleAddUser = () => {
-        const newUser = {
-            id: users.length + 1,
-            ...formData,
-        };
-        setUsers([...users, newUser]);
-        closeModal();
+        axios
+            .post('http://127.0.0.1:8000/api/member/create', formData)
+            .then((response) => {
+                setUsers([...users, response.data]);
+                closeModal();
+            })
+            .catch((error) => {
+                console.error('Error adding user:', error);
+            });
     };
 
     const handleDeleteUser = (id) => {
-        const newUsers = users.filter((user) => user.id !== id);
-        setUsers(newUsers);
+        axios
+            .delete(`http://127.0.0.1:8000/api/member/delete${id}`)
+            .then(() => {
+                setUsers(users.filter((user) => user.id !== id));
+            })
+            .catch((error) => {
+                console.error('Error deleting user:', error);
+            });
     };
 
     const [currentPage, setCurrentPage] = useState(1);
@@ -128,10 +148,11 @@ function UserManagement() {
                     <tr>
                         <th>ID</th>
                         <th>Username</th>
-                        <th>Password</th>
+                        <th>Full Name</th>
                         <th>Email</th>
                         <th>Số điện thoại</th>
                         <th>Địa chỉ</th>
+                        <th>Avatar</th>
                         <th>Trạng thái</th>
                         <th>Hành động</th>
                     </tr>
@@ -140,12 +161,20 @@ function UserManagement() {
                     {currentUsers.map((user) => (
                         <tr key={user.id}>
                             <td>{user.id}</td>
-                            <td>{user.username}</td>
-                            <td>{user.password}</td>
-                            <td>{user.email}</td>
-                            <td>{user.phone}</td>
+                            <td>{user.user_name}</td>
+                            <td>{user.full_name}</td>
+                            <td>{user.subscriber_email}</td>
+                            <td>{user.phone_number}</td>
                             <td>{user.address}</td>
-                            <td>{user.isOpen ? 'Mở' : 'Khóa'}</td>
+                            <td>
+                                <img
+                                    src={user.avatar}
+                                    alt="avatar"
+                                    width="50"
+                                    height="50"
+                                />
+                            </td>
+                            <td>{user.is_open ? 'Mở' : 'Khóa'}</td>
                             <td>
                                 <button
                                     onClick={() => openEditModal(user)}
@@ -228,8 +257,18 @@ function UserManagement() {
                             <input
                                 type="text"
                                 className="form-control"
-                                name="username"
-                                value={formData.username}
+                                name="user_name"
+                                value={formData.user_name}
+                                onChange={handleInputChange}
+                            />
+                        </div>
+                        <div className="form-group">
+                            <label>Họ và tên</label>
+                            <input
+                                type="text"
+                                className="form-control"
+                                name="full_name"
+                                value={formData.full_name}
                                 onChange={handleInputChange}
                             />
                         </div>
@@ -264,15 +303,25 @@ function UserManagement() {
                             />
                         </div>
                         <div className="form-group">
+                            <label>Avatar (URL)</label>
+                            <input
+                                type="text"
+                                className="form-control"
+                                name="avatar"
+                                value={formData.avatar}
+                                onChange={handleInputChange}
+                            />
+                        </div>
+                        <div className="form-group">
                             <label>Trạng thái</label>
                             <select
                                 className="form-control"
-                                name="isOpen"
-                                value={formData.isOpen.toString()}
+                                name="is_open"
+                                value={formData.is_open}
                                 onChange={handleInputChange}
                             >
-                                <option value={true}>Mở</option>
-                                <option value={false}>Khóa</option>
+                                <option value={1}>Mở</option>
+                                <option value={0}>Khóa</option>
                             </select>
                         </div>
                         <button

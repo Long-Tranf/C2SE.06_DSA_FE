@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom'; // Hook để điều hướng
-import axios from 'axios'; // Import axios để gọi API
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import './PostManagement.css';
 
 function PostManagement() {
-    const [posts, setPosts] = useState([]); // Danh sách bài viết (ban đầu là mảng rỗng)
-    const navigate = useNavigate(); // Khởi tạo useNavigate để điều hướng đến route khác
-    const isMaster = JSON.parse(localStorage.getItem('is_master')) || true; // Kiểm tra quyền admin từ localStorage
+    const [posts, setPosts] = useState([]); // danh sách bài viết
+    const navigate = useNavigate(); // tạo useNavigate để điều hướng đến route khác
+    const isMaster = JSON.parse(localStorage.getItem('is_master')) || true;
 
     // Gọi API khi component được render
     useEffect(() => {
@@ -14,7 +14,7 @@ function PostManagement() {
         const fetchPosts = async () => {
             try {
                 const response = await axios.get(
-                    'http://localhost:5000/posts',
+                    'http://127.0.0.1:8000/api/Post/data', // API endpoint mới
                     {
                         headers: {
                             Authorization: `Bearer ${localStorage.getItem(
@@ -24,8 +24,8 @@ function PostManagement() {
                     },
                 );
                 // Kiểm tra xem dữ liệu API có hợp lệ không
-                if (response.data && Array.isArray(response.data)) {
-                    setPosts(response.data); // Lưu dữ liệu bài viết vào state
+                if (response.data && response.data.posts) {
+                    setPosts(response.data.posts); // Lưu dữ liệu bài viết vào state
                 } else {
                     console.error('API returned invalid data');
                 }
@@ -45,6 +45,30 @@ function PostManagement() {
     // Điều hướng đến form chỉnh sửa bài viết
     const handleEdit = (postId) => {
         navigate(`/dashboardadmin/post/edit/${postId}`); // Điều hướng đến form chỉnh sửa bài viết
+    };
+
+    // Thêm hàm xử lý xóa bài viết
+    const handleDelete = async (postId) => {
+        if (window.confirm('Bạn có chắc muốn xóa bài viết này?')) {
+            try {
+                await axios.delete(
+                    `http://127.0.0.1:8000/api/Post/delete${postId}`, // API endpoint xóa bài viết
+                    {
+                        headers: {
+                            Authorization: `Bearer ${localStorage.getItem(
+                                'token',
+                            )}`, // Lấy token từ localStorage
+                        },
+                    },
+                );
+                // Xóa bài viết khỏi danh sách hiện tại
+                setPosts(posts.filter((post) => post.id !== postId));
+                alert('Xóa bài viết thành công');
+            } catch (error) {
+                console.error('Error deleting post:', error);
+                alert('Xóa bài viết thất bại. Vui lòng thử lại.');
+            }
+        }
     };
 
     return (
@@ -72,13 +96,14 @@ function PostManagement() {
                         <th>Hội viên</th>
                         <th>Danh mục</th>
                         <th>Trạng thái</th>
+                        <th>Hình ảnh</th> {/* Thêm cột hình ảnh */}
                         <th>Hành động</th>
                     </tr>
                 </thead>
                 <tbody>
                     {posts.length === 0 ? (
                         <tr>
-                            <td colSpan="7">Không có bài viết nào</td>
+                            <td colSpan="8">Không có bài viết nào</td>
                         </tr>
                     ) : (
                         posts.map((post) => (
@@ -86,18 +111,37 @@ function PostManagement() {
                                 <td>{post.id}</td>
                                 <td className="title-column">{post.title}</td>
                                 <td>{post.content.slice(0, 30)}...</td>
-                                <td>{post.author}</td>
-                                <td>{post.category}</td>
+                                <td>
+                                    {post.member
+                                        ? post.member.full_name
+                                        : 'không xác định'}
+                                </td>{' '}
+                                <td>{post.category.category_name}</td>{' '}
+                                {/* Cột danh mục */}
                                 <td>
                                     <span
                                         className={`status-btn ${
-                                            post.status === 'Active'
+                                            post.is_open === 1
                                                 ? 'open'
                                                 : 'close'
                                         }`}
                                     >
-                                        {post.status}
+                                        {post.is_open === 1
+                                            ? 'Active'
+                                            : 'Inactive'}
                                     </span>
+                                </td>
+                                <td>
+                                    {post.image && (
+                                        <img
+                                            src={post.image}
+                                            alt="Post"
+                                            style={{
+                                                width: '50px',
+                                                height: '50px',
+                                            }}
+                                        />
+                                    )}
                                 </td>
                                 <td>
                                     <button
@@ -106,7 +150,10 @@ function PostManagement() {
                                     >
                                         Chỉnh sửa
                                     </button>
-                                    <button className="btn btn-danger">
+                                    <button
+                                        className="btn btn-danger"
+                                        onClick={() => handleDelete(post.id)}
+                                    >
                                         Xóa
                                     </button>
                                 </td>

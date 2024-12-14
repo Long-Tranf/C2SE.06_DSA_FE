@@ -1,44 +1,44 @@
-.photo-library-management {
+.banner-management {
     max-width: 100%;
 }
 
-.photo-library-management h2 {
+.banner-management h2 {
     text-align: center;
     color: #333;
     margin-bottom: 20px;
 }
 
-.photo-library-management .btn {
+.banner-management .btn {
     margin: 5px;
 }
 
-.photo-library-management table {
+.banner-management table {
     width: 100%;
     border-collapse: collapse;
     margin-top: 20px;
 }
 
-.photo-library-management table th,
-.photo-library-management table td {
+.banner-management table th,
+.banner-management table td {
     border: 1px solid #ddd;
     padding: 10px;
     text-align: center;
     vertical-align: middle;
 }
 
-.photo-library-management table th {
+.banner-management table th {
     background-color: #f4f4f4;
     color: #333;
 }
 
-.photo-library-management table td img {
+.banner-management table td img {
     width: 50px;
     height: 50px;
     object-fit: cover;
     border-radius: 5px;
 }
 
-.photo-library-management .modal-overlay {
+.banner-management .modal-overlay {
     position: fixed;
     top: 0;
     left: 0;
@@ -51,7 +51,7 @@
     z-index: 1000;
 }
 
-.photo-library-management .modal-content {
+.banner-management .modal-content {
     background-color: #fff;
     padding: 20px;
     border-radius: 8px;
@@ -61,31 +61,31 @@
     text-align: left;
 }
 
-.photo-library-management .modal-content h3 {
+.banner-management .modal-content h3 {
     color: #333;
     margin-bottom: 15px;
 }
 
-.photo-library-management .form-group {
+.banner-management .form-group {
     margin-bottom: 15px;
 }
 
-.photo-library-management .form-group label {
+.banner-management .form-group label {
     display: block;
     margin-bottom: 5px;
     font-weight: bold;
     color: #555;
 }
 
-.photo-library-management .form-group input,
-.photo-library-management .form-group select {
+.banner-management .form-group input,
+.banner-management .form-group select {
     width: 100%;
     padding: 8px;
     border: 1px solid #ccc;
     border-radius: 5px;
 }
 
-.photo-library-management .form-group img {
+.banner-management .form-group img {
     display: block;
     margin-top: 10px;
     border: 1px solid #ddd;
@@ -94,38 +94,32 @@
     height: auto;
 }
 
-.photo-library-management .btn-primary {
+.banner-management .btn-primary {
     background-color: #007bff;
     color: white;
     border: none;
 }
 
-.photo-library-management .btn-secondary {
+.banner-management .btn-secondary {
     background-color: #6c757d;
     color: white;
     border: none;
 }
 
-.photo-library-management .btn-warning {
+.banner-management .btn-warning {
     background-color: #ffc107;
     color: white;
     border: none;
 }
 
-.photo-library-management .btn-danger {
+.banner-management .btn-danger {
     background-color: #dc3545;
     color: white;
     border: none;
 }
 
-.photo-library-management .btn-primary:hover,
-.photo-library-management .btn-secondary:hover,
-.photo-library-management .btn-warning:hover,
-.photo-library-management .btn-danger:hover {
-    opacity: 0.9;
-}
-
-.photo-library-management .btn:focus {
-    outline: none;
-    box-shadow: none;
+.banner-management .btn-success {
+    background-color: #28a745;
+    color: white;
+    border: none;
 }

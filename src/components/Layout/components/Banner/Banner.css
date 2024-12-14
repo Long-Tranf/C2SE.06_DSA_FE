@@ -1,27 +1,32 @@
 .banner-container {
     display: flex;
-    gap: 20px; /* Khoảng cách giữa các banner */
-    margin: 12px 0 6px; /* Khoảng cách trên và dưới cho toàn bộ banner */
+    gap: 20px;
+    margin: 12px 0 6px;
 }
 
 .banner {
-    border-radius: 20px; /* Bo góc 5% */
-    min-height: 200px; /* Chiều cao nhỏ nhất */
-    background-color: #f0f0f0; /* Màu nền mặc định */
+    border-radius: 20px;
+    height: 300px;
+    background-color: #f0f0f0;
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 1.2rem;
     color: #333;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
 }
 
-/* Banner lớn (60%) */
 .banner-large {
-    flex: 3; /* Tỷ lệ 60% */
+    flex: 3;
 }
 
-/* Banner nhỏ (20%) */
 .banner-small {
-    flex: 1; /* Tỷ lệ 20% */
+    flex: 1;
+}
+
+.banner img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }

@@ -1,26 +1,33 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './Library.css';
 import Header from '~/components/Layout/components/Header/header';
 import Footer from '~/components/Layout/components/Footer/footer';
+import axios from 'axios';
 
 const Library = () => {
-    const images = [
-        'https://upload.wikimedia.org/wikipedia/commons/4/46/Canon_200-400_1Dc-1.jpg',
-        'https://nld.mediacdn.vn/Images/Uploaded/Share/2010/09/18/10-image001.jpg',
-        'https://via.placeholder.com/200x200?text=Image+3',
-        'https://via.placeholder.com/200x200?text=Image+4',
-        'https://via.placeholder.com/200x200?text=Image+5',
-        'https://via.placeholder.com/200x200?text=Image+6',
-        'https://via.placeholder.com/200x200?text=Image+7',
-        'https://via.placeholder.com/200x200?text=Image+8',
-        'https://via.placeholder.com/200x200?text=Image+9',
-        'https://via.placeholder.com/200x200?text=Image+10',
-        'https://via.placeholder.com/200x200?text=Image+11',
-        'https://via.placeholder.com/200x200?text=Image+12',
-    ];
-
+    const [images, setImages] = useState([]); // Dữ liệu hình ảnh từ API
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
+
+    // Fetch dữ liệu từ API khi component được mount
+    useEffect(() => {
+        const fetchImages = async () => {
+            try {
+                const response = await axios.get(
+                    'http://127.0.0.1:8000/api/PhotoLibrary/data',
+                );
+                // Lọc các ảnh có trường 'is_open' = 1
+                const filteredImages = response.data.photo_librarys.filter(
+                    (image) => image.is_open === 1,
+                );
+                setImages(filteredImages); // Cập nhật danh sách ảnh đã lọc
+            } catch (error) {
+                console.error('Error fetching images:', error);
+            }
+        };
+
+        fetchImages();
+    }, []); // Chạy 1 lần khi component được render lần đầu
 
     const openModal = (index) => {
         setCurrentImageIndex(index);
@@ -50,11 +57,11 @@ const Library = () => {
                     {images.map((image, index) => (
                         <div
                             className="image-item"
-                            key={index}
+                            key={image.id} // Dùng 'id' làm key để tránh bị lỗi
                             onClick={() => openModal(index)}
                         >
                             <img
-                                src={image}
+                                src={image.image} // Sử dụng đường dẫn hình ảnh từ API
                                 alt={`Library Image ${index + 1}`}
                             />
                         </div>
@@ -66,7 +73,7 @@ const Library = () => {
             {isModalOpen && (
                 <div className="modal-overlay" onClick={closeModal}>
                     <div
-                        className="modal-content"
+                        className="modal-content-library"
                         onClick={(e) => e.stopPropagation()}
                     >
                         <button className="modal-close" onClick={closeModal}>
@@ -76,7 +83,7 @@ const Library = () => {
                             ‹
                         </button>
                         <img
-                            src={images[currentImageIndex]}
+                            src={images[currentImageIndex].image} // Hiển thị ảnh từ API
                             alt="Current Image"
                             className="modal-image"
                         />

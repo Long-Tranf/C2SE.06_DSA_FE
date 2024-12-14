@@ -56,13 +56,13 @@
 }
 
 /* Modal nội dung */
-.modal-content {
+.modal-content-library {
     position: relative;
     background: white;
     padding: 20px;
     border-radius: 8px;
-    max-width: 70%; /* Chiếm 70% màn hình */
-    max-height: 70%; /* Chiếm 70% chiều cao màn hình */
+    max-width: 60%;
+    max-height: 100%;
     overflow: hidden;
 }
 

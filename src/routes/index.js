@@ -17,6 +17,7 @@ import AssociationManagement from '~/pages/Admin/AssociationManagement/Associati
 import ContantManagement from '~/pages/Admin/ContantManagement/ContantManagement';
 import LibraryManagement from '~/pages/Admin/LibraryManagement/LibraryManagement';
 import EventManagement from '~/pages/Admin/EventManagament/EventManagement';
+import BannerManagement from '~/pages/Admin/BannerManagement/BannerManagement';
 
 // Public routes
 const publicRoutes = [
@@ -37,7 +38,7 @@ const publicRoutes = [
         element: <Search />,
     },
     {
-        path: '/category/:categoryId', // Đảm bảo sử dụng categoryId đúng trong URL
+        path: '/category/:categoryId',
         element: <CategoryDetail />,
     },
     {
@@ -63,12 +64,9 @@ const publicRoutes = [
             { path: 'category', element: <CategoryManagement /> },
             { path: 'library', element: <LibraryManagement /> },
             { path: 'contact', element: <ContantManagement /> },
+            { path: 'banner', element: <BannerManagement /> },
             { path: 'event', element: <EventManagement /> },
         ],
-    },
-    {
-        path: '/profile',
-        element: <Profile />,
     },
     {
         path: '/association',
@@ -81,6 +79,11 @@ const publicRoutes = [
 ];
 
 // Private routes
-const privateRoutes = [];
+const privateRoutes = [
+    {
+        path: '/profile',
+        element: <Profile />,
+    },
+];
 
 export { publicRoutes, privateRoutes };

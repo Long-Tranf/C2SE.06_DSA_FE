@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom'; // Sử dụng useParams để lấy postId từ URL
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css'; // Thêm style cho quill editor
+import axios from 'axios'; // Import axios để gửi request
 import './AddPost.css';
 
 const modules = {
@@ -36,29 +37,57 @@ const formats = [
 
 function AddPost({ onBack }) {
     const { postId } = useParams(); // Lấy postId từ URL
+    const [curentPost, setCurentPost] = useState(null);
     const navigate = useNavigate();
+
     const [postTitle, setPostTitle] = useState('');
     const [postContent, setPostContent] = useState('');
-    const [postCategory, setPostCategory] = useState('');
+    const [postCategory, setPostCategory] = useState();
     const [postStatus, setPostStatus] = useState('');
-    const [postAuthor, setPostAuthor] = useState('');
+    const [postAuthor, setPostAuthor] = useState();
+    const [postImage, setPostImage] = useState(null);
+    const [isLoading, setIsLoading] = useState(false);
+    const [categories, setCategories] = useState([]); // Thêm trạng thái lưu danh mục
+    const [isFetchingCategories, setIsFetchingCategories] = useState(true); // Thêm trạng thái loading danh mục
 
-    // Giả sử bạn sẽ lấy dữ liệu bài viết từ API hoặc từ mảng dữ liệu có sẵn
+    // Lấy danh mục con từ API
+    useEffect(() => {
+        axios
+            .get('http://127.0.0.1:8000/api/Categories/data')
+            .then((response) => {
+                const allCategories = response.data.categories;
+                // Lọc danh mục con (parent_category_id !== 0)
+                const childCategories = allCategories.filter(
+                    (category) => category.parent_category_id !== 0,
+                );
+                setCategories(childCategories);
+                setIsFetchingCategories(false); // Đánh dấu tải danh mục đã hoàn thành
+            })
+            .catch((error) => {
+                console.error('Lỗi khi lấy danh mục:', error);
+                setIsFetchingCategories(false);
+            });
+    }, []);
+
+    // Lấy dữ liệu bài viết nếu có postId
     useEffect(() => {
         if (postId) {
-            // Gọi API để lấy bài viết theo postId
-            fetch(`http://localhost:5000/posts/${postId}`)
-                .then((response) => response.json())
-                .then((post) => {
+            axios
+                .get(`http://127.0.0.1:8000/api/Post/data/${postId}`)
+                .then((response) => {
+                    const post = response.data.post;
                     setPostTitle(post.title);
                     setPostContent(post.content);
-                    setPostCategory(post.category);
-                    setPostStatus(post.status);
-                    setPostAuthor(post.author);
+                    setPostCategory(post.category_id);
+                    setPostStatus(post.is_open);
+                    setPostAuthor(post.member.full_name);
+                    setPostImage(post.image);
                 })
-                .catch((error) =>
-                    console.error('Có lỗi xảy ra khi lấy bài viết:', error),
-                );
+                .catch((error) => {
+                    console.error('Có lỗi xảy ra khi lấy bài viết:', error);
+                    alert('Không thể lấy dữ liệu bài viết. Vui lòng thử lại!');
+                });
+        } else {
         }
     }, [postId]);
 
@@ -66,54 +95,45 @@ function AddPost({ onBack }) {
         setPostContent(value);
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        const postData = {
-            title: postTitle,
-            content: postContent,
-            category: postCategory,
-            status: postStatus,
-            author: postAuthor,
-        };
+        setIsLoading(true);
 
-        if (postId) {
-            // Chỉnh sửa bài viết (gửi PUT request)
-            fetch(`http://localhost:5000/posts/${postId}`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(postData),
-            })
-                .then((response) => response.json())
-                .then((updatedPost) => {
-                    console.log('Bài viết đã được cập nhật:', updatedPost);
-                    navigate('/dashboardadmin/post'); // Điều hướng về trang quản lý bài viết sau khi lưu
-                })
-                .catch((error) =>
-                    console.error(
-                        'Có lỗi xảy ra khi cập nhật bài viết:',
-                        error,
-                    ),
-                );
-        } else {
-            // Thêm mới bài viết (gửi POST request)
-            fetch('http://localhost:5000/posts', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(postData),
-            })
-                .then((response) => response.json())
-                .then((newPost) => {
-                    console.log('Bài viết mới đã được đăng:', newPost);
-                    navigate('/dashboardadmin/post'); // Điều hướng về trang quản lý bài viết sau khi lưu
-                })
-                .catch((error) =>
-                    console.error('Có lỗi xảy ra khi đăng bài viết:', error),
-                );
+        const url = postId
+            ? `http://127.0.0.1:8000/api/Post/update`
+            : `http://127.0.0.1:8000/api/Post/create`;
+
+        const method = postId ? `put` : `post`;
+
+        try {
+            if (postId) {
+                await axios.put(`http://127.0.0.1:8000/api/Post/update`, {
+                    id: postId,
+                    title: postTitle,
+                    content: postContent,
+                    category_id: Number(postCategory),
+                    is_open: Number(postStatus),
+                    member_id: 1,
+                    image: postImage,
+                });
+            } else {
+                await axios.post(`http://127.0.0.1:8000/api/Post/create`, {
+                    title: postTitle,
+                    content: postContent,
+                    category_id: Number(postCategory),
+                    is_open: Number(postStatus),
+                    member_id: 1,
+                    image: postImage,
+                });
+            }
+            navigate('/dashboardadmin/post');
+        } catch (error) {
+            console.error('Có lỗi xảy ra khi lưu bài viết:', error);
+            alert('Không thể lưu bài viết. Vui lòng thử lại!');
+        } finally {
+            setIsLoading(false);
         }
+        setCurentPost(null);
     };
 
     return (
@@ -147,17 +167,23 @@ function AddPost({ onBack }) {
                 </div>
                 <div>
                     <label htmlFor="category">Danh mục</label>
-                    <select
-                        id="category"
-                        name="category"
-                        value={postCategory}
-                        onChange={(e) => setPostCategory(e.target.value)}
-                    >
-                        <option value="">-- Chọn danh mục --</option>
-                        <option value="Tech">Công nghệ</option>
-                        <option value="Health">Sức khỏe</option>
-                        <option value="Education">Giáo dục</option>
-                    </select>
+                    {isFetchingCategories ? (
+                        <p>Đang tải danh mục...</p>
+                    ) : (
+                        <select
+                            id="category"
+                            name="category"
+                            value={postCategory}
+                            onChange={(e) => setPostCategory(e.target.value)}
+                        >
+                            <option value="">-- Chọn danh mục --</option>
+                            {categories.map((category) => (
+                                <option key={category.id} value={category.id}>
+                                    {category.category_name}
+                                </option>
+                            ))}
+                        </select>
+                    )}
                 </div>
                 <div>
                     <label htmlFor="status">Trạng thái</label>
@@ -168,8 +194,8 @@ function AddPost({ onBack }) {
                         onChange={(e) => setPostStatus(e.target.value)}
                     >
                         <option value="">-- Chọn trạng thái --</option>
-                        <option value="Active">Active</option>
-                        <option value="Inactive">Inactive</option>
+                        <option value="1">Active</option>
+                        <option value="0">Inactive</option>
                     </select>
                 </div>
                 <div>
@@ -184,8 +210,21 @@ function AddPost({ onBack }) {
                     />
                 </div>
                 <div>
-                    <button type="submit">
-                        {postId ? 'Cập nhật Bài' : 'Đăng Bài'}
+                    <label htmlFor="image">Chọn Hình Ảnh</label>
+                    <input
+                        type="text"
+                        id="image"
+                        value={postImage}
+                        onChange={(e) => setPostImage(e.target.value)} // Lấy đường dẫn ảnh từ input
+                    />
+                </div>
+                <div>
+                    <button type="submit" disabled={isLoading}>
+                        {isLoading
+                            ? 'Đang lưu...'
+                            : postId
+                            ? 'Cập nhật Bài'
+                            : 'Đăng Bài'}
                     </button>
                 </div>
             </form>

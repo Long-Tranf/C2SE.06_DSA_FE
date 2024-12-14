@@ -79,8 +79,8 @@ function AdminDashboard() {
                 </div>
 
                 <div className="content">
-                    {/* Render các route con */}
-                    <Outlet /> {/* Thêm Outlet để hiển thị các component con */}
+                    {/* Render route con */}
+                    <Outlet />
                 </div>
             </div>
         </div>

@@ -1,106 +1,53 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom'; // Import useNavigate
 import Header from '~/components/Layout/components/Header/header';
 import Footer from '~/components/Layout/components/Footer/footer';
 import styles from './Search.module.scss'; // Import CSS module
 
 function Search() {
-    const [searchResults, setSearchResults] = useState([]); // Kết quả tìm kiếm
+    const [searchResults, setSearchResults] = useState([]);
     const [currentPage, setCurrentPage] = useState(1); // Trang hiện tại
-    const [searchQuery, setSearchQuery] = useState(''); // Từ khóa tìm kiếm
     const [sortOption, setSortOption] = useState('newest'); // Tùy chọn sắp xếp
-    const resultsPerPage = 5; // Số kết quả mỗi trang
+    const resultsPerPage = 5;
 
-    // Mock API giả lập
-    const mockApiCall = (query) => {
-        const mockData = [
-            // Dữ liệu giả ở đây
-            {
-                id: 1,
-                title: 'Bài viết 1',
-                content: 'Nội dung bài viết 1',
-                createdAt: '2024-01-01',
-                views: 100,
-                image: 'image_url_1',
-            },
-            {
-                id: 2,
-                title: 'Bài viết 2',
-                content: 'Nội dung bài viết 2',
-                createdAt: '2024-02-01',
-                views: 150,
-                image: 'image_url_2',
-            },
-            {
-                id: 3,
-                title: 'Bài viết 3',
-                content: 'Nội dung bài viết 3',
-                createdAt: '2024-03-01',
-                views: 50,
-                image: 'image_url_3',
-            },
-            {
-                id: 4,
-                title: 'Bài viết 4',
-                content: 'Nội dung bài viết 4',
-                createdAt: '2024-02-01',
-                views: 100,
-                image: 'image_url_4',
-            },
-            {
-                id: 5,
-                title: 'Bài viết 5',
-                content: 'Nội dung bài viết 5',
-                createdAt: '2024-01-01',
-                views: 51,
-                image: 'image_url_5',
-            },
-            {
-                id: 6,
-                title: 'Bài viết 6',
-                content: 'Nội dung bài viết 6',
-                createdAt: '2024-03-02',
-                views: 155,
-                image: 'image_url_6',
-            },
-            // Thêm các bài viết giả vào đây
-        ];
+    const location = useLocation();
+    const queryParams = new URLSearchParams(location.search);
+    const query = queryParams.get('query');
 
-        return mockData.filter(
-            (item) =>
-                item.title.toLowerCase().includes(query.toLowerCase()) ||
-                item.content.toLowerCase().includes(query.toLowerCase()),
-        );
-    };
-
-    const handleSearch = () => {
-        if (!searchQuery.trim()) {
-            alert('Vui lòng nhập từ khóa tìm kiếm!');
-            return;
+    useEffect(() => {
+        if (query) {
+            fetchSearchResults(query);
         }
+    }, [query]);
 
-        const filteredResults = mockApiCall(searchQuery);
-        setSearchResults(filteredResults); // Lưu trữ kết quả tìm kiếm
-        setCurrentPage(1); // Reset trang về 1 khi tìm kiếm lại
+    const fetchSearchResults = async (query) => {
+        try {
+            const response = await fetch(
+                `http://127.0.0.1:8000/api/posts/search?q=${query}`,
+            );
+            const data = await response.json();
+            setSearchResults(data); // Lưu kết quả vào state
+        } catch (error) {
+            console.error('Error fetching search results:', error);
+        }
     };
 
     const handleSortChange = (option) => {
-        setSortOption(option); // Thay đổi tùy chọn sắp xếp
-        setCurrentPage(1); // Reset trang khi thay đổi sắp xếp
+        setSortOption(option);
+        setCurrentPage(1); // Reset trang về 1 khi thay đổi sắp xếp
     };
 
-    // Sắp xếp kết quả
     const sortedResults = [...searchResults].sort((a, b) => {
         if (sortOption === 'newest') {
-            return new Date(b.createdAt) - new Date(a.createdAt);
+            return new Date(b.created_at) - new Date(a.created_at);
         } else if (sortOption === 'mostRelevant') {
             return a.title.localeCompare(b.title);
-        } else if (sortOption === 'mostViewed') {
-            return b.views - a.views;
+        } else if (sortOption === 'oldest') {
+            return new Date(a.created_at) - new Date(b.created_at); // So sánh để sắp xếp theo cũ nhất
         }
         return 0;
     });
 
-    // Phân trang
     const indexOfLastResult = currentPage * resultsPerPage;
     const indexOfFirstResult = indexOfLastResult - resultsPerPage;
     const currentResults = sortedResults.slice(
@@ -108,31 +55,26 @@ function Search() {
         indexOfLastResult,
     );
 
-    const handleKeyDown = (e) => {
-        if (e.key === 'Enter') {
-            handleSearch();
+    const removeImagesFromContent = (content) => {
+        const tempDiv = document.createElement('div');
+        tempDiv.innerHTML = content;
+        const images = tempDiv.querySelectorAll('img');
+        images.forEach((img) => img.remove()); // Loại bỏ ảnh
+        return tempDiv.innerHTML; // Trả ra HTML không có ảnh
+    };
+
+    const truncateText = (text, length = 100) => {
+        if (text.length > length) {
+            return text.substring(0, length) + '...'; // Cắt văn bản và thêm "..."
         }
+        return text;
     };
 
     return (
         <div>
             <Header />
-            <div className={styles.searchContainer}>
-                <input
-                    type="text"
-                    className={`form-control ${styles.searchInput}`} // Áp dụng CSS module
-                    placeholder="Nhập nội dung tìm kiếm"
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    onKeyDown={handleKeyDown}
-                />
-                <button className={styles.searchButton} onClick={handleSearch}>
-                    Tìm kiếm
-                </button>
-            </div>
-
             <div
-                className={`${styles.dFlex} ${styles.justifyContentBetween} ${styles.alignItemsCenter}`}
+                className={`${styles.dFlex} ${styles.justifyContentBetween} ${styles.alignItemsCenter} ${styles.SearchWrapper}`}
             >
                 <h2 className={styles.searchTitle}>
                     {searchResults.length > 0
@@ -172,9 +114,9 @@ function Search() {
                         <li>
                             <button
                                 className="dropdown-item"
-                                onClick={() => handleSortChange('mostViewed')}
+                                onClick={() => handleSortChange('oldest')}
                             >
-                                Xem nhiều nhất
+                                Cũ nhất
                             </button>
                         </li>
                     </ul>
@@ -185,7 +127,7 @@ function Search() {
                 {currentResults.map((result) => (
                     <div
                         key={result.id}
-                        className={`${styles.dFlex} border-bottom py-2`}
+                        className={`${styles.dFlex} ${styles.searchPost} py-2`}
                     >
                         <img
                             src={result.image}
@@ -193,8 +135,18 @@ function Search() {
                             className={styles.searchItemImage}
                         />
                         <div className={styles.searchItemContent}>
-                            <h5>{result.title}</h5>
-                            <p className="text-truncate">{result.content}</p>
+                            <h5 className={styles.searchTitlePost}>
+                                {result.title}
+                            </h5>
+                            {/* Render nội dung với dangerouslySetInnerHTML */}
+                            <div
+                                className={styles.searchDescriptionPost}
+                                dangerouslySetInnerHTML={{
+                                    __html: removeImagesFromContent(
+                                        truncateText(result.content, 350),
+                                    ), // Giới hạn độ dài và loại bỏ ảnh
+                                }}
+                            />
                         </div>
                     </div>
                 ))}

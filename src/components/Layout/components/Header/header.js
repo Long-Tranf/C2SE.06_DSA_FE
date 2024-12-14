@@ -1,40 +1,62 @@
 import React, { useState, useEffect } from 'react';
 import './header.css';
 import moment from 'moment';
+import axios from 'axios';
 import banner from '~/assets/image/banner.png';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
     faAngleDown,
-    faArrowDown,
     faGlobe,
     faSignOut,
     faUser,
     faBell,
 } from '@fortawesome/free-solid-svg-icons';
 import Search from '~/components/Layout/components/Search/index';
-import avatar from '~/assets/image/no-img.png';
+import avatarPlaceholder from '~/assets/image/no-img.png';
 import Tippy from '@tippyjs/react';
 import 'tippy.js/themes/light.css';
 import { Link } from 'react-router-dom';
 
 function Header() {
     const [curr, setCurr] = useState(moment());
-    const [currentUser, setCurrentUser] = useState(true);
+    const [user, setUser] = useState(null); // Lưu thông tin người dùng
     const [notifications, setNotifications] = useState([]);
     const [categories, setCategories] = useState([]);
     const formattedDate = curr.format('DD MMMM YYYY HH:mm:ss');
-    const user = {
-        name: 'Đình Long',
-        avatar: 'https://p16-sign-va.tiktokcdn.com/tos-maliva-avt-0068/a5d6f67a025f7175ebb766f2532aa4de~c5_720x720.jpeg?lk3s=a5d48078&nonce=95564&refresh_token=4bf0525411d3c50613a1e0867085791e&x-expires=1732348800&x-signature=xHkbbt0z3tj99p0NeA91H3h97hc%3D&shp=a5d48078&shcp=81f88b70&quot;);',
-    };
 
     useEffect(() => {
-        // Fetch categories from API
-        fetch('http://127.0.0.1:8000/api/Categories/data')
-            .then((response) => response.json())
-            .then((data) => {
-                const categoryData = data.categories;
-                // Organize categories into parent and sub-categories
+        // Kiểm tra token và lấy thông tin người dùng
+        async function fetchUserData() {
+            const token = localStorage.getItem('accessToken'); // Lấy token từ localStorage
+
+            if (!token) {
+                setUser(null);
+                return;
+            }
+
+            try {
+                const response = await axios.get(
+                    'http://127.0.0.1:8000/api/kiem-tra-token-member',
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        },
+                    },
+                );
+                setUser(response.data.user); // Lưu thông tin người dùng vào state
+            } catch (error) {
+                console.error('Token không hợp lệ hoặc lỗi hệ thống:', error);
+                setUser(null); // Token không hợp lệ
+            }
+        }
+
+        fetchUserData();
+
+        // Fetch danh mục từ API
+        axios
+            .get('http://127.0.0.1:8000/api/Categories/data')
+            .then((response) => {
+                const categoryData = response.data.categories;
                 const topLevelCategories = categoryData.filter(
                     (cat) => cat.parent_category_id === 0 && cat.is_open,
                 );
@@ -56,7 +78,7 @@ function Header() {
                 console.error('Error fetching categories:', error),
             );
 
-        // Simulating notifications
+        // Simulate thông báo
         const postNotifications = [
             'Hội viên 1 đã đăng bài viết "Tiêu đề bài viết 1"',
             'Hội viên 2 đã đăng bài viết "Tiêu đề bài viết 2"',
@@ -64,7 +86,7 @@ function Header() {
         ];
         setNotifications(postNotifications);
 
-        // Update current time every second
+        // Update thời gian hiện tại mỗi giây
         const time = setInterval(() => {
             setCurr(moment());
         }, 1000);
@@ -76,21 +98,29 @@ function Header() {
             <div className="top-header">
                 <span className="current-date-time">{formattedDate}</span>
                 <div className="info">
-                    {currentUser ? (
+                    {user ? (
                         <>
-                            <h4 className="user-name">Xin Chào, {user.name}</h4>
+                            <h4 className="user-name">
+                                Xin Chào, {user.full_name}
+                            </h4>
                             <Tippy
                                 content={
                                     <div className="profile">
-                                        <a className="profile-item">
+                                        <Link
+                                            to="/profile"
+                                            className="profile-item"
+                                        >
                                             <FontAwesomeIcon icon={faUser} />
                                             <h4>Profile</h4>
-                                        </a>
+                                        </Link>
                                         <a
                                             className="profile-item"
-                                            onClick={() =>
-                                                setCurrentUser(false)
-                                            }
+                                            onClick={() => {
+                                                localStorage.removeItem(
+                                                    'accessToken',
+                                                );
+                                                setUser(null);
+                                            }}
                                         >
                                             <FontAwesomeIcon icon={faSignOut} />
                                             <h4>Logout</h4>
@@ -104,7 +134,7 @@ function Header() {
                                 theme="light"
                             >
                                 <img
-                                    src={user.avatar || avatar}
+                                    src={user.avatar || avatarPlaceholder}
                                     className="avatar"
                                     alt="User Avatar"
                                 />

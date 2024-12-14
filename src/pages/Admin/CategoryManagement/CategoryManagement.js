@@ -80,7 +80,6 @@ function CategoryManagement() {
         setIsLoading(true);
         try {
             if (currentCategory) {
-                // Update category
                 await axios.put(`http://127.0.0.1:8000/api/Categories/update`, {
                     id: currentCategory.id,
                     category_name: formData.name,

@@ -14,7 +14,7 @@ function ContentCategoryDetail() {
         { name: categoryName, active: true },
     ];
 
-    const [posts, setPosts] = useState([]);
+    const [posts, setPosts] = useState([]); // Bài viết
     const [currentPage, setCurrentPage] = useState(1);
     const [postsPerPage] = useState(5);
 
@@ -23,13 +23,8 @@ function ContentCategoryDetail() {
     const currentPosts = posts.slice(indexOfFirstPost, indexOfLastPost);
     const totalPages = Math.ceil(posts.length / postsPerPage);
 
-    const limitContent = (content, length = 100) => {
-        return content.length > length
-            ? content.substring(0, length) + '...'
-            : content;
-    };
-
     useEffect(() => {
+        // Fetch category thông tin
         const fetchCategory = async () => {
             const categoryResponse = await fetch(
                 `http://127.0.0.1:8000/api/categories/${categoryId}`,
@@ -55,6 +50,7 @@ function ContentCategoryDetail() {
             setSubCategories(subCategoryData.child_categories);
         };
 
+        // Fetch bài viết cho categoryId
         const fetchPosts = async () => {
             const response = await fetch(
                 `http://127.0.0.1:8000/api/categories/${categoryId}/posts`,
@@ -65,7 +61,22 @@ function ContentCategoryDetail() {
 
         fetchCategory();
         fetchPosts();
-    }, [categoryId]);
+    }, [categoryId]); // Dependency array là categoryId để fetch lại khi categoryId thay đổi
+
+    const removeImagesFromContent = (content) => {
+        const tempDiv = document.createElement('div');
+        tempDiv.innerHTML = content;
+        const images = tempDiv.querySelectorAll('img');
+        images.forEach((img) => img.remove()); // Loại bỏ ảnh
+        return tempDiv.innerHTML; // Trả ra HTML không có ảnh
+    };
+
+    const truncateText = (text, length = 100) => {
+        if (text.length > length) {
+            return text.substring(0, length) + '...'; // Cắt văn bản và thêm "..."
+        }
+        return text;
+    };
 
     return (
         <div className="wrapper-category">
@@ -93,33 +104,41 @@ function ContentCategoryDetail() {
                     </ul>
                 </div>
 
-                <div className="main-content p-4" style={{ flexGrow: 1 }}>
-                    <h1>Main Content Area</h1>
+                <div className="main-content">
                     <div className="posts-list">
-                        {currentPosts.map((post) => (
-                            <div
-                                key={post.id}
-                                className="post-item d-flex mb-4"
-                            >
-                                <div
-                                    className="post-image"
-                                    style={{
-                                        width: '150px',
-                                        marginRight: '20px',
-                                    }}
-                                >
-                                    <img
-                                        src={post.image}
-                                        alt={post.title}
-                                        className="img-fluid"
-                                    />
-                                </div>
-                                <div className="post-details">
-                                    <h5>{post.title}</h5>
-                                    <p>{limitContent(post.content, 100)}</p>
-                                </div>
-                            </div>
-                        ))}
+                        {currentPosts.map(
+                            (post) =>
+                                post.is_open === 1 && ( // Kiểm tra điều kiện is_open
+                                    <div
+                                        key={post.id}
+                                        className="post-item d-flex"
+                                    >
+                                        <div className="post-image">
+                                            <img
+                                                src={post.image}
+                                                alt={post.title}
+                                                className="img-fluid"
+                                            />
+                                        </div>
+                                        <div className="post-details">
+                                            <h5 className="category-post-title">
+                                                {post.title}
+                                            </h5>
+                                            <p
+                                                className="category-post-content"
+                                                dangerouslySetInnerHTML={{
+                                                    __html: removeImagesFromContent(
+                                                        truncateText(
+                                                            post.content,
+                                                            350,
+                                                        ),
+                                                    ), // Giới hạn độ dài và loại bỏ ảnh
+                                                }}
+                                            ></p>
+                                        </div>
+                                    </div>
+                                ),
+                        )}
                     </div>
                 </div>
             </div>
@@ -128,11 +147,20 @@ function ContentCategoryDetail() {
                 <nav aria-label="...">
                     <ul className="pagination justify-content-center">
                         <li
-                            className="page-item"
-                            onClick={() => setCurrentPage(currentPage - 1)}
-                            disabled={currentPage === 1}
+                            className={`page-item ${
+                                currentPage === 1 ? 'disabled' : ''
+                            }`} // Disable Previous if on the first page
                         >
-                            <a className="page-link" href="#">
+                            <a
+                                className="page-link"
+                                href="#"
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    if (currentPage > 1) {
+                                        setCurrentPage(currentPage - 1);
+                                    }
+                                }}
+                            >
                                 Previous
                             </a>
                         </li>
@@ -146,18 +174,32 @@ function ContentCategoryDetail() {
                                 <a
                                     className="page-link"
                                     href="#"
-                                    onClick={() => setCurrentPage(index + 1)}
+                                    onClick={(e) => {
+                                        e.preventDefault();
+                                        setCurrentPage(index + 1);
+                                    }}
                                 >
                                     {index + 1}
                                 </a>
                             </li>
                         ))}
                         <li
-                            className="page-item"
-                            onClick={() => setCurrentPage(currentPage + 1)}
-                            disabled={currentPage === totalPages}
+                            className={`page-item ${
+                                currentPage === totalPages || totalPages === 0
+                                    ? 'disabled'
+                                    : ''
+                            }`} // Disable Next if on the last page
                         >
-                            <a className="page-link" href="#">
+                            <a
+                                className="page-link"
+                                href="#"
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    if (currentPage < totalPages) {
+                                        setCurrentPage(currentPage + 1);
+                                    }
+                                }}
+                            >
                                 Next
                             </a>
                         </li>
