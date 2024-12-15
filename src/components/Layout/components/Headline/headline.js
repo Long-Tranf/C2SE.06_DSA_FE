@@ -1,25 +1,30 @@
+import React, { useEffect, useState } from 'react';
 import Marquee from 'react-fast-marquee';
+import { useNavigate } from 'react-router-dom';
 import './headline.css';
 
 function Headline() {
-    const LoadingSpinner = [
-        {
-            id: 1,
-            title: 'Tin tức nổi bật trong ngày',
-        },
-        {
-            id: 2,
-            title: 'Tin tuyển dụng',
-        },
-        {
-            id: 3,
-            title: 'Tin tức 24h',
-        },
-        {
-            id: 4,
-            title: 'Nhịp sống Đà Nẵng',
-        },
-    ];
+    const [posts, setPosts] = useState([]);
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        // Gọi API lấy danh sách bài viết
+        fetch('http://127.0.0.1:8000/api/posts/top')
+            .then((response) => response.json())
+            .then((data) => {
+                // Lọc bài viết chỉ lấy các bài có `is_open` = 1
+                const filteredPosts = data.filter((post) => post.is_open === 1);
+                setPosts(filteredPosts);
+            })
+            .catch((error) => {
+                console.error('Lỗi khi gọi API:', error);
+            });
+    }, []);
+
+    const handleNavigate = (postId) => {
+        // Điều hướng đến đường dẫn bài viết
+        navigate(`/post/${postId}`);
+    };
 
     return (
         <div className="headline-container">
@@ -31,10 +36,14 @@ function Headline() {
             <div className="headline-right">
                 <div className="marquee-container">
                     <Marquee>
-                        {LoadingSpinner.map((s, i) => (
-                            <a key={s.id} href="#">
-                                {s.title}
-                            </a>
+                        {posts.map((post) => (
+                            <span
+                                key={post.id}
+                                className="headline-link"
+                                onClick={() => handleNavigate(post.id)}
+                            >
+                                {post.title}
+                            </span>
                         ))}
                     </Marquee>
                 </div>

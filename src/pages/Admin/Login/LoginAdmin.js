@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import './LoginAdmin.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
@@ -7,42 +8,36 @@ function LoginAdmin() {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
 
-    // Giả lập hàm xác thực người dùng (từ API)
-    const authenticateUser = async (username, password) => {
-        // Đây là ví dụ mô phỏng API
-        // Bạn sẽ thay thế nó bằng gọi API thực tế để lấy dữ liệu người dùng
-        const users = [
-            { username: 'john_doe', password: '1234', role: 'admin' },
-            { username: 'member_user', password: '5678', role: 'member' },
-            { username: 'regular_user', password: 'abcd', role: 'user' },
-        ];
-
-        // Tìm người dùng trong mảng giả lập
-        const user = users.find(
-            (u) => u.username === username && u.password === password,
-        );
-        return user;
-    };
-
     const handleLogin = async () => {
-        const user = await authenticateUser(username, password);
+        setIsLoading(true); // Bắt đầu trạng thái loading
+        try {
+            const response = await axios.post(
+                'http://127.0.0.1:8000/api/association/dang-nhap',
+                {
+                    user_name: username,
+                    password: password,
+                },
+            );
 
-        if (user) {
-            // Lưu thông tin người dùng vào localStorage hoặc context nếu cần thiết
-            localStorage.setItem('userRole', user.role);
+            setIsLoading(false); // Kết thúc trạng thái loading
 
-            // Chuyển hướng theo vai trò
-            if (user.role === 'admin') {
-                navigate('/admin-dashboard');
-            } else if (user.role === 'member') {
-                navigate('/member-dashboard');
+            if (response.data.status) {
+                // Lưu token và thông tin người dùng
+                localStorage.setItem('token', response.data.token);
+                localStorage.setItem('user_name', response.data.user_name);
+
+                // Chuyển hướng đến trang admin-dashboard
+                navigate('/dashboardadmin');
             } else {
-                navigate('/');
+                setErrorMessage(response.data.message); // Hiển thị lỗi từ backend
             }
-        } else {
-            setErrorMessage('Invalid username or password');
+        } catch (error) {
+            setIsLoading(false); // Kết thúc trạng thái loading
+            setErrorMessage('Đã xảy ra lỗi. Vui lòng thử lại.'); // Lỗi kết nối
+            console.error(error);
         }
     };
 
@@ -72,7 +67,7 @@ function LoginAdmin() {
                             </div>
 
                             {/* Form */}
-                            <form action="#">
+                            <form>
                                 <div className="input-group mb-3">
                                     <span className="input-group-text">
                                         <i className="bx bx-user"></i>
@@ -110,8 +105,9 @@ function LoginAdmin() {
                                     type="button"
                                     className="btn btn-primary btn-lg w-100 mb-3"
                                     onClick={handleLogin}
+                                    disabled={isLoading}
                                 >
-                                    Login
+                                    {isLoading ? 'Loading...' : 'Login'}
                                 </button>
                             </form>
                             {/* Form */}

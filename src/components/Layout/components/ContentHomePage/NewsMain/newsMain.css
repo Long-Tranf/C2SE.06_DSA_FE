@@ -4,6 +4,7 @@
     margin-bottom: 30px;
     background-color: #fff;
     padding: 16px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
 .innerNewMain:first-child {
@@ -32,14 +33,18 @@
 
 .innerNewMain .headingNewMain {
     font-size: 20px;
-    font-weight: 700;
+    font-weight: 600;
 }
 
 .heading-link {
     font-size: 20px;
     font-weight: 700;
     text-decoration: none;
-    color: #333;
+    color: var(--title-color);
+}
+
+.heading-link:hover {
+    color: var(--title-hover-color);
 }
 
 .innerNewMain:first-child .headingNewMain:first-child {
@@ -65,16 +70,14 @@
     -webkit-line-clamp: 4;
     overflow: hidden;
     -webkit-box-orient: vertical;
-}
-
-.innerNewMain:first-child .descNewMain {
-    font-size: 16px;
+    font-weight: 400;
 }
 
 .meta {
     display: flex;
-    gap: 10px; /* Khoảng cách giữa các icon */
+    gap: 10px;
     margin: 10px 0;
+    color: #888;
 }
 
 .meta span {
@@ -83,5 +86,5 @@
 }
 
 .meta i {
-    margin-right: 5px; /* Khoảng cách giữa icon và text */
+    margin-right: 5px;
 }

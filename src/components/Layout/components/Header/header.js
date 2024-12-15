@@ -19,15 +19,14 @@ import { Link } from 'react-router-dom';
 
 function Header() {
     const [curr, setCurr] = useState(moment());
-    const [user, setUser] = useState(null); // Lưu thông tin người dùng
+    const [user, setUser] = useState(null);
     const [notifications, setNotifications] = useState([]);
     const [categories, setCategories] = useState([]);
     const formattedDate = curr.format('DD MMMM YYYY HH:mm:ss');
 
     useEffect(() => {
-        // Kiểm tra token và lấy thông tin người dùng
         async function fetchUserData() {
-            const token = localStorage.getItem('accessToken'); // Lấy token từ localStorage
+            const token = localStorage.getItem('accessToken');
 
             if (!token) {
                 setUser(null);
@@ -43,16 +42,29 @@ function Header() {
                         },
                     },
                 );
-                setUser(response.data.user); // Lưu thông tin người dùng vào state
+
+                setUser(response.data.user);
+
+                const eventsResponse = await axios.get(
+                    'http://127.0.0.1:8000/api/Events/data',
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        },
+                    },
+                );
+
+                const eventsData = eventsResponse.data.events;
+
+                setNotifications(eventsData);
             } catch (error) {
                 console.error('Token không hợp lệ hoặc lỗi hệ thống:', error);
-                setUser(null); // Token không hợp lệ
+                setUser(null);
             }
         }
 
         fetchUserData();
 
-        // Fetch danh mục từ API
         axios
             .get('http://127.0.0.1:8000/api/Categories/data')
             .then((response) => {
@@ -78,15 +90,6 @@ function Header() {
                 console.error('Error fetching categories:', error),
             );
 
-        // Simulate thông báo
-        const postNotifications = [
-            'Hội viên 1 đã đăng bài viết "Tiêu đề bài viết 1"',
-            'Hội viên 2 đã đăng bài viết "Tiêu đề bài viết 2"',
-            'Hội viên 3 đã đăng bài viết "Tiêu đề bài viết 3"',
-        ];
-        setNotifications(postNotifications);
-
-        // Update thời gian hiện tại mỗi giây
         const time = setInterval(() => {
             setCurr(moment());
         }, 1000);
@@ -129,7 +132,7 @@ function Header() {
                                 }
                                 interactive={true}
                                 placement="bottom-start"
-                                offset={[20, 10]}
+                                offset={[-70, 10]}
                                 delay={[0, 200]}
                                 theme="light"
                             >
@@ -146,7 +149,24 @@ function Header() {
                                         <ul>
                                             {notifications.map(
                                                 (notif, index) => (
-                                                    <li key={index}>{notif}</li>
+                                                    <li
+                                                        key={index}
+                                                        className="notif-item"
+                                                    >
+                                                        <Link
+                                                            to={`/event/${
+                                                                index + 1
+                                                            }`}
+                                                            className="notification-link"
+                                                        >
+                                                            {`${notif.association.registrant_name} đã đăng sự kiện "${notif.title}"`}
+                                                        </Link>
+                                                        <span className="notification-date">
+                                                            {new Date(
+                                                                notif.created_at,
+                                                            ).toLocaleDateString()}
+                                                        </span>
+                                                    </li>
                                                 ),
                                             )}
                                         </ul>

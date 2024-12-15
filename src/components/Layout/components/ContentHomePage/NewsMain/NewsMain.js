@@ -21,7 +21,22 @@ const NewsMain = () => {
         return <div>Loading...</div>;
     }
 
-    const { title, image, created_at, updated_at, content } = post;
+    const { title, image, created_at, content } = post;
+
+    const removeImagesFromContent = (content) => {
+        const tempDiv = document.createElement('div');
+        tempDiv.innerHTML = content;
+        const images = tempDiv.querySelectorAll('img');
+        images.forEach((img) => img.remove()); // Loại bỏ ảnh
+        return tempDiv.innerHTML; // Trả ra HTML không có ảnh
+    };
+
+    const truncateText = (text, length = 100) => {
+        if (text.length > length) {
+            return text.substring(0, length) + '...'; // Cắt văn bản và thêm "..."
+        }
+        return text;
+    };
 
     return (
         <div className="innerNewMain">
@@ -30,7 +45,7 @@ const NewsMain = () => {
             </div>
             <div className="boxNewsMain">
                 <h3 className="headingNewMain">
-                    <Link to="/newdetail" className="heading-link">
+                    <Link to={`/post/${post.id}`} className="heading-link">
                         {title}
                     </Link>
                 </h3>
@@ -41,15 +56,19 @@ const NewsMain = () => {
                     </span>
                     <span>
                         <i className="fas fa-clock"></i>{' '}
-                        {new Date(updated_at).toLocaleTimeString()}
+                        {new Date(created_at).toLocaleTimeString()}
                     </span>
                     <span>
-                        <i className="fas fa-eye"></i> {1000}
+                        <i className="fas fa-eye"></i> {post.view}
                     </span>
                 </div>
                 <p
                     className="descNewMain"
-                    dangerouslySetInnerHTML={{ __html: content }}
+                    dangerouslySetInnerHTML={{
+                        __html: removeImagesFromContent(
+                            truncateText(content, 350),
+                        ),
+                    }}
                 />
             </div>
         </div>

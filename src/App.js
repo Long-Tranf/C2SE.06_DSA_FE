@@ -7,8 +7,7 @@ import {
 import { publicRoutes, privateRoutes } from '~/routes';
 
 function App() {
-    // Kiểm tra xem người dùng đã đăng nhập hay chưa
-    const isAuthenticated = !!localStorage.getItem('accessToken'); // Token trong localStorage (hoặc đổi sang state/context nếu cần)
+    const isAuthenticated = !!localStorage.getItem('accessToken');
 
     return (
         <Router>

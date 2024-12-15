@@ -127,7 +127,7 @@ function Search() {
                 {currentResults.map((result) => (
                     <div
                         key={result.id}
-                        className={`${styles.dFlex} ${styles.searchPost} py-2`}
+                        className={`${styles.dFlex} ${styles.searchPost}`}
                     >
                         <img
                             src={result.image}

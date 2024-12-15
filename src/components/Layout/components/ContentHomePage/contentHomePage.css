@@ -1,5 +1,5 @@
 .contentHomePage {
-    margin: 14px 0;
+    margin: 14px 0 0;
     background-color: #f6f6f6;
 }
 
@@ -22,6 +22,6 @@
     display: flex;
     flex-wrap: wrap;
     height: min-content;
-    gap: 10px;
+    gap: 8px;
     width: 20%;
 }

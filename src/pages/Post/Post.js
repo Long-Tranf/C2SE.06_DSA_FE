@@ -4,34 +4,41 @@ import Header from '~/components/Layout/components/Header/header';
 import Footer from '~/components/Layout/components/Footer/footer';
 import Breadcrumb from '~/components/Layout/components/Breadcrumb/Breadcumb';
 import NewSidebar from '~/components/Layout/components/ContentHomePage/NewSidebar/NewSidebar';
+import { useParams } from 'react-router-dom'; // Import useParams để lấy params từ URL
 
 const Post = () => {
+    const { postId } = useParams(); // Lấy ID bài viết từ URL
     const [post, setPost] = useState(null); // State lưu dữ liệu bài viết
-    const categoryName = 'Bài viết';
-    const breadcrumbItems = [
-        { name: 'Home', link: '/' },
-        { name: 'Category', link: '/category' },
-        { name: categoryName, active: true },
-    ];
 
     // Lấy bài viết từ API
     useEffect(() => {
         const fetchPost = async () => {
             try {
-                const response = await fetch('http://localhost:5000/posts/1');
+                const response = await fetch(
+                    `http://127.0.0.1:8000/api/Post/data/${postId}`,
+                );
                 const data = await response.json();
-                setPost(data); // Cập nhật dữ liệu vào state
+                setPost(data.post);
             } catch (error) {
                 console.error('Lỗi khi tải bài viết:', error);
             }
         };
 
         fetchPost();
-    }, []); // Chạy 1 lần khi component render
+    }, [postId]);
 
     if (!post) {
-        return <div>Loading...</div>; // Nếu dữ liệu chưa được tải về, hiển thị loading
+        return <div>Loading...</div>;
     }
+
+    const breadcrumbItems = [
+        { name: 'Home', link: '/' },
+        {
+            name: post.category.category_name,
+            link: `/category/${post.category.category_id}`,
+        },
+        { name: post.title, active: true },
+    ];
 
     return (
         <div className="wrapper">
@@ -42,16 +49,25 @@ const Post = () => {
             <div className="content-container">
                 <div className="post-content">
                     <h1>{post.title}</h1>
-                    <div className="post-meta">
-                        <span>
-                            <i className="fa fa-calendar"></i> 12/12/2024
-                        </span>
-                        <span>
-                            <i className="fa fa-eye"></i> 500 lượt xem
-                        </span>
+                    <div className="meta-list">
+                        <div className="meta-info">
+                            <i className="fas fa-calendar-alt meta-info-icon"></i>
+                            <p>
+                                {new Date(post.created_at).toLocaleDateString()}
+                            </p>
+                        </div>
+                        <div className="meta-info">
+                            <i className="fas fa-clock meta-info-icon"></i>
+                            <p>
+                                {new Date(post.created_at).toLocaleTimeString()}
+                            </p>
+                        </div>
+                        <div className="meta-info">
+                            <i className="fas fa-eye meta-info-icon"></i>
+                            <p>{post.view}</p>
+                        </div>
                     </div>
                     <div className="post-body">
-                        {/* Sử dụng dangerouslySetInnerHTML để render nội dung HTML */}
                         <div
                             className="content-output"
                             dangerouslySetInnerHTML={{ __html: post.content }}
@@ -60,7 +76,7 @@ const Post = () => {
                     <div className="author">
                         <p>
                             <strong>Tác giả: </strong>
-                            {post.author}
+                            {post.association.registrant_name}
                         </p>
                     </div>
                     <div className="related-posts-news">
@@ -82,7 +98,10 @@ const Post = () => {
                     </div>
                 </div>
                 <div className="sidebar-post">
-                    <NewSidebar />
+                    <NewSidebar
+                        title="Bài Viết Mới nhất"
+                        apiUrl="http://127.0.0.1:8000/api/posts/latest/14"
+                    />
                 </div>
             </div>
             <Footer />

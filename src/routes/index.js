@@ -42,7 +42,7 @@ const publicRoutes = [
         element: <CategoryDetail />,
     },
     {
-        path: '/post',
+        path: '/post/:postId',
         element: <Post />,
     },
     {

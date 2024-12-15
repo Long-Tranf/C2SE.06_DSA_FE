@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router-dom'; // Sử dụng useParams để lấy postId từ URL
+import { useNavigate, useParams } from 'react-router-dom';
 import ReactQuill from 'react-quill';
-import 'react-quill/dist/quill.snow.css'; // Thêm style cho quill editor
-import axios from 'axios'; // Import axios để gửi request
+import 'react-quill/dist/quill.snow.css';
+import axios from 'axios';
 import './AddPost.css';
 
 const modules = {
@@ -36,7 +36,7 @@ const formats = [
 ];
 
 function AddPost({ onBack }) {
-    const { postId } = useParams(); // Lấy postId từ URL
+    const { postId } = useParams(); // lấy postId từ url
     const [curentPost, setCurentPost] = useState(null);
     const navigate = useNavigate();
 
@@ -45,23 +45,22 @@ function AddPost({ onBack }) {
     const [postCategory, setPostCategory] = useState();
     const [postStatus, setPostStatus] = useState('');
     const [postAuthor, setPostAuthor] = useState();
+    const [idAuthor, setIdAuthor] = useState();
     const [postImage, setPostImage] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
-    const [categories, setCategories] = useState([]); // Thêm trạng thái lưu danh mục
-    const [isFetchingCategories, setIsFetchingCategories] = useState(true); // Thêm trạng thái loading danh mục
+    const [categories, setCategories] = useState([]);
+    const [isFetchingCategories, setIsFetchingCategories] = useState(true);
 
-    // Lấy danh mục con từ API
     useEffect(() => {
         axios
             .get('http://127.0.0.1:8000/api/Categories/data')
             .then((response) => {
                 const allCategories = response.data.categories;
-                // Lọc danh mục con (parent_category_id !== 0)
                 const childCategories = allCategories.filter(
                     (category) => category.parent_category_id !== 0,
                 );
                 setCategories(childCategories);
-                setIsFetchingCategories(false); // Đánh dấu tải danh mục đã hoàn thành
+                setIsFetchingCategories(false);
             })
             .catch((error) => {
                 console.error('Lỗi khi lấy danh mục:', error);
@@ -69,7 +68,6 @@ function AddPost({ onBack }) {
             });
     }, []);
 
-    // Lấy dữ liệu bài viết nếu có postId
     useEffect(() => {
         if (postId) {
             axios
@@ -80,7 +78,7 @@ function AddPost({ onBack }) {
                     setPostContent(post.content);
                     setPostCategory(post.category_id);
                     setPostStatus(post.is_open);
-                    setPostAuthor(post.member.full_name);
+                    setPostAuthor(post.association.registrant_name);
                     setPostImage(post.image);
                 })
                 .catch((error) => {
@@ -90,6 +88,15 @@ function AddPost({ onBack }) {
         } else {
         }
     }, [postId]);
+    useEffect(() => {
+        const fullName = localStorage.getItem('full_name');
+        const id = localStorage.getItem('id_user');
+        if (fullName) {
+            setPostAuthor(fullName);
+        } else {
+            console.warn('Không tìm thấy full_name trong localStorage');
+        }
+    }, []);
 
     const handlePostContentChange = (value) => {
         setPostContent(value);
@@ -113,16 +120,17 @@ function AddPost({ onBack }) {
                     content: postContent,
                     category_id: Number(postCategory),
                     is_open: Number(postStatus),
-                    member_id: 1,
+                    member_id: 5,
                     image: postImage,
                 });
             } else {
+                setPostAuthor(JSON.parse(localStorage.getItem('full_name')));
                 await axios.post(`http://127.0.0.1:8000/api/Post/create`, {
                     title: postTitle,
                     content: postContent,
                     category_id: Number(postCategory),
                     is_open: Number(postStatus),
-                    member_id: 1,
+                    member_id: localStorage.getItem('id'),
                     image: postImage,
                 });
             }
@@ -200,14 +208,7 @@ function AddPost({ onBack }) {
                 </div>
                 <div>
                     <label htmlFor="author">Tác giả</label>
-                    <input
-                        type="text"
-                        id="author"
-                        name="author"
-                        value={postAuthor}
-                        onChange={(e) => setPostAuthor(e.target.value)}
-                        placeholder="Nhập tên tác giả"
-                    />
+                    <label>{postAuthor}</label>
                 </div>
                 <div>
                     <label htmlFor="image">Chọn Hình Ảnh</label>

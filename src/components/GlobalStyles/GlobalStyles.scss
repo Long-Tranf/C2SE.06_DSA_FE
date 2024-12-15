@@ -4,7 +4,10 @@
     --black: #000;
     --white: #fff;
     --text-color: #333;
-    //Default layout
+    --title-color: #337ab7;
+    --title-hover-color: #23527c;
+    --notification-color: #f8312f;
+    --heading: #555555;
 }
 
 * {
@@ -51,7 +54,7 @@ input,
 }
 
 a[href] {
-    color: var(--text-color);
+    // color: var(--text-color);
     text-decoration: none;
 }
 

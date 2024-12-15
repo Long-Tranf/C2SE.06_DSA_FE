@@ -1,37 +1,60 @@
-import { Outlet } from 'react-router-dom'; // Import Outlet
-import { useEffect } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { useNavigate, Link, Outlet } from 'react-router-dom'; // Import Outlet
+import axios from 'axios'; // Import axios
 import logo from '~/assets/image/logoadmin.png';
 import './AdminDashboard.css';
 
 function AdminDashboard() {
-    const user = {
-        name: 'admin123',
-        isMaster: JSON.parse(localStorage.getItem('is_master')) || true, // Lấy giá trị `is_master` từ localStorage
-    };
-
+    const [user, setUser] = useState(null);
     const navigate = useNavigate();
 
     useEffect(() => {
-        // Thêm class 'no-padding' khi vào Dashboard
         document.body.classList.add('no-padding');
-
-        // Xóa class khi rời khỏi trang Dashboard (nếu cần)
         return () => {
             document.body.classList.remove('no-padding');
         };
     }, []);
 
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+        if (token) {
+            axios
+                .get('http://127.0.0.1:8000/api/kiem-tra-token-association', {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                })
+                .then((response) => {
+                    if (response.data.status) {
+                        setUser(response.data.user);
+                    }
+                })
+                .catch((error) => {
+                    console.error('Lỗi khi kiểm tra token:', error);
+                    navigate('/loginadmin');
+                });
+        } else {
+            navigate('/loginadmin');
+        }
+    }, [navigate]);
+    useEffect(() => {
+        if (user) {
+            localStorage.setItem('id_user', user.id);
+            localStorage.setItem('isMaster', user.is_master);
+            localStorage.setItem('full_name', user.registrant_name);
+        }
+    }, [user]);
+
     const handleLogout = () => {
-        // Xóa thông tin đăng nhập và chuyển hướng đến trang login
-        localStorage.removeItem('userRole');
-        localStorage.removeItem('userToken');
-        localStorage.removeItem('is_master');
+        localStorage.removeItem('full_name');
+        localStorage.removeItem('token');
+        localStorage.removeItem('isMaster');
+        localStorage.removeItem('id_user');
+        localStorage.removeItem('user_name');
         navigate('/loginadmin');
     };
 
-    // Sidebar menu tùy theo quyền
-    const sidebarMenu = user.isMaster
+    const sidebarMenu = user?.is_master
         ? [
               { path: '/dashboardadmin/user', label: 'User' },
               { path: '/dashboardadmin/association', label: 'Association' },
@@ -55,12 +78,23 @@ function AdminDashboard() {
                     <img className="logo-img" src={logo} alt="Logo" />
                 </div>
                 <div className="admin-info">
-                    <h4 className="admin-name">Xin Chào, {user.name}</h4>
-                    <img
-                        className="admin-avatar"
-                        src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ9z2IpZagy0I6RWL80m6dFmz60PsauqPR9Bw&s"
-                        alt="Avatar"
-                    />
+                    {user ? (
+                        <>
+                            <h4 className="admin-name">
+                                Xin Chào, {user.registrant_name}
+                            </h4>
+                            <img
+                                className="admin-avatar"
+                                src={
+                                    user.avatar ||
+                                    'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ9z2IpZagy0I6RWL80m6dFmz60PsauqPR9Bw&s'
+                                }
+                                alt="Avatar"
+                            />
+                        </>
+                    ) : (
+                        <h4>Loading...</h4> // Hiển thị "Loading..." nếu chưa có thông tin người dùng
+                    )}
                 </div>
             </div>
 
@@ -80,7 +114,7 @@ function AdminDashboard() {
 
                 <div className="content">
                     {/* Render route con */}
-                    <Outlet />
+                    <Outlet /> {/* Giữ lại Outlet để render route con */}
                 </div>
             </div>
         </div>

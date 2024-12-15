@@ -59,14 +59,14 @@
     align-items: center;
 }
 
-/* Style for the links inside Marquee */
-.marquee-container a {
+.marquee-container .headline-link {
     color: #333333;
     font-size: 16px;
     margin-right: 30px;
     text-decoration: none;
 }
 
-.marquee-container a:hover {
+.marquee-container .headline-link:hover {
     color: #fcbe21;
+    cursor: pointer;
 }

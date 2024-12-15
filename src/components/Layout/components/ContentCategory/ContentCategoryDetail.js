@@ -132,7 +132,7 @@ function ContentCategoryDetail() {
                                                             post.content,
                                                             350,
                                                         ),
-                                                    ), // Giới hạn độ dài và loại bỏ ảnh
+                                                    ),
                                                 }}
                                             ></p>
                                         </div>

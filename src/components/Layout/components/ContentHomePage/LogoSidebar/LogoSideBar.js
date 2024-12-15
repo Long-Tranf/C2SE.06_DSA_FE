@@ -1,12 +1,9 @@
-import "./logoSidebar.css";
+import './logoSidebar.css';
 
-const LogoSidebar = () => {
+const LogoSidebar = ({ avatar }) => {
     return (
         <div className="imgLogoSidebar">
-            <img
-                src="https://img.freepik.com/premium-vector/default-image-icon-vector-missing-picture-page-website-design-mobile-app-no-photo-available_87543-11093.jpg"
-                alt=""
-            />
+            <img src={avatar} alt="" />
         </div>
     );
 };
