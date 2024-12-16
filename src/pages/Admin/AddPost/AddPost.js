@@ -37,7 +37,7 @@ const formats = [
 
 function AddPost({ onBack }) {
     const { postId } = useParams(); // lấy postId từ url
-    const [curentPost, setCurentPost] = useState(null);
+    //const [curentPost, setCurentPost] = useState(null);
     const navigate = useNavigate();
 
     const [postTitle, setPostTitle] = useState('');
@@ -85,14 +85,14 @@ function AddPost({ onBack }) {
                     console.error('Có lỗi xảy ra khi lấy bài viết:', error);
                     alert('Không thể lấy dữ liệu bài viết. Vui lòng thử lại!');
                 });
-        } else {
         }
     }, [postId]);
     useEffect(() => {
         const fullName = localStorage.getItem('full_name');
         const id = localStorage.getItem('id_user');
-        if (fullName) {
+        if (fullName && id) {
             setPostAuthor(fullName);
+            setIdAuthor(id);
         } else {
             console.warn('Không tìm thấy full_name trong localStorage');
         }
@@ -106,11 +106,9 @@ function AddPost({ onBack }) {
         e.preventDefault();
         setIsLoading(true);
 
-        const url = postId
-            ? `http://127.0.0.1:8000/api/Post/update`
-            : `http://127.0.0.1:8000/api/Post/create`;
-
-        const method = postId ? `put` : `post`;
+        // const url = postId
+        //     ? `http://127.0.0.1:8000/api/Post/update`
+        //     : `http://127.0.0.1:8000/api/Post/create`;
 
         try {
             if (postId) {
@@ -124,14 +122,14 @@ function AddPost({ onBack }) {
                     image: postImage,
                 });
             } else {
-                setPostAuthor(JSON.parse(localStorage.getItem('full_name')));
                 await axios.post(`http://127.0.0.1:8000/api/Post/create`, {
                     title: postTitle,
                     content: postContent,
                     category_id: Number(postCategory),
                     is_open: Number(postStatus),
-                    member_id: localStorage.getItem('id'),
+                    member_id: JSON.parse(localStorage.getItem('id_user')),
                     image: postImage,
+                    view: 0,
                 });
             }
             navigate('/dashboardadmin/post');
@@ -141,7 +139,7 @@ function AddPost({ onBack }) {
         } finally {
             setIsLoading(false);
         }
-        setCurentPost(null);
+        //setCurentPost(null);
     };
 
     return (

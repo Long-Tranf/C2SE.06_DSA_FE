@@ -4,105 +4,103 @@
     margin-bottom: 20px;
 }
 
+.post-management {
+    padding: 20px;
+}
+
 .post-management-title {
     text-align: center;
     margin-bottom: 20px;
+    font-weight: 600;
+    font-size: 20px;
 }
 
-/* Nút Add New */
 .btn-add-new {
-    padding: 10px 15px; /* Kích thước nút */
-    font-size: 14px; /* Cỡ chữ */
-    border-radius: 4px; /* Bo góc */
-    background-color: #28a745; /* Màu xanh lá */
-    color: #fff; /* Màu chữ */
-    border: none; /* Xóa viền */
+    padding: 10px 15px;
+    font-size: 14px;
+    border-radius: 4px;
+    background-color: #28a745;
+    color: #fff;
+    border: none;
     cursor: pointer;
     transition: all 0.3s ease;
 }
 
 .btn-add-new:hover {
-    background-color: #218838; /* Màu khi hover */
+    background-color: #218838;
 }
 
-/* Bảng quản lý bài viết */
 .post-table {
-    width: 100%; /* Chiếm toàn bộ chiều ngang */
-    border-collapse: collapse; /* Xóa khoảng cách giữa các đường viền */
-    margin: 0 auto; /* Căn giữa */
-    text-align: left; /* Căn lề trái */
-    background-color: #fff; /* Màu nền */
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0 auto;
+    text-align: left;
+    background-color: #fff;
 }
 
 .post-table th,
 .post-table td {
-    border: 1px solid #dee2e6; /* Đường viền nhạt */
-    padding: 10px; /* Khoảng cách bên trong ô */
-    font-size: 14px; /* Cỡ chữ */
+    border: 1px solid #dee2e6;
+    padding: 10px;
+    font-size: 14px;
 }
 
 .post-table td.title-column {
-    max-width: 150px; /* Chiều ngang tối đa */
-    white-space: nowrap; /* Không cho xuống dòng */
-    overflow: hidden; /* Ẩn phần dư */
-    text-overflow: ellipsis; /* Hiển thị dấu "..." khi bị tràn */
+    max-width: 150px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .post-table th {
-    background-color: #f8f9fa; /* Nền header */
-    font-weight: bold; /* Chữ đậm */
-}
-
-.post-table tbody tr:nth-child(odd) {
-    background-color: #f2f2f2; /* Nền màu xám nhạt cho hàng lẻ */
+    background-color: #f8f9fa;
+    font-weight: bold;
 }
 
 .post-table tbody tr:hover {
-    background-color: #e9ecef; /* Màu nền khi hover */
+    background-color: #e9ecef;
 }
 
-/* Nút trạng thái */
 .status-btn {
-    padding: 5px 10px; /* Kích thước nút trạng thái */
-    font-size: 12px; /* Cỡ chữ nhỏ */
-    border-radius: 3px; /* Bo góc */
-    color: white; /* Màu chữ */
+    padding: 5px 10px;
+    font-size: 12px;
+    border-radius: 3px;
+    color: white;
     text-align: center;
 }
 
 .status-btn.open {
-    background-color: #28a745; /* Màu xanh lá cho trạng thái Active */
+    background-color: #28a745;
 }
 
 .status-btn.close {
-    background-color: #dc3545; /* Màu đỏ cho trạng thái Inactive */
+    background-color: #dc3545;
 }
 
-/* Các nút hành động (Chỉnh sửa, Xóa) */
 .btn {
-    padding: 5px 10px; /* Kích thước nút */
-    font-size: 12px; /* Cỡ chữ */
-    border-radius: 3px; /* Bo góc */
-    margin-right: 5px; /* Khoảng cách giữa các nút */
+    padding: 5px 10px;
+    font-size: 12px;
+    border-radius: 3px;
+    margin-right: 5px;
     cursor: pointer;
 }
 
 .btn-warning {
-    background-color: #ffc107; /* Màu vàng */
-    color: #000; /* Màu chữ đen */
-    border: none; /* Xóa viền */
+    background-color: #ffc107;
+    color: #000;
+    border: none;
 }
 
 .btn-warning:hover {
-    background-color: #e0a800; /* Màu vàng đậm hơn khi hover */
+    background-color: #e0a800;
 }
 
 .btn-danger {
-    background-color: #dc3545; /* Màu đỏ */
-    color: #fff; /* Màu chữ trắng */
-    border: none; /* Xóa viền */
+    background-color: #dc3545;
+    color: #fff;
+    border: none;
 }
 
 .btn-danger:hover {
-    background-color: #c82333; /* Màu đỏ đậm hơn khi hover */
+    background-color: #c82333;
 }

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import axios from 'axios';
 import './NewsLayout.css';
 
@@ -48,7 +49,12 @@ const NewsLayout = ({ apiUrl, title }) => {
                         height="128"
                     />
                     <div className="details">
-                        <h2>{posts[0].title}</h2>
+                        <Link
+                            to={`/post/${posts[0].id}`}
+                            className="heading-link"
+                        >
+                            {posts[0].title}
+                        </Link>
                         <div className="meta-list">
                             <div className="meta-info">
                                 <i className="fas fa-calendar-alt"></i>
@@ -81,9 +87,9 @@ const NewsLayout = ({ apiUrl, title }) => {
 
             <div className="news-layout-list">
                 {posts.slice(1).map((post) => (
-                    <a key={post.id} href={`#${post.id}`}>
+                    <Link key={post.id} to={`/post/${post.id}`}>
                         {post.title}
-                    </a>
+                    </Link>
                 ))}
             </div>
         </div>

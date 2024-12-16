@@ -7,54 +7,76 @@ import { useNavigate } from 'react-router-dom';
 import { Wrapper as PopperWrapper } from '~/components/Popper';
 import PostItem from '~/components/PostItem';
 import { SearchIcon } from '~/components/icons';
+import AssociationItem from '~/components/AssociationItem/AssociationItem';
 import styles from './Search.module.scss';
+import axios from 'axios';
 
 const cx = classNames.bind(styles);
 
 function Search() {
     const [searchValue, setSearchValue] = useState('');
     const [searchResult, setSearchResult] = useState([]);
+    const [associations, setAssociations] = useState([]);
     const [loading, setLoading] = useState(false);
 
     const inputRef = useRef();
-    const navigate = useNavigate(); // Hook để điều hướng
+    const navigate = useNavigate();
 
-    // Hàm gọi API tìm kiếm
     const fetchSearchResults = async (query) => {
         setLoading(true);
         try {
             const response = await fetch(
-                `http://127.0.0.1:8000/api/posts/search?q=${query}`,
+                `http://localhost:8000/api/posts/recommend?q=${query}`,
             );
             const data = await response.json();
-            setSearchResult(data); // Lưu kết quả tìm kiếm vào state
+            setSearchResult(data);
+            setLoading(false);
         } catch (error) {
             console.error('Error fetching search results:', error);
+            setLoading(false);
         }
-        setLoading(false);
+    };
+
+    const fetchAssociations = async (query) => {
+        try {
+            const response = await axios.get(
+                `http://localhost:8000/api/Associations/recommend?q=${query}`,
+            );
+            setAssociations(response.data);
+            setLoading(false);
+        } catch (error) {
+            console.error('Error fetching associations:', error);
+            setLoading(false);
+        }
     };
 
     useEffect(() => {
-        if (!searchValue.trim()) {
-            setSearchResult([]); // Nếu không có giá trị tìm kiếm thì không hiển thị kết quả
-            return;
+        if (searchValue.trim()) {
+            fetchSearchResults(searchValue);
+            fetchAssociations(searchValue);
+        } else {
+            setSearchResult([]);
+            setAssociations([]);
+            setLoading(false);
         }
-
-        fetchSearchResults(searchValue); // Gọi API mỗi khi searchValue thay đổi
-    }, [searchValue]); // Trigger khi searchValue thay đổi
+    }, [searchValue]);
 
     const handleClear = () => {
         setSearchValue('');
         setSearchResult([]);
+        setAssociations([]);
+        setLoading(false);
         inputRef.current.focus();
     };
 
     const handleSearchClick = () => {
         if (searchValue.trim()) {
-            // Điều hướng đến trang tìm kiếm
             navigate(`/search?query=${searchValue}`);
         }
     };
+
+    const hasPosts = searchResult.length > 0;
+    const hasAssociations = associations.length > 0;
 
     return (
         <HeadlessTippy
@@ -64,10 +86,27 @@ function Search() {
             render={(attrs) => (
                 <div className={cx('search-result')} tabIndex="-1" {...attrs}>
                     <PopperWrapper>
-                        <h4 className={cx('search-title')}>Results</h4>
-                        {searchResult.map((result) => (
-                            <PostItem key={result.id} data={result} />
-                        ))}
+                        {hasPosts && (
+                            <>
+                                <h4 className={cx('search-title')}>Posts</h4>
+                                {searchResult.map((result) => (
+                                    <PostItem key={result.id} data={result} />
+                                ))}
+                            </>
+                        )}
+                        {hasAssociations && (
+                            <>
+                                <h4 className={cx('search-title')}>
+                                    Associations
+                                </h4>
+                                {associations.map((association) => (
+                                    <AssociationItem
+                                        key={association.id}
+                                        data={association}
+                                    />
+                                ))}
+                            </>
+                        )}
                     </PopperWrapper>
                 </div>
             )}

@@ -64,6 +64,16 @@ function PostManagement() {
         }
     };
 
+    const [currentPage, setCurrentPage] = useState(1);
+    const eventsPerPage = 6;
+
+    const indexOfLastEvent = currentPage * eventsPerPage;
+    const indexOfFirstEvent = indexOfLastEvent - eventsPerPage;
+
+    const currentPosts = posts.slice(indexOfFirstEvent, indexOfLastEvent);
+
+    const totalPages = Math.ceil(posts.length / eventsPerPage);
+
     return (
         <div className="post-management">
             <h2 className="post-management-title">Quản lý Bài Viết</h2>
@@ -92,12 +102,12 @@ function PostManagement() {
                     </tr>
                 </thead>
                 <tbody>
-                    {posts.length === 0 ? (
+                    {currentPosts.length === 0 ? (
                         <tr>
                             <td colSpan="8">Không có bài viết nào</td>
                         </tr>
                     ) : (
-                        posts.map((post) => (
+                        currentPosts.map((post) => (
                             <tr key={post.id}>
                                 <td>{post.id}</td>
                                 <td className="title-column">{post.title}</td>
@@ -152,6 +162,53 @@ function PostManagement() {
                     )}
                 </tbody>
             </table>
+
+            <nav
+                aria-label="Page navigation example"
+                className="d-flex justify-content-center mt-3"
+            >
+                <ul className="pagination">
+                    <li
+                        className={`page-item ${
+                            currentPage === 1 && 'disabled'
+                        }`}
+                    >
+                        <button
+                            className="page-link"
+                            onClick={() => setCurrentPage((prev) => prev - 1)}
+                        >
+                            Previous
+                        </button>
+                    </li>
+                    {Array.from({ length: totalPages }, (_, index) => (
+                        <li
+                            key={index + 1}
+                            className={`page-item ${
+                                currentPage === index + 1 ? 'active' : ''
+                            }`}
+                        >
+                            <button
+                                className="page-link"
+                                onClick={() => setCurrentPage(index + 1)}
+                            >
+                                {index + 1}
+                            </button>
+                        </li>
+                    ))}
+                    <li
+                        className={`page-item ${
+                            currentPage === totalPages && 'disabled'
+                        }`}
+                    >
+                        <button
+                            className="page-link"
+                            onClick={() => setCurrentPage((prev) => prev + 1)}
+                        >
+                            Next
+                        </button>
+                    </li>
+                </ul>
+            </nav>
         </div>
     );
 }

@@ -1,12 +1,14 @@
 import { useEffect, useState } from 'react';
-import { useNavigate, Link, Outlet } from 'react-router-dom'; // Import Outlet
-import axios from 'axios'; // Import axios
+import { useNavigate, Link, Outlet } from 'react-router-dom';
+import axios from 'axios';
 import logo from '~/assets/image/logoadmin.png';
 import './AdminDashboard.css';
 
 function AdminDashboard() {
     const [user, setUser] = useState(null);
     const navigate = useNavigate();
+    // const id = localStorage.getItem('id_user');
+    // console.log(id);
 
     useEffect(() => {
         document.body.classList.add('no-padding');
@@ -56,7 +58,7 @@ function AdminDashboard() {
 
     const sidebarMenu = user?.is_master
         ? [
-              { path: '/dashboardadmin/user', label: 'User' },
+              { path: '/dashboardadmin/member', label: 'Member' },
               { path: '/dashboardadmin/association', label: 'Association' },
               { path: '/dashboardadmin/post', label: 'Post' },
               { path: '/dashboardadmin/category', label: 'Category' },
@@ -93,7 +95,7 @@ function AdminDashboard() {
                             />
                         </>
                     ) : (
-                        <h4>Loading...</h4> // Hiển thị "Loading..." nếu chưa có thông tin người dùng
+                        <h4>Loading...</h4>
                     )}
                 </div>
             </div>
@@ -113,8 +115,7 @@ function AdminDashboard() {
                 </div>
 
                 <div className="content">
-                    {/* Render route con */}
-                    <Outlet /> {/* Giữ lại Outlet để render route con */}
+                    <Outlet />
                 </div>
             </div>
         </div>

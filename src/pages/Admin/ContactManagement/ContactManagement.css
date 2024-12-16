@@ -1,4 +1,14 @@
-/* Cấu trúc bảng */
+.contact-management {
+    padding: 20px;
+}
+
+.contact-management h2 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 20px;
+    font-weight: 600;
+}
+
 .content-table {
     width: 100%;
     border-collapse: collapse;
@@ -13,27 +23,23 @@
     border: 1px solid #ddd;
 }
 
-/* Căn chỉnh tiêu đề bảng */
 .content-table th {
     background-color: #f4f4f4;
     font-weight: bold;
 }
 
-/* Các ô trong bảng với nội dung bị cắt nếu quá dài */
 .content-table td {
-    max-width: 200px; /* Đặt chiều rộng tối đa cho các ô */
-    white-space: nowrap; /* Nội dung sẽ không xuống dòng */
-    overflow: hidden; /* Ẩn phần vượt ra ngoài */
-    text-overflow: ellipsis; /* Hiển thị dấu ba chấm khi nội dung bị cắt */
+    max-width: 200px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
     padding: 10px;
 }
 
-/* Cấu hình chiều rộng cho cột tiêu đề */
 .content-table td.title {
     max-width: 300px;
 }
 
-/* Hiển thị trong modal cho nội dung dài */
 .modal-overlay {
     position: fixed;
     top: 0;
@@ -59,19 +65,17 @@
     font-size: 18px;
 }
 
-/* Textarea cho chỉnh sửa nội dung dài */
 .modal-content textarea {
     width: 100%;
-    height: 150px; /* Cho phép chỉnh sửa nội dung dài */
-    white-space: normal; /* Cho phép xuống dòng trong modal */
-    overflow-y: auto; /* Thêm thanh cuộn dọc nếu nội dung dài */
+    height: 150px;
+    white-space: normal;
+    overflow-y: auto;
     padding: 10px;
     font-size: 14px;
     border: 1px solid #ddd;
     border-radius: 4px;
 }
 
-/* Nút lưu thay đổi */
 .modal-content button {
     background-color: #4caf50;
     color: white;
@@ -87,7 +91,6 @@
     background-color: #45a049;
 }
 
-/* Cấu hình nút đóng (thường là ngoài modal) */
 .modal-overlay .close-btn {
     position: absolute;
     top: 20px;

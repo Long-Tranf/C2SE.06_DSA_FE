@@ -1,0 +1,22 @@
+.info {
+    color: var(--text-color);
+    padding: 6px 13px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block;
+}
+.wrapper {
+    display: block;
+    width: 100%;
+    overflow: hidden;
+}
+
+.title {
+    font-size: 1.6rem;
+    font-weight: 600;
+    color: var(--text-color);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}

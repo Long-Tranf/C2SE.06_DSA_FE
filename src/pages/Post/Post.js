@@ -4,13 +4,12 @@ import Header from '~/components/Layout/components/Header/header';
 import Footer from '~/components/Layout/components/Footer/footer';
 import Breadcrumb from '~/components/Layout/components/Breadcrumb/Breadcumb';
 import NewSidebar from '~/components/Layout/components/ContentHomePage/NewSidebar/NewSidebar';
-import { useParams } from 'react-router-dom'; // Import useParams để lấy params từ URL
+import { useParams } from 'react-router-dom';
 
 const Post = () => {
-    const { postId } = useParams(); // Lấy ID bài viết từ URL
-    const [post, setPost] = useState(null); // State lưu dữ liệu bài viết
+    const { postId } = useParams();
+    const [post, setPost] = useState(null);
 
-    // Lấy bài viết từ API
     useEffect(() => {
         const fetchPost = async () => {
             try {

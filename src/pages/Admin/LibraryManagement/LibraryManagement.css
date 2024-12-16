@@ -1,11 +1,13 @@
 .photo-library-management {
     max-width: 100%;
+    padding: 20px;
 }
 
 .photo-library-management h2 {
     text-align: center;
     color: #333;
     margin-bottom: 20px;
+    font-weight: 600;
 }
 
 .photo-library-management .btn {

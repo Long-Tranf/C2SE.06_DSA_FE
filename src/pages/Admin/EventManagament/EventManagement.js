@@ -1,42 +1,49 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import './EventManagement.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 function EventManagement() {
-    const [events, setEvents] = useState([
-        {
-            id: 1,
-            eventName: 'Event A',
-            memberName: 'Member A',
-            image: 'image-a.jpg',
-            content: 'Content of Event A',
-            startDate: '2024-12-01',
-            endDate: '2024-12-05',
-            status: true,
-        },
-        {
-            id: 2,
-            eventName: 'Event B',
-            memberName: 'Member B',
-            image: 'image-b.jpg',
-            content: 'Content of Event B',
-            startDate: '2024-12-10',
-            endDate: '2024-12-15',
-            status: false,
-        },
-    ]);
-
+    const [events, setEvents] = useState([]);
     const [showModal, setShowModal] = useState(false);
     const [currentEvent, setCurrentEvent] = useState(null);
     const [formData, setFormData] = useState({
-        eventName: '',
-        memberName: '',
+        title: '',
+        organizer_id: '',
+        association_name: '',
         image: '',
         content: '',
-        startDate: '',
-        endDate: '',
-        status: true,
+        event_date: '',
+        end_date: '',
+        location: '',
+        status: '',
     });
+
+    // Fetch events from API
+    useEffect(() => {
+        const fetchEvents = async () => {
+            try {
+                const response = await axios.get(
+                    'http://127.0.0.1:8000/api/Events/data',
+                );
+                const fetchedEvents = response.data.events.map((event) => ({
+                    id: event.id,
+                    title: event.title,
+                    organizer_id: event.association.id,
+                    association_name: event.association.registrant_name,
+                    image: event.image,
+                    content: event.content,
+                    event_date: event.event_date.split(' ')[0],
+                    end_date: event.end_date.split(' ')[0],
+                    status: event.status,
+                }));
+                setEvents(fetchedEvents);
+            } catch (error) {
+                console.error('Error fetching events:', error);
+            }
+        };
+        fetchEvents();
+    }, []);
 
     const openEditModal = (event) => {
         setCurrentEvent(event);
@@ -47,13 +54,15 @@ function EventManagement() {
     const openAddModal = () => {
         setCurrentEvent(null);
         setFormData({
-            eventName: '',
-            memberName: '',
+            title: '',
+            organizer_id: Number(localStorage.getItem('id_user')),
+            association_name: localStorage.getItem('full_name'),
             image: '',
             content: '',
-            startDate: '',
-            endDate: '',
-            status: true,
+            event_date: '',
+            end_date: '',
+            location: 'sssssss',
+            status: 'pending',
         });
         setShowModal(true);
     };
@@ -68,7 +77,7 @@ function EventManagement() {
         if (name === 'status') {
             setFormData((prevState) => ({
                 ...prevState,
-                [name]: value === 'true',
+                [name]: value === 'active' ? 'active' : 'inactive',
             }));
         } else {
             setFormData((prevState) => ({
@@ -77,53 +86,69 @@ function EventManagement() {
             }));
         }
     };
+
     const handleFileChange = (e) => {
-        const file = e.target.files[0]; // Lấy file đã chọn
+        const file = e.target.files[0];
         if (file) {
-            const imageUrl = URL.createObjectURL(file); // Tạo URL tạm
+            const imageUrl = URL.createObjectURL(file);
             setFormData((prevState) => ({
                 ...prevState,
-                image: imageUrl, // Lưu URL vào formData
+                image: imageUrl,
             }));
         }
     };
 
-    const handleUpdateEvent = () => {
-        setEvents(
-            events.map((event) =>
-                event.id === currentEvent.id
-                    ? { ...event, ...formData }
-                    : event,
-            ),
-        );
-        closeModal();
+    const handleUpdateEvent = async () => {
+        try {
+            const response = await axios.put(
+                'http://127.0.0.1:8000/api/Events/update',
+                formData,
+            );
+            setEvents(
+                events.map((event) =>
+                    event.id === currentEvent.id
+                        ? { ...event, ...formData }
+                        : event,
+                ),
+            );
+            closeModal();
+        } catch (error) {
+            console.error('Error updating event:', error);
+        }
     };
 
-    const handleAddEvent = () => {
-        const newEvent = {
-            id: events.length + 1,
-            ...formData,
-        };
-        setEvents([...events, newEvent]);
-        closeModal();
+    const handleAddEvent = async () => {
+        try {
+            const response = await axios.post(
+                'http://127.0.0.1:8000/api/Events/create',
+                formData,
+            );
+            const newEvent = { ...formData, id: response.data.id };
+            setEvents([...events, newEvent]);
+            closeModal();
+        } catch (error) {
+            console.error('Error adding event:', error);
+        }
     };
 
-    const handleDeleteEvent = (id) => {
-        const newEvents = events.filter((event) => event.id !== id);
-        setEvents(newEvents);
+    const handleDeleteEvent = async (id) => {
+        try {
+            await axios.delete(`http://127.0.0.1:8000/api/Events/delete${id}`);
+            setEvents(events.filter((event) => event.id !== id));
+        } catch (error) {
+            console.error('Error deleting event:', error);
+        }
     };
 
     const [currentPage, setCurrentPage] = useState(1);
     const eventsPerPage = 6;
+
     const indexOfLastEvent = currentPage * eventsPerPage;
     const indexOfFirstEvent = indexOfLastEvent - eventsPerPage;
-    const currentEvents = events.slice(indexOfFirstEvent, indexOfLastEvent);
-    const totalPages = Math.ceil(events.length / eventsPerPage);
 
-    const handlePageChange = (page) => {
-        if (page < 1 || page > totalPages) return;
-        setCurrentPage(page);
-    };
+    const currentEvents = events.slice(indexOfFirstEvent, indexOfLastEvent);
+
+    const totalPages = Math.ceil(events.length / eventsPerPage);
 
     return (
         <div className="event-management">
@@ -133,7 +158,7 @@ function EventManagement() {
                 className="btn btn-success mb-3"
                 style={{ float: 'right' }}
             >
-                Add New
+                Thêm Mới Sự Kiện
             </button>
             <table className="event-table">
                 <thead>
@@ -153,20 +178,22 @@ function EventManagement() {
                     {currentEvents.map((event) => (
                         <tr key={event.id}>
                             <td>{event.id}</td>
-                            <td className="title-column">{event.eventName}</td>
-                            <td>{event.memberName}</td>
+                            <td className="title-column">{event.title}</td>
+                            <td>{event.association_name}</td>
                             <td>
                                 <img
                                     src={event.image}
-                                    alt={event.eventName}
+                                    alt={event.title}
                                     width="50"
                                 />
                             </td>
                             <td>{event.content}</td>
-                            <td>{event.startDate}</td>
-                            <td>{event.endDate}</td>
+                            <td>{event.event_date}</td>
+                            <td>{event.end_date}</td>
                             <td>
-                                {event.status ? 'Hoạt động' : 'Không hoạt động'}
+                                {event.status === 'active'
+                                    ? 'Hoạt động'
+                                    : 'Không hoạt động'}
                             </td>
                             <td>
                                 <button
@@ -200,7 +227,7 @@ function EventManagement() {
                     >
                         <button
                             className="page-link"
-                            onClick={() => handlePageChange(currentPage - 1)}
+                            onClick={() => setCurrentPage((prev) => prev - 1)}
                         >
                             Previous
                         </button>
@@ -214,7 +241,7 @@ function EventManagement() {
                         >
                             <button
                                 className="page-link"
-                                onClick={() => handlePageChange(index + 1)}
+                                onClick={() => setCurrentPage(index + 1)}
                             >
                                 {index + 1}
                             </button>
@@ -227,7 +254,7 @@ function EventManagement() {
                     >
                         <button
                             className="page-link"
-                            onClick={() => handlePageChange(currentPage + 1)}
+                            onClick={() => setCurrentPage((prev) => prev + 1)}
                         >
                             Next
                         </button>
@@ -235,7 +262,7 @@ function EventManagement() {
                 </ul>
             </nav>
 
-            {/* Modal chỉnh sửa */}
+            {/* Modal */}
             {showModal && (
                 <div className="modal-overlay" onClick={closeModal}>
                     <div
@@ -252,20 +279,14 @@ function EventManagement() {
                             <input
                                 type="text"
                                 className="form-control"
-                                name="eventName"
-                                value={formData.eventName}
+                                name="title"
+                                value={formData.title}
                                 onChange={handleInputChange}
                             />
                         </div>
                         <div className="form-group">
                             <label>Tên hội viên</label>
-                            <input
-                                type="text"
-                                className="form-control"
-                                name="memberName"
-                                value={formData.memberName}
-                                onChange={handleInputChange}
-                            />
+                            <label>{formData.association_name}</label>
                         </div>
                         <div className="form-group">
                             <label>Hình ảnh</label>
@@ -278,7 +299,6 @@ function EventManagement() {
                             />
                         </div>
 
-                        {/* Hiển thị hình ảnh nếu có */}
                         {formData.image && (
                             <div className="form-group mt-2">
                                 <img
@@ -298,15 +318,15 @@ function EventManagement() {
                                 name="content"
                                 value={formData.content}
                                 onChange={handleInputChange}
-                            ></textarea>
+                            />
                         </div>
                         <div className="form-group">
                             <label>Ngày bắt đầu</label>
                             <input
                                 type="date"
                                 className="form-control"
-                                name="startDate"
-                                value={formData.startDate}
+                                name="event_date"
+                                value={formData.event_date}
                                 onChange={handleInputChange}
                             />
                         </div>
@@ -315,8 +335,18 @@ function EventManagement() {
                             <input
                                 type="date"
                                 className="form-control"
-                                name="endDate"
-                                value={formData.endDate}
+                                name="end_date"
+                                value={formData.end_date}
+                                onChange={handleInputChange}
+                            />
+                        </div>
+                        <div className="form-group">
+                            <label>Địa điểm</label>
+                            <input
+                                type="text"
+                                className="form-control"
+                                name="location"
+                                value={formData.location}
                                 onChange={handleInputChange}
                             />
                         </div>
@@ -328,12 +358,15 @@ function EventManagement() {
                                 value={formData.status}
                                 onChange={handleInputChange}
                             >
-                                <option value={true}>Hoạt động</option>
-                                <option value={false}>Không hoạt động</option>
+                                <option value="active">Hoạt động</option>
+                                <option value="inactive">
+                                    Không hoạt động
+                                </option>
                             </select>
                         </div>
-                        <div className="modal-actions">
+                        <div className="form-group">
                             <button
+                                type="button"
                                 onClick={
                                     currentEvent
                                         ? handleUpdateEvent
@@ -344,10 +377,11 @@ function EventManagement() {
                                 {currentEvent ? 'Cập nhật' : 'Thêm mới'}
                             </button>
                             <button
+                                type="button"
                                 onClick={closeModal}
                                 className="btn btn-secondary ml-2"
                             >
-                                Hủy
+                                Đóng
                             </button>
                         </div>
                     </div>

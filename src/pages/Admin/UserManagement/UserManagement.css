@@ -1,11 +1,13 @@
 .user-management {
-    background-color: #f8f9fa;
+    padding: 20px;
     border-radius: 8px;
 }
 
 .user-management-title {
     text-align: center;
     margin-bottom: 20px;
+    font-size: 20px;
+    font-weight: 600;
 }
 
 .user-table {

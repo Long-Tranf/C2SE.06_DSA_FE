@@ -1,23 +1,23 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import axios from 'axios';
 import './newSidebar.css';
 
 const NewSidebar = ({ title, apiUrl }) => {
     const [posts, setPosts] = useState([]);
 
-    // Gọi API khi component được mount
     useEffect(() => {
         const fetchPosts = async () => {
             try {
                 const response = await axios.get(apiUrl);
-                setPosts(response.data); // Lưu dữ liệu vào state
+                setPosts(response.data);
             } catch (error) {
                 console.error('Error fetching posts:', error);
             }
         };
 
         fetchPosts();
-    }, [apiUrl]); // Chạy lại nếu apiUrl thay đổi
+    }, [apiUrl]);
 
     const removeImagesFromContent = (content) => {
         const tempDiv = document.createElement('div');
@@ -43,13 +43,15 @@ const NewSidebar = ({ title, apiUrl }) => {
                     <div className="image">
                         <img src={posts[0].image} alt="" />
                     </div>
-                    <h5 className="title">{posts[0].title}</h5>
+                    <Link to={`/post/${posts[0].id}`} className="title">
+                        {posts[0].title}
+                    </Link>
                     <p
                         className="desc"
                         dangerouslySetInnerHTML={{
                             __html: removeImagesFromContent(
                                 truncateText(posts[0].content, 200),
-                            ), // Giới hạn độ dài và loại bỏ ảnh
+                            ),
                         }}
                     ></p>
                 </div>
@@ -58,13 +60,13 @@ const NewSidebar = ({ title, apiUrl }) => {
             <div className="related-posts">
                 {posts.slice(1).map((post, index) => (
                     <div key={post.id} className="related-post">
-                        <a
-                            href={`/post/${post.id}`}
+                        <Link
+                            to={`/post/${post.id}`}
                             className="related-post-link"
                             dangerouslySetInnerHTML={{
-                                __html: truncateText(post.title, 50), // Giới hạn độ dài và loại bỏ ảnh
+                                __html: truncateText(post.title, 50),
                             }}
-                        ></a>
+                        ></Link>
                     </div>
                 ))}
             </div>

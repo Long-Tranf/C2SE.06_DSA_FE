@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
-import Breadcrumb from '~/components/Layout/components/Breadcrumb/Breadcumb'; // Sửa lỗi chính tả
+import { useParams, Link } from 'react-router-dom';
+import Breadcrumb from '~/components/Layout/components/Breadcrumb/Breadcumb';
 import './ContentCategoryDetail.css';
 
 function ContentCategoryDetail() {
-    const { categoryId } = useParams(); // Lấy categoryId từ URL
+    const { categoryId } = useParams();
     const [categoryName, setCategoryName] = useState('');
     const [parentCategoryName, setParentCategoryName] = useState('');
     const [subCategories, setSubCategories] = useState([]);
@@ -14,7 +14,7 @@ function ContentCategoryDetail() {
         { name: categoryName, active: true },
     ];
 
-    const [posts, setPosts] = useState([]); // Bài viết
+    const [posts, setPosts] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [postsPerPage] = useState(5);
 
@@ -24,7 +24,6 @@ function ContentCategoryDetail() {
     const totalPages = Math.ceil(posts.length / postsPerPage);
 
     useEffect(() => {
-        // Fetch category thông tin
         const fetchCategory = async () => {
             const categoryResponse = await fetch(
                 `http://127.0.0.1:8000/api/categories/${categoryId}`,
@@ -50,7 +49,6 @@ function ContentCategoryDetail() {
             setSubCategories(subCategoryData.child_categories);
         };
 
-        // Fetch bài viết cho categoryId
         const fetchPosts = async () => {
             const response = await fetch(
                 `http://127.0.0.1:8000/api/categories/${categoryId}/posts`,
@@ -61,19 +59,19 @@ function ContentCategoryDetail() {
 
         fetchCategory();
         fetchPosts();
-    }, [categoryId]); // Dependency array là categoryId để fetch lại khi categoryId thay đổi
+    }, [categoryId]);
 
     const removeImagesFromContent = (content) => {
         const tempDiv = document.createElement('div');
         tempDiv.innerHTML = content;
         const images = tempDiv.querySelectorAll('img');
-        images.forEach((img) => img.remove()); // Loại bỏ ảnh
-        return tempDiv.innerHTML; // Trả ra HTML không có ảnh
+        images.forEach((img) => img.remove());
+        return tempDiv.innerHTML;
     };
 
     const truncateText = (text, length = 100) => {
         if (text.length > length) {
-            return text.substring(0, length) + '...'; // Cắt văn bản và thêm "..."
+            return text.substring(0, length) + '...';
         }
         return text;
     };
@@ -108,7 +106,7 @@ function ContentCategoryDetail() {
                     <div className="posts-list">
                         {currentPosts.map(
                             (post) =>
-                                post.is_open === 1 && ( // Kiểm tra điều kiện is_open
+                                post.is_open === 1 && (
                                     <div
                                         key={post.id}
                                         className="post-item d-flex"
@@ -121,9 +119,12 @@ function ContentCategoryDetail() {
                                             />
                                         </div>
                                         <div className="post-details">
-                                            <h5 className="category-post-title">
+                                            <Link
+                                                to={`/post/${post.id}`}
+                                                className="category-post-title"
+                                            >
                                                 {post.title}
-                                            </h5>
+                                            </Link>
                                             <p
                                                 className="category-post-content"
                                                 dangerouslySetInnerHTML={{

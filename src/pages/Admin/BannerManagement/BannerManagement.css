@@ -1,11 +1,13 @@
 .banner-management {
     max-width: 100%;
+    padding: 20px;
 }
 
 .banner-management h2 {
     text-align: center;
     color: #333;
     margin-bottom: 20px;
+    font-weight: 600;
 }
 
 .banner-management .btn {

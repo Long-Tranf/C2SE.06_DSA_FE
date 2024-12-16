@@ -135,13 +135,13 @@ function UserManagement() {
 
     return (
         <div className="user-management">
-            <h2 className="user-management-title">Quản lý User</h2>
+            <h2 className="user-management-title">Quản lý Member</h2>
             <button
                 onClick={openAddModal}
                 className="btn btn-success mb-3"
                 style={{ float: 'right' }}
             >
-                Add New
+                Thêm Mới Member
             </button>
             <table className="user-table">
                 <thead>

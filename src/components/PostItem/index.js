@@ -6,7 +6,7 @@ const cx = classNames.bind(styles);
 
 function PostItem({ data }) {
     return (
-        <Link to={`/@${data.title}`} className={cx('wrapper')}>
+        <Link to={`/post/${data.id}`} className={cx('wrapper')}>
             <div className={cx('info')}>
                 <h4 className={cx('title')}>{data.title}</h4>
             </div>

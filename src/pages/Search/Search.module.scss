@@ -15,7 +15,6 @@
     margin-top: 20px;
 }
 
-/* styles.scss */
 .searchButton {
     background-color: var(--primary);
     color: white;
@@ -83,10 +82,24 @@
     font-size: 20px;
     font-weight: 700;
     color: var(--title-color);
+    display: block;
 }
 
 .searchDescriptionPost {
     font-size: 16px;
     margin-top: 20px;
     font-weight: 300;
+}
+
+.infoPost {
+    display: flex;
+    margin-top: 40px;
+}
+
+.searchInfoIcon {
+    margin: auto 0;
+}
+
+.searchInfoView {
+    margin: 0;
 }

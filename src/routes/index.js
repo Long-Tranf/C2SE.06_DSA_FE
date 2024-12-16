@@ -14,12 +14,11 @@ import PostManagement from '~/pages/Admin/PostManagement/PostManagement';
 import AddPost from '~/pages/Admin/AddPost/AddPost';
 import CategoryManagement from '~/pages/Admin/CategoryManagement/CategoryManagement';
 import AssociationManagement from '~/pages/Admin/AssociationManagement/AssociationManagement';
-import ContantManagement from '~/pages/Admin/ContantManagement/ContantManagement';
+import ContantManagement from '~/pages/Admin/ContactManagement/ContactManagement';
 import LibraryManagement from '~/pages/Admin/LibraryManagement/LibraryManagement';
 import EventManagement from '~/pages/Admin/EventManagament/EventManagement';
 import BannerManagement from '~/pages/Admin/BannerManagement/BannerManagement';
 
-// Public routes
 const publicRoutes = [
     {
         path: '/',
@@ -50,10 +49,28 @@ const publicRoutes = [
         element: <LoginAdmin />,
     },
     {
+        path: '/association/:id',
+        element: <GroupProfile />,
+    },
+    {
+        path: '/library',
+        element: <Library />,
+    },
+];
+
+const privateRoutes = [
+    {
+        path: '/profile',
+        element: <Profile />,
+    },
+];
+
+const privateRoutesAdmin = [
+    {
         path: '/dashboardadmin',
         element: <AdminDashboard />,
         children: [
-            { path: 'user', element: <UserManagement /> },
+            { path: 'member', element: <UserManagement /> },
             { path: 'association', element: <AssociationManagement /> },
             { path: 'post', element: <PostManagement /> },
             { path: 'post/add', element: <AddPost /> },
@@ -68,22 +85,6 @@ const publicRoutes = [
             { path: 'event', element: <EventManagement /> },
         ],
     },
-    {
-        path: '/association',
-        element: <GroupProfile />,
-    },
-    {
-        path: '/library',
-        element: <Library />,
-    },
 ];
 
-// Private routes
-const privateRoutes = [
-    {
-        path: '/profile',
-        element: <Profile />,
-    },
-];
-
-export { publicRoutes, privateRoutes };
+export { publicRoutes, privateRoutes, privateRoutesAdmin };

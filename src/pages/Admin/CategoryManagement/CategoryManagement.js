@@ -13,8 +13,8 @@ function CategoryManagement() {
         isOpen: true,
     });
 
-    const [currentPage, setCurrentPage] = useState(1);
     const [isLoading, setIsLoading] = useState(false);
+    const [currentPage, setCurrentPage] = useState(1);
     const categoriesPerPage = 6;
 
     useEffect(() => {
@@ -131,7 +131,6 @@ function CategoryManagement() {
         }
     };
 
-    // Phân trang
     const indexOfLastCategory = currentPage * categoriesPerPage;
     const indexOfFirstCategory = indexOfLastCategory - categoriesPerPage;
     const currentCategories = categories.slice(

@@ -29,6 +29,7 @@
     font-weight: 600;
     color: var(--title-color);
     margin: 10px 0 10px 14px;
+    display: block;
 }
 
 .innerNewSidebar .title:hover {

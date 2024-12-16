@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom'; // Import useNavigate
+import { useLocation, Link } from 'react-router-dom';
 import Header from '~/components/Layout/components/Header/header';
 import Footer from '~/components/Layout/components/Footer/footer';
-import styles from './Search.module.scss'; // Import CSS module
+import styles from './Search.module.scss';
 
 function Search() {
     const [searchResults, setSearchResults] = useState([]);
-    const [currentPage, setCurrentPage] = useState(1); // Trang hiện tại
-    const [sortOption, setSortOption] = useState('newest'); // Tùy chọn sắp xếp
+    const [currentPage, setCurrentPage] = useState(1);
+    const [sortOption, setSortOption] = useState('newest');
     const resultsPerPage = 5;
 
     const location = useLocation();
@@ -26,7 +26,7 @@ function Search() {
                 `http://127.0.0.1:8000/api/posts/search?q=${query}`,
             );
             const data = await response.json();
-            setSearchResults(data); // Lưu kết quả vào state
+            setSearchResults(data);
         } catch (error) {
             console.error('Error fetching search results:', error);
         }
@@ -34,7 +34,7 @@ function Search() {
 
     const handleSortChange = (option) => {
         setSortOption(option);
-        setCurrentPage(1); // Reset trang về 1 khi thay đổi sắp xếp
+        setCurrentPage(1);
     };
 
     const sortedResults = [...searchResults].sort((a, b) => {
@@ -43,7 +43,7 @@ function Search() {
         } else if (sortOption === 'mostRelevant') {
             return a.title.localeCompare(b.title);
         } else if (sortOption === 'oldest') {
-            return new Date(a.created_at) - new Date(b.created_at); // So sánh để sắp xếp theo cũ nhất
+            return new Date(a.created_at) - new Date(b.created_at);
         }
         return 0;
     });
@@ -59,13 +59,13 @@ function Search() {
         const tempDiv = document.createElement('div');
         tempDiv.innerHTML = content;
         const images = tempDiv.querySelectorAll('img');
-        images.forEach((img) => img.remove()); // Loại bỏ ảnh
-        return tempDiv.innerHTML; // Trả ra HTML không có ảnh
+        images.forEach((img) => img.remove());
+        return tempDiv.innerHTML;
     };
 
     const truncateText = (text, length = 100) => {
         if (text.length > length) {
-            return text.substring(0, length) + '...'; // Cắt văn bản và thêm "..."
+            return text.substring(0, length) + '...';
         }
         return text;
     };
@@ -135,18 +135,28 @@ function Search() {
                             className={styles.searchItemImage}
                         />
                         <div className={styles.searchItemContent}>
-                            <h5 className={styles.searchTitlePost}>
+                            <Link
+                                to={`/post/${result.id}`}
+                                className={styles.searchTitlePost}
+                            >
                                 {result.title}
-                            </h5>
-                            {/* Render nội dung với dangerouslySetInnerHTML */}
+                            </Link>
                             <div
                                 className={styles.searchDescriptionPost}
                                 dangerouslySetInnerHTML={{
                                     __html: removeImagesFromContent(
-                                        truncateText(result.content, 350),
-                                    ), // Giới hạn độ dài và loại bỏ ảnh
+                                        truncateText(result.content, 600),
+                                    ),
                                 }}
                             />
+                            <div className={styles.infoPost}>
+                                <i
+                                    className={`fas fa-eye ${styles.searchInfoIcon}`}
+                                ></i>
+                                <p className={styles.searchInfoView}>
+                                    {result.view}
+                                </p>
+                            </div>
                         </div>
                     </div>
                 ))}

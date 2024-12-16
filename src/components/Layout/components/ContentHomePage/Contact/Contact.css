@@ -1,7 +1,8 @@
 .contact {
-    margin: 40px -5px 0;
+    margin: 40px -4px 0;
     background-color: #fff;
     padding: 40px 0 80px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
 .contact .innerContact {

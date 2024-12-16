@@ -12,7 +12,7 @@ function LoginAdmin() {
     const navigate = useNavigate();
 
     const handleLogin = async () => {
-        setIsLoading(true); // Bắt đầu trạng thái loading
+        setIsLoading(true);
         try {
             const response = await axios.post(
                 'http://127.0.0.1:8000/api/association/dang-nhap',
@@ -22,21 +22,18 @@ function LoginAdmin() {
                 },
             );
 
-            setIsLoading(false); // Kết thúc trạng thái loading
+            setIsLoading(false);
 
             if (response.data.status) {
-                // Lưu token và thông tin người dùng
                 localStorage.setItem('token', response.data.token);
                 localStorage.setItem('user_name', response.data.user_name);
-
-                // Chuyển hướng đến trang admin-dashboard
                 navigate('/dashboardadmin');
             } else {
-                setErrorMessage(response.data.message); // Hiển thị lỗi từ backend
+                setErrorMessage(response.data.message);
             }
         } catch (error) {
-            setIsLoading(false); // Kết thúc trạng thái loading
-            setErrorMessage('Đã xảy ra lỗi. Vui lòng thử lại.'); // Lỗi kết nối
+            setIsLoading(false);
+            setErrorMessage('Đã xảy ra lỗi. Vui lòng thử lại.');
             console.error(error);
         }
     };
