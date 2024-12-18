@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import Header from '~/components/Layout/components/Header/header';
 import Footer from '~/components/Layout/components/Footer/footer';
 import './GroupProfile.css';
@@ -8,6 +8,7 @@ import './GroupProfile.css';
 const GroupProfile = () => {
     const { id } = useParams();
     const [association, setAssociation] = useState(null);
+    const [posts, setPosts] = useState([]);
 
     useEffect(() => {
         axios
@@ -17,6 +18,20 @@ const GroupProfile = () => {
             })
             .catch((error) => {
                 console.error('Có lỗi khi gọi API:', error);
+            });
+
+        axios
+            .get(`http://127.0.0.1:8000/api/posts/member/${id}`)
+            .then((response) => {
+                console.log(response);
+                setPosts(response.data.posts);
+                console.log(posts);
+            })
+            .catch((error) => {
+                console.log(
+                    'Có lỗi khi gọi API bài viết theo Association:',
+                    error,
+                );
             });
     }, [id]);
 
@@ -68,28 +83,30 @@ const GroupProfile = () => {
                     </div>
                 </div>
                 <div className="row mt-4 flex-column align-items-center">
-                    {articles.map((article) => (
-                        <a
-                            href={article.url}
-                            key={article.id}
+                    {posts.map((post) => (
+                        <div
+                            key={post.id}
                             className="col-md-8 mb-4 article-link"
                         >
                             <div className="card flex-row">
                                 <img
-                                    src={article.thumbnail}
+                                    src={post.image}
                                     className="card-img-left img-fluid col-4"
-                                    alt={article.title}
+                                    alt={post.title}
                                 />
                                 <div className="col-8 p-3">
-                                    <h5 className="card-title">
-                                        {article.title}
-                                    </h5>
+                                    <Link
+                                        to={`/post/${post.id}`}
+                                        className="card-title"
+                                    >
+                                        {post.title}
+                                    </Link>
                                     <p className="card-text">
-                                        {article.description}
+                                        {post.description}
                                     </p>
                                 </div>
                             </div>
-                        </a>
+                        </div>
                     ))}
                 </div>
             </div>
@@ -97,33 +114,5 @@ const GroupProfile = () => {
         </div>
     );
 };
-
-const articles = [
-    {
-        id: 1,
-        title: 'Article Title 1',
-        description:
-            'A brief description of Article 1.A brief description of Article 1.A brief description of Article 1.A brief description of Article 1.A brief description of Article 1.A brief description of Article 1.A brief description of Article 1.A brief description of Article 1.A brief description of Article 1.A brief description of Article 1.',
-        thumbnail:
-            'https://hoinhabaobacgiang.vn/Includes/NewsImg/1_2024/29736_7-1-1626444923.jpg',
-        url: '',
-    },
-    {
-        id: 2,
-        title: 'Article Title 2',
-        description: 'A brief description of Article 2.',
-        thumbnail:
-            'https://hoinhabaobacgiang.vn/Includes/NewsImg/1_2024/29736_7-1-1626444923.jpg',
-        url: '',
-    },
-    {
-        id: 3,
-        title: 'Article Title 3',
-        description: 'A brief description of Article 3.',
-        thumbnail:
-            'https://hoinhabaobacgiang.vn/Includes/NewsImg/1_2024/29736_7-1-1626444923.jpg',
-        url: '',
-    },
-];
 
 export default GroupProfile;

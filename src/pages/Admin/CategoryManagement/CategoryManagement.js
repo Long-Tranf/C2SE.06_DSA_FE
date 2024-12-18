@@ -7,6 +7,8 @@ function CategoryManagement() {
     const [categories, setCategories] = useState([]);
     const [showModal, setShowModal] = useState(false);
     const [currentCategory, setCurrentCategory] = useState(null);
+    const [errors, setErrors] = useState({});
+
     const [formData, setFormData] = useState({
         name: '',
         parentId: null,
@@ -21,7 +23,6 @@ function CategoryManagement() {
         fetchCategories();
     }, []);
 
-    // Lấy danh sách danh mục
     const fetchCategories = async () => {
         setIsLoading(true);
         try {
@@ -87,7 +88,6 @@ function CategoryManagement() {
                     is_open: formData.isOpen ? 1 : 0,
                 });
             } else {
-                // Add new category
                 await axios.post(
                     'http://127.0.0.1:8000/api/Categories/create',
                     {
@@ -104,11 +104,12 @@ function CategoryManagement() {
                 `Lỗi khi ${currentCategory ? 'cập nhật' : 'thêm'} danh mục:`,
                 error,
             );
-            alert(
-                `Không thể ${
-                    currentCategory ? 'cập nhật' : 'thêm'
-                } danh mục. Vui lòng thử lại!`,
-            );
+            if (error.response && error.response.data) {
+                setErrors(error.response.data.errors);
+                console.log(errors);
+            } else {
+                alert('Không thể lưu bài viết. Vui lòng thử lại!');
+            }
         } finally {
             setIsLoading(false);
         }
@@ -263,6 +264,11 @@ function CategoryManagement() {
                                 value={formData.name}
                                 onChange={handleInputChange}
                             />
+                            {errors.category_name && (
+                                <p className="error-message">
+                                    {errors.category_name[0]}
+                                </p>
+                            )}
                         </div>
                         <div className="form-group">
                             <label>Danh mục cha</label>

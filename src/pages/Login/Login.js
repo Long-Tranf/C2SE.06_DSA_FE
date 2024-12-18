@@ -1,8 +1,10 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import './Login.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import axios from 'axios';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faHome } from '@fortawesome/free-solid-svg-icons';
 
 function Login() {
     const [username, setUsername] = useState('');
@@ -57,6 +59,12 @@ function Login() {
 
                 {/* Right */}
                 <div className="col-lg-6">
+                    <Link to={`/`} className="home-navigate">
+                        <FontAwesomeIcon
+                            icon={faHome}
+                            className="home-navigate-icon"
+                        />
+                    </Link>
                     <div className="row align-items-center justify-content-center h-100 g-0 px-4 px-sm-0">
                         <div className="col col-sm-6 col-lg-7 col-xl-6">
                             <div className="text-center mb-5">
@@ -115,9 +123,9 @@ function Login() {
                             <div className="text-center">
                                 <small>
                                     Don't have an account?{' '}
-                                    <a href="#" className="fw-bold">
+                                    <Link to={`/signup`} className="fw-bold">
                                         Sign Up
-                                    </a>
+                                    </Link>
                                 </small>
                             </div>
                         </div>

@@ -1,60 +1,71 @@
-body{
-  font-family: "Nunito Sans", sans-serif;
-  background-color: #fff;
+body {
+    font-family: 'Nunito Sans', sans-serif;
+    background-color: #fff;
 }
 
-.fp{
-  text-decoration: none;
+.home-navigate {
+    position: absolute;
+    right: 0;
+    padding: 14px;
+}
+
+.home-navigate-icon {
+    color: #333;
+    font-size: 20px;
+}
+
+.fp {
+    text-decoration: none;
 }
 
 .fp:hover {
-  text-decoration: underline;
+    text-decoration: underline;
 }
 
-.btn{
-  font-size: 0.8rem;
-  font-weight: 700;
+.btn {
+    font-size: 0.8rem;
+    font-weight: 700;
 }
 
 /* .btn i{
   vertical-align: text-top;
 } */
 
-.btn-online-custom{
-  color:#31374a;
-  border-color: #ddd;
+.btn-online-custom {
+    color: #31374a;
+    border-color: #ddd;
 }
 
-.btn-online-custom:hover{
-  color:#31374a;
-  border-color: #eee;
-  background-color: #eee;
+.btn-online-custom:hover {
+    color: #31374a;
+    border-color: #eee;
+    background-color: #eee;
 }
 
-.bg-holder{
-  position: absolute;
-  width: 100%;
-  min-height: 100%;
-  top: 0;
-  left: -8px;
-  background-size: conver;
-  background-position: center;
-  background-repeat: no-repeat;
+.bg-holder {
+    position: absolute;
+    width: 100%;
+    min-height: 100%;
+    top: 0;
+    left: -8px;
+    background-size: conver;
+    background-position: center;
+    background-repeat: no-repeat;
 }
 
-.divider-content-center{
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  padding-left: 0.5rem;
-  padding-right: 0.5rem;
-  background-color: #fff;
-  font-size: 0.8rem;
-  font-weight: 500;
-  color: #999;
+.divider-content-center {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+    background-color: #fff;
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: #999;
 }
 
-.divider{
-  margin: 2rem 0;
+.divider {
+    margin: 2rem 0;
 }

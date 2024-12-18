@@ -18,6 +18,8 @@ import ContantManagement from '~/pages/Admin/ContactManagement/ContactManagement
 import LibraryManagement from '~/pages/Admin/LibraryManagement/LibraryManagement';
 import EventManagement from '~/pages/Admin/EventManagament/EventManagement';
 import BannerManagement from '~/pages/Admin/BannerManagement/BannerManagement';
+import Statistic from '~/pages/Admin/Statistics/Statistics';
+import AssociationProfile from '~/pages/Admin/AssociationProfile/AssociationProfile';
 
 const publicRoutes = [
     {
@@ -70,6 +72,7 @@ const privateRoutesAdmin = [
         path: '/dashboardadmin',
         element: <AdminDashboard />,
         children: [
+            { path: 'statistic', element: <Statistic /> },
             { path: 'member', element: <UserManagement /> },
             { path: 'association', element: <AssociationManagement /> },
             { path: 'post', element: <PostManagement /> },
@@ -78,6 +81,7 @@ const privateRoutesAdmin = [
                 path: '/dashboardadmin/post/edit/:postId',
                 element: <AddPost />,
             },
+            { path: 'AssociationProfile', element: <AssociationProfile /> },
             { path: 'category', element: <CategoryManagement /> },
             { path: 'library', element: <LibraryManagement /> },
             { path: 'contact', element: <ContantManagement /> },

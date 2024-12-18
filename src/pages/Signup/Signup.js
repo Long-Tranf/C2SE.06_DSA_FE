@@ -2,13 +2,17 @@ import './Login.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import axios from 'axios';
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faHome } from '@fortawesome/free-solid-svg-icons';
 
 function Signup() {
     const [formData, setFormData] = useState({
         user_name: '',
         password: '',
         avatar: 'http://example.com/avatar.jpg',
-        full_name: 'Nguyen Van A',
+        full_name: '',
+        address: '',
         subscriber_email: '',
         phone: '',
         is_open: true,
@@ -34,6 +38,7 @@ function Signup() {
                     password: formData.password,
                     avatar: formData.avatar,
                     full_name: formData.full_name,
+                    address: formData.address,
                     subscriber_email: formData.subscriber_email,
                     phone_number: formData.phone,
                     is_open: formData.is_open,
@@ -41,6 +46,7 @@ function Signup() {
             );
 
             alert(response.data.message);
+            window.location.href = '/login';
         } catch (error) {
             if (error.response && error.response.data.errors) {
                 setErrors(error.response.data.errors);
@@ -66,6 +72,12 @@ function Signup() {
 
                 {/* right */}
                 <div className="col-lg-6">
+                    <Link to={`/`} className="home-navigate">
+                        <FontAwesomeIcon
+                            icon={faHome}
+                            className="home-navigate-icon"
+                        />
+                    </Link>
                     <div className="row align-items-center justify-content-center h-100 g-0 px-4 px-sm-0">
                         <div className="col col-sm-6 col-lg-7 col-xl-6">
                             <div className="text-center mb-5">
@@ -77,6 +89,27 @@ function Signup() {
 
                             {/* form */}
                             <form onSubmit={handleSubmit}>
+                                <div className="input-group mb-3">
+                                    <span className="input-group-text">
+                                        <i className="bx bx-user-circle"></i>
+                                    </span>
+                                    <input
+                                        type="text"
+                                        className={`form-control form-control-lg fs-6 ${
+                                            errors.full_name ? 'is-invalid' : ''
+                                        }`}
+                                        placeholder="Full Name"
+                                        name="full_name"
+                                        value={formData.full_name}
+                                        onChange={handleInputChange}
+                                    />
+                                    {errors.full_name && (
+                                        <div className="invalid-feedback">
+                                            {errors.full_name[0]}
+                                        </div>
+                                    )}
+                                </div>
+
                                 <div className="input-group mb-3">
                                     <span className="input-group-text">
                                         <i className="bx bx-user"></i>
@@ -126,7 +159,7 @@ function Signup() {
                                         <i className="bx bx-phone"></i>
                                     </span>
                                     <input
-                                        type="number"
+                                        type="text"
                                         className={`form-control form-control-lg fs-6 ${
                                             errors.phone_number
                                                 ? 'is-invalid'
@@ -140,6 +173,27 @@ function Signup() {
                                     {errors.phone_number && (
                                         <div className="invalid-feedback">
                                             {errors.phone_number[0]}
+                                        </div>
+                                    )}
+                                </div>
+
+                                <div className="input-group mb-3">
+                                    <span className="input-group-text">
+                                        <i className="bx bx-map"></i>
+                                    </span>
+                                    <input
+                                        type="text"
+                                        className={`form-control form-control-lg fs-6 ${
+                                            errors.address ? 'is-invalid' : ''
+                                        }`}
+                                        placeholder="Address"
+                                        name="address"
+                                        value={formData.address}
+                                        onChange={handleInputChange}
+                                    />
+                                    {errors.address && (
+                                        <div className="invalid-feedback">
+                                            {errors.address[0]}
                                         </div>
                                     )}
                                 </div>
@@ -191,9 +245,9 @@ function Signup() {
                             <div className="text-center">
                                 <small>
                                     You have an account?{' '}
-                                    <a href="#" className="fw-bold">
+                                    <Link to={`/login`} className="fw-bold">
                                         Login
-                                    </a>
+                                    </Link>
                                 </small>
                             </div>
                         </div>

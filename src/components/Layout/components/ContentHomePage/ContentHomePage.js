@@ -11,7 +11,6 @@ const ContentHomePage = () => {
     const [avatars, setAvatars] = useState([]);
 
     useEffect(() => {
-        // Gọi API lấy danh sách avatars
         axios
             .get('http://127.0.0.1:8000/api/associations/avatars')
             .then((response) => {

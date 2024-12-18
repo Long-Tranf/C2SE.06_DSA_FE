@@ -7,18 +7,20 @@ function UserManagement() {
     const [users, setUsers] = useState([]);
     const [showModal, setShowModal] = useState(false);
     const [currentUser, setCurrentUser] = useState(null);
+    const [errors, setErrors] = useState({});
+
     const [formData, setFormData] = useState({
         user_name: '',
+        password: '',
         full_name: '',
-        email: '',
-        phone: '',
+        subscriber_email: '',
+        phone_number: '',
         address: '',
         avatar: '',
         is_open: 1,
     });
 
     useEffect(() => {
-        // Fetching users from API
         axios
             .get('http://127.0.0.1:8000/api/member/data')
             .then((response) => {
@@ -33,9 +35,10 @@ function UserManagement() {
         setCurrentUser(user);
         setFormData({
             user_name: user.user_name,
+            password: user.password,
             full_name: user.full_name,
-            email: user.subscriber_email,
-            phone: user.phone_number,
+            subscriber_email: user.subscriber_email,
+            phone_number: user.phone_number,
             address: user.address,
             avatar: user.avatar,
             is_open: user.is_open,
@@ -47,9 +50,10 @@ function UserManagement() {
         setCurrentUser(null);
         setFormData({
             user_name: '',
+            password: '',
             full_name: '',
-            email: '',
-            phone: '',
+            subscriber_email: '',
+            phone_number: '',
             address: '',
             avatar: '',
             is_open: 1,
@@ -77,6 +81,17 @@ function UserManagement() {
         }
     };
 
+    const handleFileChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            const imageUrl = URL.createObjectURL(file);
+            setFormData((prevState) => ({
+                ...prevState,
+                avatar: imageUrl,
+            }));
+        }
+    };
+
     const handleUpdateUser = () => {
         axios
             .put('http://127.0.0.1:8000/api/member/update', {
@@ -98,16 +113,23 @@ function UserManagement() {
             });
     };
 
-    const handleAddUser = () => {
-        axios
-            .post('http://127.0.0.1:8000/api/member/create', formData)
-            .then((response) => {
-                setUsers([...users, response.data]);
-                closeModal();
-            })
-            .catch((error) => {
-                console.error('Error adding user:', error);
-            });
+    const handleAddUser = async () => {
+        try {
+            const response = await axios.post(
+                'http://127.0.0.1:8000/api/member/create',
+                formData,
+            );
+            setUsers([...users, response.data]);
+            closeModal();
+        } catch (error) {
+            console.error('Có lỗi xảy ra khi thêm người dùng:', error);
+            if (error.response && error.response.data) {
+                setErrors(error.response.data.errors);
+                console.log(errors);
+            } else {
+                alert('Không thể thêm người dùng. Vui lòng thử lại!');
+            }
+        }
     };
 
     const handleDeleteUser = (id) => {
@@ -122,7 +144,7 @@ function UserManagement() {
     };
 
     const [currentPage, setCurrentPage] = useState(1);
-    const usersPerPage = 6;
+    const usersPerPage = 4;
     const indexOfLastUser = currentPage * usersPerPage;
     const indexOfFirstUser = indexOfLastUser - usersPerPage;
     const currentUsers = users.slice(indexOfFirstUser, indexOfLastUser);
@@ -261,6 +283,26 @@ function UserManagement() {
                                 value={formData.user_name}
                                 onChange={handleInputChange}
                             />
+                            {errors.user_name && (
+                                <p className="error-message">
+                                    {errors.user_name[0]}
+                                </p>
+                            )}
+                        </div>
+                        <div className="form-group">
+                            <label>Mật Khẩu</label>
+                            <input
+                                type="text"
+                                className="form-control"
+                                name="password"
+                                value={formData.password}
+                                onChange={handleInputChange}
+                            />
+                            {errors.password && (
+                                <p className="error-message">
+                                    {errors.password[0]}
+                                </p>
+                            )}
                         </div>
                         <div className="form-group">
                             <label>Họ và tên</label>
@@ -271,26 +313,41 @@ function UserManagement() {
                                 value={formData.full_name}
                                 onChange={handleInputChange}
                             />
+                            {errors.full_name && (
+                                <p className="error-message">
+                                    {errors.full_name[0]}
+                                </p>
+                            )}
                         </div>
                         <div className="form-group">
                             <label>Email</label>
                             <input
                                 type="email"
                                 className="form-control"
-                                name="email"
-                                value={formData.email}
+                                name="subscriber_email"
+                                value={formData.subscriber_email}
                                 onChange={handleInputChange}
                             />
+                            {errors.subscriber_email && (
+                                <p className="error-message">
+                                    {errors.subscriber_email[0]}
+                                </p>
+                            )}
                         </div>
                         <div className="form-group">
                             <label>Số điện thoại</label>
                             <input
                                 type="text"
                                 className="form-control"
-                                name="phone"
-                                value={formData.phone}
+                                name="phone_number"
+                                value={formData.phone_number}
                                 onChange={handleInputChange}
                             />
+                            {errors.phone_number && (
+                                <p className="error-message">
+                                    {errors.phone_number[0]}
+                                </p>
+                            )}
                         </div>
                         <div className="form-group">
                             <label>Địa chỉ</label>
@@ -301,15 +358,19 @@ function UserManagement() {
                                 value={formData.address}
                                 onChange={handleInputChange}
                             />
+                            {errors.address && (
+                                <p className="error-message">
+                                    {errors.address[0]}
+                                </p>
+                            )}
                         </div>
                         <div className="form-group">
-                            <label>Avatar (URL)</label>
+                            <label>Avatar</label>
                             <input
-                                type="text"
+                                type="file"
                                 className="form-control"
                                 name="avatar"
-                                value={formData.avatar}
-                                onChange={handleInputChange}
+                                onChange={handleFileChange}
                             />
                         </div>
                         <div className="form-group">

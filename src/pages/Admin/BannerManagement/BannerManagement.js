@@ -8,12 +8,11 @@ function BannerManagement() {
     const [showModal, setShowModal] = useState(false);
     const [currentBanner, setCurrentBanner] = useState(null);
     const [formData, setFormData] = useState({
-        priority: 0, // Mặc định là 0
-        is_open: 1, // Sử dụng 1 thay vì true
-        image: '', // Hình ảnh chỉ là URL
+        priority: 0,
+        is_open: 1,
+        image: '',
     });
 
-    // Fetch dữ liệu từ API
     useEffect(() => {
         fetchBanners();
     }, []);
@@ -62,16 +61,25 @@ function BannerManagement() {
         }));
     };
 
+    const handleFileChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            const imageUrl = URL.createObjectURL(file);
+            setFormData((prevState) => ({
+                ...prevState,
+                image: imageUrl,
+            }));
+        }
+    };
+
     const handleSave = async () => {
         if (currentBanner) {
-            // Cập nhật banner
             try {
                 await axios.put(
                     'http://127.0.0.1:8000/api/ConfigBanners/update',
                     {
                         id: currentBanner.id,
                         ...formData,
-                        is_open: formData.is_open,
                     },
                 );
                 fetchBanners();
@@ -80,14 +88,10 @@ function BannerManagement() {
                 console.error('Error updating banner:', error);
             }
         } else {
-            // Tạo mới banner
             try {
                 await axios.post(
                     'http://127.0.0.1:8000/api/ConfigBanners/create',
-                    {
-                        ...formData,
-                        is_open: formData.is_open,
-                    },
+                    formData,
                 );
                 fetchBanners();
                 closeModal();
@@ -217,7 +221,6 @@ function BannerManagement() {
                 </ul>
             </nav>
 
-            {/* Modal */}
             {showModal && (
                 <div className="modal-overlay" onClick={closeModal}>
                     <div
@@ -264,6 +267,26 @@ function BannerManagement() {
                                 name="image"
                                 value={formData.image}
                                 onChange={handleInputChange}
+                            />
+                            {formData.image && (
+                                <div className="mt-2">
+                                    <img
+                                        src={formData.image}
+                                        alt="uploaded"
+                                        style={{
+                                            width: '50px',
+                                            height: '50px',
+                                        }}
+                                    />
+                                </div>
+                            )}
+                        </div>
+                        <div className="form-group">
+                            <label>Hình ảnh (Tải lên từ máy tính)</label>
+                            <input
+                                type="file"
+                                className="form-control"
+                                onChange={handleFileChange}
                             />
                             {formData.image && (
                                 <div className="mt-2">

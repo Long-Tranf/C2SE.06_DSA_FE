@@ -7,6 +7,8 @@ function EventManagement() {
     const [events, setEvents] = useState([]);
     const [showModal, setShowModal] = useState(false);
     const [currentEvent, setCurrentEvent] = useState(null);
+    const [errors, setErrors] = useState({});
+
     const [formData, setFormData] = useState({
         title: '',
         organizer_id: '',
@@ -19,29 +21,56 @@ function EventManagement() {
         status: '',
     });
 
-    // Fetch events from API
     useEffect(() => {
         const fetchEvents = async () => {
             try {
-                const response = await axios.get(
-                    'http://127.0.0.1:8000/api/Events/data',
-                );
-                const fetchedEvents = response.data.events.map((event) => ({
-                    id: event.id,
-                    title: event.title,
-                    organizer_id: event.association.id,
-                    association_name: event.association.registrant_name,
-                    image: event.image,
-                    content: event.content,
-                    event_date: event.event_date.split(' ')[0],
-                    end_date: event.end_date.split(' ')[0],
-                    status: event.status,
-                }));
-                setEvents(fetchedEvents);
+                const isMaster = JSON.parse(localStorage.getItem('isMaster'));
+
+                let apiUrl = '';
+
+                if (isMaster === 0) {
+                    const memberId = JSON.parse(
+                        localStorage.getItem('id_user'),
+                    );
+                    apiUrl = `http://127.0.0.1:8000/api/events/organizer/${memberId}`;
+                } else if (isMaster === 1) {
+                    apiUrl = 'http://127.0.0.1:8000/api/Events/data';
+                }
+
+                const response = await axios.get(apiUrl);
+                console.log(response);
+                if (isMaster === 0) {
+                    const fetchedEvents = response.data.map((event) => ({
+                        id: event.id,
+                        title: event.title,
+                        organizer_id: event.association.id,
+                        association_name: event.association.registrant_name,
+                        image: event.image,
+                        content: event.content,
+                        event_date: event.event_date.split(' ')[0],
+                        end_date: event.end_date.split(' ')[0],
+                        status: event.status,
+                    }));
+                    setEvents(fetchedEvents);
+                } else if (isMaster === 1) {
+                    const fetchedEvents = response.data.events.map((event) => ({
+                        id: event.id,
+                        title: event.title,
+                        organizer_id: event.association.id,
+                        association_name: event.association.registrant_name,
+                        image: event.image,
+                        content: event.content,
+                        event_date: event.event_date.split(' ')[0],
+                        end_date: event.end_date.split(' ')[0],
+                        status: event.status,
+                    }));
+                    setEvents(fetchedEvents);
+                }
             } catch (error) {
                 console.error('Error fetching events:', error);
             }
         };
+
         fetchEvents();
     }, []);
 
@@ -61,7 +90,7 @@ function EventManagement() {
             content: '',
             event_date: '',
             end_date: '',
-            location: 'sssssss',
+            location: '',
             status: 'pending',
         });
         setShowModal(true);
@@ -127,7 +156,12 @@ function EventManagement() {
             setEvents([...events, newEvent]);
             closeModal();
         } catch (error) {
-            console.error('Error adding event:', error);
+            console.error('Có lỗi xảy ra khi lưu bài viết:', error);
+            if (error.response && error.response.data.errors) {
+                setErrors(error.response.data.errors);
+            } else {
+                alert('Không thể lưu bài viết. Vui lòng thử lại!');
+            }
         }
     };
 
@@ -141,7 +175,7 @@ function EventManagement() {
     };
 
     const [currentPage, setCurrentPage] = useState(1);
-    const eventsPerPage = 6;
+    const eventsPerPage = 5;
 
     const indexOfLastEvent = currentPage * eventsPerPage;
     const indexOfFirstEvent = indexOfLastEvent - eventsPerPage;
@@ -283,6 +317,11 @@ function EventManagement() {
                                 value={formData.title}
                                 onChange={handleInputChange}
                             />
+                            {errors.title && (
+                                <p className="error-message">
+                                    {errors.title[0]}
+                                </p>
+                            )}
                         </div>
                         <div className="form-group">
                             <label>Tên hội viên</label>
@@ -319,6 +358,11 @@ function EventManagement() {
                                 value={formData.content}
                                 onChange={handleInputChange}
                             />
+                            {errors.content && (
+                                <p className="error-message">
+                                    {errors.content[0]}
+                                </p>
+                            )}
                         </div>
                         <div className="form-group">
                             <label>Ngày bắt đầu</label>
@@ -329,6 +373,11 @@ function EventManagement() {
                                 value={formData.event_date}
                                 onChange={handleInputChange}
                             />
+                            {errors.event_date && (
+                                <p className="error-message">
+                                    {errors.event_date[0]}
+                                </p>
+                            )}
                         </div>
                         <div className="form-group">
                             <label>Ngày kết thúc</label>
@@ -339,6 +388,11 @@ function EventManagement() {
                                 value={formData.end_date}
                                 onChange={handleInputChange}
                             />
+                            {errors.end_date && (
+                                <p className="error-message">
+                                    {errors.end_date[0]}
+                                </p>
+                            )}
                         </div>
                         <div className="form-group">
                             <label>Địa điểm</label>
@@ -349,6 +403,11 @@ function EventManagement() {
                                 value={formData.location}
                                 onChange={handleInputChange}
                             />
+                            {errors.location && (
+                                <p className="error-message">
+                                    {errors.location[0]}
+                                </p>
+                            )}
                         </div>
                         <div className="form-group">
                             <label>Trạng thái</label>

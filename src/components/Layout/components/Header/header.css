@@ -1,4 +1,3 @@
-/* Tổng quát */
 .top-header {
     display: flex;
     justify-content: space-between;
@@ -8,17 +7,14 @@
     padding: 5px 20px;
 }
 
-/* Định dạng thời gian */
 .current-date-time {
     font-size: 13px;
     font-weight: 500;
 }
 
-/* Vùng chứa các icon mạng xã hội */
 .info {
     display: flex;
     gap: 16px;
-    /* Khoảng cách ngang giữa các icon */
     justify-content: space-around;
     height: 30px;
     align-items: center;
@@ -67,12 +63,10 @@
     font-size: 16px;
 }
 
-/* Đổi màu icon khi hover */
 .icon:hover {
     background-color: rgba(255, 255, 255, 0.3);
 }
 
-/* avatar user */
 .user-name {
     margin: 0;
     font-size: 1.3rem;
@@ -151,6 +145,7 @@
     justify-content: space-around;
     align-items: center;
     margin: 0;
+    padding: 0;
 }
 
 .menu-item-icon {
@@ -198,11 +193,19 @@
     z-index: 10;
     flex-direction: column;
     align-items: flex-start;
+    animation: slideDown 0.3s ease-in-out;
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
 }
 
 .menu-link {
     text-decoration: none;
     color: #333;
+}
+
+.sub-menu-item {
+    width: 100%;
 }
 
 .sub-menu-item:hover {
@@ -235,7 +238,7 @@
 .bell-icon {
     font-size: 24px;
     cursor: pointer;
-    margin-left: 20px; /* Căn lề cho chuông */
+    margin-left: 20px;
     color: #333;
 }
 
@@ -267,4 +270,39 @@
     height: 40px;
     border-radius: 50%;
     object-fit: cover;
+}
+
+/* Animation xổ xuống */
+@keyframes slideDown {
+    from {
+        transform: translateY(-10px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.menu-list-item:hover .sub-menu-list {
+    display: flex;
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.menu-list-item .menu-item-icon {
+    transition: transform 0.3s ease-in-out;
+}
+
+.menu-list-item:hover .menu-item-icon {
+    transform: rotate(180deg);
+}
+
+.home-button {
+    display: block;
+}
+
+.menu-link {
+    padding: 10px 12px;
+    display: block;
 }

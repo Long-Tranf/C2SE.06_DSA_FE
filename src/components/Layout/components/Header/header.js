@@ -6,10 +6,10 @@ import banner from '~/assets/image/banner.png';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
     faAngleDown,
-    faGlobe,
     faSignOut,
     faUser,
     faBell,
+    faHome,
 } from '@fortawesome/free-solid-svg-icons';
 import Search from '~/components/Layout/components/Search/index';
 import avatarPlaceholder from '~/assets/image/no-img.png';
@@ -118,6 +118,7 @@ function Header() {
                                         </Link>
                                         <a
                                             className="profile-item"
+                                            href="/"
                                             onClick={() => {
                                                 localStorage.removeItem(
                                                     'accessToken',
@@ -186,14 +187,6 @@ function Header() {
                         </>
                     ) : (
                         <>
-                            <div className="info-item language">
-                                <a className="icon youtube" href="">
-                                    <FontAwesomeIcon icon={faGlobe} />
-                                </a>
-                                <span className="language-selected">
-                                    English
-                                </span>
-                            </div>
                             <Link to="/signup" className="info-item authen">
                                 Signup
                             </Link>
@@ -208,6 +201,11 @@ function Header() {
                 <img src={banner} alt="banner" className="banner-img" />
             </div>
             <div className="navigation">
+                <div className="home-button">
+                    <Link to="/" className="menu-link">
+                        <FontAwesomeIcon icon={faHome} className="home-icon" />
+                    </Link>
+                </div>
                 <ul className="menu-list">
                     {categories.map((category) => (
                         <li key={category.id} className="menu-list-item">

@@ -58,19 +58,21 @@ function AdminDashboard() {
 
     const sidebarMenu = user?.is_master
         ? [
+              { path: '/dashboardadmin/statistic', label: 'Thống Kê' },
               { path: '/dashboardadmin/member', label: 'Member' },
-              { path: '/dashboardadmin/association', label: 'Association' },
-              { path: '/dashboardadmin/post', label: 'Post' },
-              { path: '/dashboardadmin/category', label: 'Category' },
-              { path: '/dashboardadmin/library', label: 'Library' },
-              { path: '/dashboardadmin/contact', label: 'Contact' },
+              { path: '/dashboardadmin/association', label: 'Hiệp Hội' },
+              { path: '/dashboardadmin/post', label: 'Bài Viết' },
+              { path: '/dashboardadmin/category', label: 'Danh Mục' },
+              { path: '/dashboardadmin/library', label: 'Thư Viện' },
+              { path: '/dashboardadmin/contact', label: 'Góp Ý' },
               { path: '/dashboardadmin/banner', label: 'Banner' },
-              { path: '/dashboardadmin/event', label: 'Event' },
+              { path: '/dashboardadmin/event', label: 'Sự Kiện' },
           ]
         : [
-              { path: '/dashboardadmin/post', label: 'Post' },
-              { path: '/dashboardadmin/post/add', label: 'Add New Post' },
-              { path: '/dashboardadmin/event', label: 'Event' },
+              { path: '/dashboardadmin/AssociationProfile', label: 'Profile' },
+              { path: '/dashboardadmin/post', label: 'Bài Viết' },
+              { path: '/dashboardadmin/post/add', label: 'Thêm Mới Bài Viết' },
+              { path: '/dashboardadmin/event', label: 'Sự Kiện' },
           ];
 
     return (

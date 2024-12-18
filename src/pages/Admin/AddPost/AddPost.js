@@ -36,9 +36,9 @@ const formats = [
 ];
 
 function AddPost({ onBack }) {
-    const { postId } = useParams(); // lấy postId từ url
-    //const [curentPost, setCurentPost] = useState(null);
+    const { postId } = useParams();
     const navigate = useNavigate();
+    const [errors, setErrors] = useState({});
 
     const [postTitle, setPostTitle] = useState('');
     const [postContent, setPostContent] = useState('');
@@ -80,6 +80,7 @@ function AddPost({ onBack }) {
                     setPostStatus(post.is_open);
                     setPostAuthor(post.association.registrant_name);
                     setPostImage(post.image);
+                    setIdAuthor(post.member_id);
                 })
                 .catch((error) => {
                     console.error('Có lỗi xảy ra khi lấy bài viết:', error);
@@ -87,6 +88,7 @@ function AddPost({ onBack }) {
                 });
         }
     }, [postId]);
+
     useEffect(() => {
         const fullName = localStorage.getItem('full_name');
         const id = localStorage.getItem('id_user');
@@ -106,10 +108,6 @@ function AddPost({ onBack }) {
         e.preventDefault();
         setIsLoading(true);
 
-        // const url = postId
-        //     ? `http://127.0.0.1:8000/api/Post/update`
-        //     : `http://127.0.0.1:8000/api/Post/create`;
-
         try {
             if (postId) {
                 await axios.put(`http://127.0.0.1:8000/api/Post/update`, {
@@ -118,7 +116,7 @@ function AddPost({ onBack }) {
                     content: postContent,
                     category_id: Number(postCategory),
                     is_open: Number(postStatus),
-                    member_id: 5,
+                    member_id: Number(idAuthor),
                     image: postImage,
                 });
             } else {
@@ -135,18 +133,26 @@ function AddPost({ onBack }) {
             navigate('/dashboardadmin/post');
         } catch (error) {
             console.error('Có lỗi xảy ra khi lưu bài viết:', error);
-            alert('Không thể lưu bài viết. Vui lòng thử lại!');
+            if (error.response && error.response.data.errors) {
+                setErrors(error.response.data.errors);
+            } else {
+                alert('Không thể lưu bài viết. Vui lòng thử lại!');
+            }
         } finally {
             setIsLoading(false);
         }
-        //setCurentPost(null);
+    };
+
+    const handleFileChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            const imageUrl = URL.createObjectURL(file);
+            setPostImage(imageUrl);
+        }
     };
 
     return (
         <div className="add-post-form">
-            <button className="btn btn-back" onClick={onBack}>
-                Quay lại Quản lý Bài Viết
-            </button>
             <h2>{postId ? 'Chỉnh sửa Bài Viết' : 'Thêm Bài Viết Mới'}</h2>
             <form onSubmit={handleSubmit}>
                 <div>
@@ -170,7 +176,11 @@ function AddPost({ onBack }) {
                         formats={formats}
                         placeholder="Nhập nội dung bài viết..."
                     />
+                    {errors.content && (
+                        <p className="error-message">{errors.content[0]}</p>
+                    )}
                 </div>
+
                 <div>
                     <label htmlFor="category">Danh mục</label>
                     {isFetchingCategories ? (
@@ -189,6 +199,9 @@ function AddPost({ onBack }) {
                                 </option>
                             ))}
                         </select>
+                    )}
+                    {errors.category_id && (
+                        <p className="error-message">{errors.category_id[0]}</p>
                     )}
                 </div>
                 <div>
@@ -209,12 +222,21 @@ function AddPost({ onBack }) {
                     <label>{postAuthor}</label>
                 </div>
                 <div>
-                    <label htmlFor="image">Chọn Hình Ảnh</label>
+                    <label htmlFor="image">
+                        Chọn Hình Ảnh (Link hoặc File)
+                    </label>
                     <input
                         type="text"
                         id="image"
                         value={postImage}
-                        onChange={(e) => setPostImage(e.target.value)} // Lấy đường dẫn ảnh từ input
+                        onChange={(e) => setPostImage(e.target.value)}
+                        placeholder="Nhập URL ảnh"
+                    />
+                    <input
+                        type="file"
+                        id="imageFile"
+                        accept="image/*"
+                        onChange={handleFileChange}
                     />
                 </div>
                 <div>

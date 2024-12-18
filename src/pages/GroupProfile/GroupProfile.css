@@ -15,6 +15,7 @@ p.lead {
 .card {
     flex-direction: row;
     transition: background-color 0.2s;
+    border: none;
 }
 
 .card img {

@@ -7,13 +7,14 @@ function PhotoLibraryManagement() {
     const [photos, setPhotos] = useState([]);
     const [showModal, setShowModal] = useState(false);
     const [currentPhoto, setCurrentPhoto] = useState(null);
+    const [errors, setErrors] = useState({});
+
     const [formData, setFormData] = useState({
         title: '',
-        is_open: 1, // Sử dụng 1 thay vì true
-        image: '', // Hình ảnh chỉ là URL
+        is_open: 1,
+        image: '',
     });
 
-    // Fetch dữ liệu từ API
     useEffect(() => {
         fetchPhotos();
     }, []);
@@ -33,8 +34,8 @@ function PhotoLibraryManagement() {
         setCurrentPhoto(photo);
         setFormData({
             title: photo.title,
-            is_open: photo.is_open, // Đảm bảo nhận giá trị là 0 hoặc 1
-            image: photo.image, // Hình ảnh là URL
+            is_open: photo.is_open,
+            image: photo.image,
         });
         setShowModal(true);
     };
@@ -43,7 +44,7 @@ function PhotoLibraryManagement() {
         setCurrentPhoto(null);
         setFormData({
             title: '',
-            is_open: 1, // Mặc định là mở
+            is_open: 1,
             image: '',
         });
         setShowModal(true);
@@ -61,38 +62,56 @@ function PhotoLibraryManagement() {
             [name]: value,
         }));
     };
+    const handleFileChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            const imageUrl = URL.createObjectURL(file);
+            setFormData((prevState) => ({
+                ...prevState,
+                image: imageUrl,
+            }));
+        }
+    };
 
     const handleSave = async () => {
         if (currentPhoto) {
-            // Cập nhật ảnh
             try {
                 await axios.put(
                     'http://127.0.0.1:8000/api/PhotoLibrary/update',
                     {
                         id: currentPhoto.id,
                         ...formData,
-                        is_open: formData.is_open, // Chuyển thành 1 hoặc 0
+                        is_open: formData.is_open,
                     },
                 );
                 fetchPhotos();
                 closeModal();
             } catch (error) {
-                console.error('Error updating photo:', error);
+                console.error('Có lỗi xảy ra khi lưu hình ảnh:', error);
+                if (error.response && error.response.data.errors) {
+                    setErrors(error.response.data.errors);
+                } else {
+                    alert('Không thể lưu hình ảnh. Vui lòng thử lại!');
+                }
             }
         } else {
-            // Tạo mới ảnh
             try {
                 await axios.post(
                     'http://127.0.0.1:8000/api/PhotoLibrary/create',
                     {
                         ...formData,
-                        is_open: formData.is_open, // Chuyển thành 1 hoặc 0
+                        is_open: formData.is_open,
                     },
                 );
                 fetchPhotos();
                 closeModal();
             } catch (error) {
-                console.error('Error creating photo:', error);
+                console.error('Có lỗi xảy ra khi thêm hình ảnh:', error);
+                if (error.response && error.response.data.errors) {
+                    setErrors(error.response.data.errors);
+                } else {
+                    alert('Không thể thêm hình ảnh. Vui lòng thử lại!');
+                }
             }
         }
     };
@@ -217,7 +236,6 @@ function PhotoLibraryManagement() {
                 </ul>
             </nav>
 
-            {/* Modal */}
             {showModal && (
                 <div className="modal-overlay" onClick={closeModal}>
                     <div
@@ -236,6 +254,11 @@ function PhotoLibraryManagement() {
                                 value={formData.title}
                                 onChange={handleInputChange}
                             />
+                            {errors.title && (
+                                <p className="error-message">
+                                    {errors.title[0]}
+                                </p>
+                            )}
                         </div>
                         <div className="form-group">
                             <label>Trạng thái</label>
@@ -250,7 +273,7 @@ function PhotoLibraryManagement() {
                             </select>
                         </div>
                         <div className="form-group">
-                            <label>Hình ảnh (URL)</label>
+                            <label>Hình ảnh (URL hoặc Upload)</label>
                             <input
                                 type="text"
                                 className="form-control"
@@ -258,7 +281,30 @@ function PhotoLibraryManagement() {
                                 value={formData.image}
                                 onChange={handleInputChange}
                             />
-                            {formData.imageUrl && (
+                            <div className="mt-2">
+                                {formData.image &&
+                                    !formData.image.startsWith('blob:') && (
+                                        <img
+                                            src={formData.image}
+                                            alt="uploaded"
+                                            style={{
+                                                width: '50px',
+                                                height: '50px',
+                                            }}
+                                        />
+                                    )}
+                            </div>
+                            <input
+                                type="file"
+                                className="form-control mt-2"
+                                onChange={handleFileChange}
+                            />
+                            {errors.image && (
+                                <p className="error-message">
+                                    {errors.image[0]}
+                                </p>
+                            )}
+                            {formData.image.startsWith('blob:') && (
                                 <div className="mt-2">
                                     <img
                                         src={formData.image}

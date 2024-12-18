@@ -11,20 +11,33 @@ function PostManagement() {
     useEffect(() => {
         const fetchPosts = async () => {
             try {
-                const response = await axios.get(
-                    'http://127.0.0.1:8000/api/Post/data',
-                    {
+                const isMaster = JSON.parse(localStorage.getItem('isMaster'));
+                let apiUrl = '';
+
+                if (isMaster === 1) {
+                    apiUrl = 'http://127.0.0.1:8000/api/Post/data';
+                } else if (isMaster === 0) {
+                    const memberId = JSON.parse(
+                        localStorage.getItem('id_user'),
+                    );
+                    apiUrl = `http://127.0.0.1:8000/api/posts/member/${memberId}`;
+                }
+
+                if (apiUrl) {
+                    const response = await axios.get(apiUrl, {
                         headers: {
                             Authorization: `Bearer ${localStorage.getItem(
                                 'token',
                             )}`,
                         },
-                    },
-                );
-                if (response.data && response.data.posts) {
-                    setPosts(response.data.posts);
+                    });
+                    if (response.data && response.data.posts) {
+                        setPosts(response.data.posts);
+                    } else {
+                        console.error('API returned invalid data');
+                    }
                 } else {
-                    console.error('API returned invalid data');
+                    console.error('Invalid API URL');
                 }
             } catch (error) {
                 console.error('Error fetching posts:', error);

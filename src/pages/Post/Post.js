@@ -25,6 +25,7 @@ const Post = () => {
 
         fetchPost();
     }, [postId]);
+    console.log(post);
 
     if (!post) {
         return <div>Loading...</div>;
@@ -34,10 +35,12 @@ const Post = () => {
         { name: 'Home', link: '/' },
         {
             name: post.category.category_name,
-            link: `/category/${post.category.category_id}`,
+            link: `/category/${post.category.id}`,
         },
         { name: post.title, active: true },
     ];
+
+    console.log(post.category.id);
 
     return (
         <div className="wrapper">
@@ -99,7 +102,7 @@ const Post = () => {
                 <div className="sidebar-post">
                     <NewSidebar
                         title="Bài Viết Mới nhất"
-                        apiUrl="http://127.0.0.1:8000/api/posts/latest/14"
+                        apiUrl="http://127.0.0.1:8000/api/Posts/latest-five"
                     />
                 </div>
             </div>

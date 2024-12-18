@@ -15,7 +15,7 @@
         height: 100%;
         color: var(--black);
         border: rgba(22, 24, 32, 0.9);
-        padding: 0;
+        padding-left: 14px;
     }
 
     input:not(:placeholder-shown) ~ .search-btn {

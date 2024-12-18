@@ -7,8 +7,11 @@ function AssociationManagement() {
     const [associations, setAssociations] = useState([]);
     const [showModal, setShowModal] = useState(false);
     const [currentAssociation, setCurrentAssociation] = useState(null);
+    const [errors, setErrors] = useState({});
+
     const [formData, setFormData] = useState({
         user_name: '',
+        password: '',
         company_email: '',
         registrant_name: '',
         subscriber_email: '',
@@ -24,7 +27,6 @@ function AssociationManagement() {
     });
 
     useEffect(() => {
-        // Gọi API để lấy dữ liệu
         axios
             .get('http://127.0.0.1:8000/api/Association/data')
             .then((response) => {
@@ -39,6 +41,7 @@ function AssociationManagement() {
         setCurrentAssociation(association);
         setFormData({
             user_name: association.user_name,
+            password: association.password,
             company_email: association.company_email,
             registrant_name: association.registrant_name,
             subscriber_email: association.subscriber_email,
@@ -48,7 +51,7 @@ function AssociationManagement() {
             website: association.website,
             avatar: association.avatar,
             is_active: association.is_active,
-            is_open: association.is_open,
+            is_open: Number(association.is_open),
             company_name: association.company_name,
             is_master: association.is_master,
         });
@@ -59,6 +62,7 @@ function AssociationManagement() {
         setCurrentAssociation(null);
         setFormData({
             user_name: '',
+            password: '',
             company_email: '',
             registrant_name: '',
             subscriber_email: '',
@@ -88,24 +92,51 @@ function AssociationManagement() {
         }));
     };
 
+    const handleFileChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            const imageUrl = URL.createObjectURL(file);
+            setFormData((prevState) => ({
+                ...prevState,
+                avatar: imageUrl,
+            }));
+        }
+    };
+
     const handleUpdateAssociation = () => {
-        setAssociations(
-            associations.map((association) =>
-                association.id === currentAssociation.id
-                    ? { ...association, ...formData }
-                    : association,
-            ),
-        );
-        closeModal();
+        axios
+            .put(`http://127.0.0.1:8000/api/Association/update`, formData)
+            .then((response) => {
+                setAssociations(
+                    associations.map((association) =>
+                        association.id === currentAssociation.id
+                            ? { ...association, ...response.data }
+                            : association,
+                    ),
+                );
+                closeModal();
+            })
+            .catch((error) => {
+                console.error('Error updating association:', error);
+            });
     };
 
     const handleAddAssociation = () => {
-        const newAssociation = {
-            id: associations.length + 1,
-            ...formData,
-        };
-        setAssociations([...associations, newAssociation]);
-        closeModal();
+        axios
+            .post('http://127.0.0.1:8000/api/Association/create', formData)
+            .then((response) => {
+                setAssociations([...associations, response.data]);
+                closeModal();
+            })
+            .catch((error) => {
+                console.error('Có lỗi xảy ra khi lưu bài viết:', error);
+                if (error.response && error.response.data.errors) {
+                    setErrors(error.response.data.errors);
+                    console.log(errors);
+                } else {
+                    alert('Không thể lưu bài viết. Vui lòng thử lại!');
+                }
+            });
     };
 
     const handleDeleteAssociation = (id) => {
@@ -116,7 +147,7 @@ function AssociationManagement() {
     };
 
     const [currentPage, setCurrentPage] = useState(1);
-    const eventsPerPage = 5;
+    const eventsPerPage = 4;
 
     const indexOfLastEvent = currentPage * eventsPerPage;
     const indexOfFirstEvent = indexOfLastEvent - eventsPerPage;
@@ -260,6 +291,26 @@ function AssociationManagement() {
                                 value={formData.user_name}
                                 onChange={handleInputChange}
                             />
+                            {errors.user_name && (
+                                <p className="error-message">
+                                    {errors.user_name[0]}
+                                </p>
+                            )}
+                        </div>
+                        <div className="form-group">
+                            <label>Mật Khẩu</label>
+                            <input
+                                type="password"
+                                className="form-control"
+                                name="password"
+                                value={formData.password}
+                                onChange={handleInputChange}
+                            />
+                            {errors.password && (
+                                <p className="error-message">
+                                    {errors.password[0]}
+                                </p>
+                            )}
                         </div>
                         <div className="form-group">
                             <label>Email công ty</label>
@@ -270,6 +321,11 @@ function AssociationManagement() {
                                 value={formData.company_email}
                                 onChange={handleInputChange}
                             />
+                            {errors.company_email && (
+                                <p className="error-message">
+                                    {errors.company_email[0]}
+                                </p>
+                            )}
                         </div>
                         <div className="form-group">
                             <label>Tên người đăng ký</label>
@@ -280,6 +336,11 @@ function AssociationManagement() {
                                 value={formData.registrant_name}
                                 onChange={handleInputChange}
                             />
+                            {errors.registrant_name && (
+                                <p className="error-message">
+                                    {errors.registrant_name[0]}
+                                </p>
+                            )}
                         </div>
                         <div className="form-group">
                             <label>Email người đăng ký</label>
@@ -290,6 +351,11 @@ function AssociationManagement() {
                                 value={formData.subscriber_email}
                                 onChange={handleInputChange}
                             />
+                            {errors.subscriber_email && (
+                                <p className="error-message">
+                                    {errors.subscriber_email[0]}
+                                </p>
+                            )}
                         </div>
                         <div className="form-group">
                             <label>Số điện thoại</label>
@@ -300,6 +366,11 @@ function AssociationManagement() {
                                 value={formData.phone_number}
                                 onChange={handleInputChange}
                             />
+                            {errors.phone_number && (
+                                <p className="error-message">
+                                    {errors.phone_number[0]}
+                                </p>
+                            )}
                         </div>
                         <div className="form-group">
                             <label>Số điện thoại đăng ký</label>
@@ -310,6 +381,11 @@ function AssociationManagement() {
                                 value={formData.registered_phone_number}
                                 onChange={handleInputChange}
                             />
+                            {errors.registered_phone_number && (
+                                <p className="error-message">
+                                    {errors.registered_phone_number[0]}
+                                </p>
+                            )}
                         </div>
                         <div className="form-group">
                             <label>Địa chỉ</label>
@@ -320,6 +396,11 @@ function AssociationManagement() {
                                 value={formData.address}
                                 onChange={handleInputChange}
                             />
+                            {errors.address && (
+                                <p className="error-message">
+                                    {errors.address[0]}
+                                </p>
+                            )}
                         </div>
                         <div className="form-group">
                             <label>Website</label>
@@ -330,6 +411,11 @@ function AssociationManagement() {
                                 value={formData.website}
                                 onChange={handleInputChange}
                             />
+                            {errors.website && (
+                                <p className="error-message">
+                                    {errors.website[0]}
+                                </p>
+                            )}
                         </div>
                         <div className="form-group">
                             <label>Avatar</label>
@@ -337,22 +423,22 @@ function AssociationManagement() {
                                 type="url"
                                 className="form-control"
                                 name="avatar"
+                                placeholder="Nhập URL avatar"
                                 value={formData.avatar}
                                 onChange={handleInputChange}
                             />
+                            <input
+                                type="file"
+                                className="form-control mt-2"
+                                onChange={handleFileChange}
+                            />
+                            {errors.avatar && (
+                                <p className="error-message">
+                                    {errors.avatar[0]}
+                                </p>
+                            )}
                         </div>
-                        <div className="form-group">
-                            <label>Is Active</label>
-                            <select
-                                className="form-control"
-                                name="is_active"
-                                value={formData.is_active}
-                                onChange={handleInputChange}
-                            >
-                                <option value={1}>Active</option>
-                                <option value={0}>Inactive</option>
-                            </select>
-                        </div>
+
                         <div className="form-group">
                             <label>Is Open</label>
                             <select
@@ -374,6 +460,11 @@ function AssociationManagement() {
                                 value={formData.company_name}
                                 onChange={handleInputChange}
                             />
+                            {errors.company_name && (
+                                <p className="error-message">
+                                    {errors.company_name[0]}
+                                </p>
+                            )}
                         </div>
                         <div className="form-group">
                             <label>Is Master</label>

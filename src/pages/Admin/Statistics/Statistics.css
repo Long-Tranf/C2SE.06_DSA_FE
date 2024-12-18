@@ -1,0 +1,37 @@
+.statistic-container {
+    padding: 20px;
+}
+
+.statistic-heading {
+    font-weight: 600;
+    text-align: center;
+    margin-bottom: 60px;
+    width: 100%;
+}
+
+.statistic-content {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 20px;
+}
+.statistic-content-item {
+    background-color: var(--primary);
+    padding: 10px 16px;
+    height: 150px;
+    margin: 26px 0;
+    width: 284px;
+}
+
+.statistic-content-item-title {
+    color: #fff;
+    font-weight: 600;
+    text-align: center;
+}
+
+.statistic-content-item-desc {
+    text-align: center;
+    font-size: 60px;
+    color: #fff;
+    margin-top: 12px;
+}
