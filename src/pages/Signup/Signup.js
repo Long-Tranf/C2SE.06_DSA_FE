@@ -1,7 +1,7 @@
 import './Login.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import axios from 'axios';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHome } from '@fortawesome/free-solid-svg-icons';
@@ -20,6 +20,13 @@ function Signup() {
     });
 
     const [errors, setErrors] = useState({});
+
+    useEffect(() => {
+        document.body.classList.add('no-padding');
+        return () => {
+            document.body.classList.remove('no-padding');
+        };
+    }, []);
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;

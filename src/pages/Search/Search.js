@@ -26,6 +26,8 @@ function Search() {
                 `http://127.0.0.1:8000/api/posts/search?q=${query}`,
             );
             const data = await response.json();
+
+            console.log('Search Results from API:', data); // Log kết quả từ API
             setSearchResults(data);
         } catch (error) {
             console.error('Error fetching search results:', error);
@@ -37,11 +39,28 @@ function Search() {
         setCurrentPage(1);
     };
 
+    const countKeywordOccurrences = (text, query) => {
+        const regex = new RegExp(`\\b${query}\\b`, 'gi'); // Tìm từ khóa chính xác
+        const matches = text ? text.match(regex) : [];
+        return matches ? matches.length : 0;
+    };
+
     const sortedResults = [...searchResults].sort((a, b) => {
         if (sortOption === 'newest') {
             return new Date(b.created_at) - new Date(a.created_at);
         } else if (sortOption === 'mostRelevant') {
-            return a.title.localeCompare(b.title);
+            const countA =
+                countKeywordOccurrences(a.title, query) +
+                countKeywordOccurrences(a.content, query);
+            const countB =
+                countKeywordOccurrences(b.title, query) +
+                countKeywordOccurrences(b.content, query);
+
+            // Log để kiểm tra độ phù hợp
+            console.log(`Post A: ${a.title}, Count: ${countA}`);
+            console.log(`Post B: ${b.title}, Count: ${countB}`);
+
+            return countB - countA; // Sắp xếp giảm dần theo số lần xuất hiện
         } else if (sortOption === 'oldest') {
             return new Date(a.created_at) - new Date(b.created_at);
         }

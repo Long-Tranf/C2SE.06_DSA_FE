@@ -1,94 +1,95 @@
+import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import axios from 'axios';
 import './footer.css';
 import './grid.css';
 
 function Footer() {
+    const [categories, setCategories] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        // Gọi API khi component được mount
+        axios
+            .get('http://127.0.0.1:8000/api/Categories/data')
+            .then((response) => {
+                setCategories(response.data.categories);
+                setLoading(false);
+            })
+            .catch((error) => {
+                console.error('Error fetching categories:', error);
+                setLoading(false);
+            });
+    }, []);
+
+    // Chia categories thành các nhóm theo parent_category_id
+    const categorizedData = categories.reduce((acc, category) => {
+        if (category.parent_category_id === 0) {
+            acc[category.category_name] = [];
+        } else {
+            const parentCategoryName = categories.find(
+                (c) => c.id === category.parent_category_id,
+            )?.category_name;
+            if (parentCategoryName) {
+                acc[parentCategoryName].push(category);
+            }
+        }
+        return acc;
+    }, {});
+
     return (
         <footer className="footer">
             <div className="grid wide footer__content">
                 <div className="row">
+                    {loading ? (
+                        <div>Loading...</div>
+                    ) : (
+                        Object.keys(categorizedData).map((categoryName) => (
+                            <div
+                                key={categoryName}
+                                className="col l-2-4 m-6 c-6"
+                            >
+                                <h3 className="footer__heading">
+                                    {categoryName}
+                                </h3>
+                                <ul className="footer-list">
+                                    {categorizedData[categoryName].map(
+                                        (category) => (
+                                            <li
+                                                key={category.id}
+                                                className="footer-item"
+                                            >
+                                                <Link
+                                                    to={`/category/${category.id}`}
+                                                    className="footer-item__link"
+                                                >
+                                                    {category.category_name}
+                                                </Link>
+                                            </li>
+                                        ),
+                                    )}
+                                </ul>
+                            </div>
+                        ))
+                    )}
                     <div className="col l-2-4 m-6 c-6">
-                        <h3 className="footer__heading">Sự Kiện</h3>
+                        <h3 className="footer__heading">Dành Cho Hội Viên</h3>
                         <ul className="footer-list">
                             <li className="footer-item">
-                                <a href="" className="footer-item__link">
-                                    Tài nguyên – Chính sách mới
-                                </a>
+                                <Link
+                                    to={`/event`}
+                                    className="footer-item__link"
+                                >
+                                    Sự Kiện
+                                </Link>
                             </li>
                             <li className="footer-item">
-                                <a href="" className="footer-item__link">
-                                    Từ suy nghĩ đến bàn phím
-                                </a>
-                            </li>
-                            <li className="footer-item">
-                                <a href="" className="footer-item__link">
-                                    Chia sẻ giải pháp, thành tựu
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-                    <div className="col l-2-4 m-6 c-6">
-                        <h3 className="footer__heading">Cộng đồng chúng ta</h3>
-                        <ul className="footer-list">
-                            <li className="footer-item">
-                                <a href="" className="footer-item__link">
-                                    Gia nhập DSA
-                                </a>
-                            </li>
-                            <li className="footer-item">
-                                <a href="" className="footer-item__link">
-                                    Nối vòng tay lớn
-                                </a>
-                            </li>
-                            <li className="footer-item">
-                                <a href="" className="footer-item__link">
-                                    Sự kiện sắp đến
-                                </a>
-                            </li>
-                            <li className="footer-item">
-                                <a href="" className="footer-item__link">
-                                    Hội viên kể chuyện
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-                    <div className="col l-2-4 m-6 c-6">
-                        <h3 className="footer__heading">Nguồn nhân lực it</h3>
-
-                        <ul className="footer-list">
-                            <li className="footer-item">
-                                <a href="" className="footer-item__link">
-                                    Đào tạo nguồn nhân lực
-                                </a>
-                            </li>
-                            <li className="footer-item">
-                                <a href="" className="footer-item__link">
-                                    Tuyển dụng
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-                    <div className="col l-2-4 m-6 c-6">
-                        <h3 className="footer__heading">Góc Nhìn DSA</h3>
-                        <ul className="footer-list">
-                            <li className="footer-item">
-                                <a href="" className="footer-item__link">
-                                    Đà Nẵng 24h
-                                </a>
-                            </li>
-                            <li className="footer-item">
-                                <a href="" className="footer-item__link">
-                                    Kỹ năng sống
-                                </a>
-                            </li>
-                            <li className="footer-item">
-                                <a href="" className="footer-item__link">
-                                    Du lịch
-                                </a>
-                            </li>
-                            <li className="footer-item">
-                                <a href="" className="footer-item__link">
-                                    Văn hóa – Nghệ thuật
-                                </a>
+                                <Link
+                                    to={`/library`}
+                                    className="footer-item__link"
+                                >
+                                    Thư Viện
+                                </Link>
                             </li>
                         </ul>
                     </div>

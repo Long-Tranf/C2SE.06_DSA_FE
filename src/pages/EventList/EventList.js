@@ -3,7 +3,6 @@ import axios from 'axios';
 import Footer from '~/components/Layout/components/Footer/footer';
 import Header from '~/components/Layout/components/Header/header';
 import Breadcrumb from '~/components/Layout/components/Breadcrumb/Breadcumb';
-
 import './EventList.css';
 
 const EventList = () => {
@@ -12,6 +11,7 @@ const EventList = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [selectedEvent, setSelectedEvent] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [sortOption, setSortOption] = useState('happening'); // "happening" for ongoing, "upcoming" for upcoming events
     const resultsPerPage = 6;
     const breadcrumbItems = [
         { name: 'Home', link: '/' },
@@ -23,28 +23,40 @@ const EventList = () => {
         const checkAccessToken = () => {
             const accessToken = localStorage.getItem('accessToken');
             if (accessToken) {
-                fetchEvents(accessToken);
+                fetchEvents(accessToken, sortOption);
             }
             setLoading(false);
         };
 
         checkAccessToken();
-    }, []);
+    }, [sortOption]); // Reload events when sortOption changes
 
-    const fetchEvents = async (accessToken) => {
+    const fetchEvents = async (accessToken, sortOption) => {
         try {
-            const response = await axios.get(
-                'http://127.0.0.1:8000/api/Events/data',
-                {
-                    headers: {
-                        Authorization: `Bearer ${accessToken}`,
-                    },
+            let url = '';
+            if (sortOption === 'happening') {
+                url = 'http://127.0.0.1:8000/api/events/happening';
+            } else if (sortOption === 'upcoming') {
+                url = 'http://127.0.0.1:8000/api/events/upcoming';
+            }
+            const response = await axios.get(url, {
+                headers: {
+                    Authorization: `Bearer ${accessToken}`,
                 },
+            });
+            setEvents(
+                sortOption === 'happening'
+                    ? response.data.ongoing_events
+                    : response.data.upcoming_events,
             );
-            setEvents(response.data.events);
         } catch (error) {
             console.error('Error fetching events:', error);
         }
+    };
+
+    const handleSortChange = (option) => {
+        setSortOption(option);
+        setCurrentPage(1); // Reset pagination when changing sort
     };
 
     const handleOpenModal = (event) => {
@@ -70,10 +82,25 @@ const EventList = () => {
     return (
         <div className="wrapper">
             <Header />
-            <h2 className="event-heading">Sự Kiện Đang Diễn Ra</h2>
+            <h2 className="event-heading">
+                {sortOption === 'happening'
+                    ? 'Sự Kiện Đang Diễn Ra'
+                    : 'Sự Kiện Sắp Diễn Ra'}
+            </h2>
             <div className="breadcrumb-container">
                 <Breadcrumb items={breadcrumbItems} />
             </div>
+            {accessToken && (
+                <div className="dropdown d-flex justify-content-end">
+                    <select
+                        onChange={(e) => handleSortChange(e.target.value)}
+                        value={sortOption}
+                    >
+                        <option value="happening">Đang diễn ra</option>
+                        <option value="upcoming">Sắp diễn ra</option>
+                    </select>
+                </div>
+            )}
             <div className="event-list">
                 {!accessToken ? (
                     <p className="access-warning">
@@ -210,13 +237,14 @@ const EventList = () => {
                         >
                             X
                         </button>
-                        <h3>{selectedEvent.title}</h3>
+                        <h3 className="event-modal-title">
+                            {selectedEvent.title}
+                        </h3>
                         <img
-                            className="event-image"
+                            className="event-modal-image"
                             src={selectedEvent.image}
                             alt={selectedEvent.title}
                         />
-                        <p>{selectedEvent.content}</p>
                         <p>
                             <strong>Thời gian:</strong>{' '}
                             {new Date(
@@ -233,6 +261,10 @@ const EventList = () => {
                             {selectedEvent.association?.company_name ||
                                 'Không rõ'}
                         </p>
+                        <p>
+                            <strong>Nội Dung:</strong>
+                        </p>
+                        <p>{selectedEvent.content || 'Không rõ'}</p>
                     </div>
                 </div>
             )}

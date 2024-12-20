@@ -103,8 +103,14 @@
 
 .notification-link {
     color: #000;
-    display: block;
+    display: -webkit-box;
     margin-bottom: 8px;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    text-overflow: ellipsis;
+    word-wrap: break-word;
+    white-space: normal;
 }
 
 .notif-item:hover {

@@ -7,6 +7,12 @@
     margin: 40px 0 20px 10px;
 }
 
+.dropdown {
+    position: relative;
+    display: inline-block;
+    float: right; /* Căn dropdown sang phải */
+}
+
 .event-content {
     /* border-top: 1px solid #ccc; */
 }
@@ -90,6 +96,17 @@
     border: none;
     font-size: 18px;
     cursor: pointer;
+}
+
+.event-modal-title {
+    text-align: center;
+    font-weight: 700;
+    font-size: 20px;
+}
+
+.event-modal-image {
+    width: 100%;
+    margin-bottom: 12px;
 }
 
 @keyframes slideDown {

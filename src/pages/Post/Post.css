@@ -95,6 +95,10 @@
     background-color: #fff;
 }
 
+.related-post-few {
+    justify-content: flex-start;
+}
+
 .related-posts-news img {
     width: 100%;
     height: auto;

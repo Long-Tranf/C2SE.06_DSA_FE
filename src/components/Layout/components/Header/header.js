@@ -88,18 +88,21 @@ function Header() {
                 });
                 setCategories(categoryMap);
             });
+    }, []);
 
+    useEffect(() => {
         const time = setInterval(() => {
             setCurr(moment());
         }, 1000);
 
         return () => clearInterval(time);
-    }, []);
+    });
 
     const handleShowHiddenMenu = () => {
         setshowHiddenMenu(!showHiddenMenu);
         setActive('active');
     };
+    //console.log(user);
 
     return (
         <div className="header-container">
@@ -139,8 +142,9 @@ function Header() {
                                 interactive
                                 placement="bottom-start"
                                 offset={[-70, 10]}
-                                delay={[0, 200]}
+                                delay={[0, 0]}
                                 theme="light"
+                                trigger="click"
                             >
                                 <img
                                     src={
@@ -172,7 +176,7 @@ function Header() {
                                                     </Link>
                                                     <span className="notification-date">
                                                         {`Ngày kết thúc : ${new Date(
-                                                            notif.event_date,
+                                                            notif.end_date,
                                                         ).toLocaleDateString()}`}
                                                     </span>
                                                 </li>
@@ -183,8 +187,9 @@ function Header() {
                                 interactive
                                 placement="bottom-start"
                                 offset={[20, 10]}
-                                delay={[0, 200]}
+                                delay={[0, 0]}
                                 theme="light"
+                                trigger="click"
                             >
                                 <FontAwesomeIcon
                                     icon={faBell}

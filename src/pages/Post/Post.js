@@ -15,12 +15,23 @@ const Post = () => {
     useEffect(() => {
         const fetchPost = async () => {
             try {
-                const response = await fetch(
+                // Tăng lượt xem
+                await axios
+                    .get(`http://127.0.0.1:8000/api/posts/view/${postId}`)
+                    .then((response) => {
+                        console.log('Tăng lượt xem:', response.data);
+                    })
+                    .catch((error) => {
+                        console.error('Lỗi khi tăng lượt xem:', error);
+                    });
+
+                // Lấy chi tiết bài viết
+                const response = await axios.get(
                     `http://127.0.0.1:8000/api/Post/data/${postId}`,
                 );
-                const data = await response.json();
-                setPost(data.post);
+                setPost(response.data.post);
 
+                // Lấy danh sách bài viết liên quan
                 axios
                     .get(
                         `http://127.0.0.1:8000/api/posts/top-excluding/${postId}`,
@@ -36,8 +47,10 @@ const Post = () => {
                 console.error('Lỗi khi tải bài viết:', error);
             }
         };
+
         fetchPost();
     }, [postId]);
+
     console.log(post);
     console.log(relatedPosts);
 
@@ -116,7 +129,13 @@ const Post = () => {
                     </div>
                     <div className="related-posts-news">
                         <h3>Bài viết liên quan</h3>
-                        <div className="related-post-list">
+                        <div
+                            className={`related-post-list ${
+                                relatedPosts.length < 3
+                                    ? 'related-post-few'
+                                    : ''
+                            }`}
+                        >
                             {relatedPosts.map((post) => {
                                 return (
                                     <div

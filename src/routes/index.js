@@ -21,6 +21,7 @@ import EventManagement from '~/pages/Admin/EventManagament/EventManagement';
 import BannerManagement from '~/pages/Admin/BannerManagement/BannerManagement';
 import Statistic from '~/pages/Admin/Statistics/Statistics';
 import AssociationProfile from '~/pages/Admin/AssociationProfile/AssociationProfile';
+import ChangePassword from '~/pages/Admin/ChangePassword/ChangePassword';
 
 const publicRoutes = [
     {
@@ -92,6 +93,7 @@ const privateRoutesAdmin = [
             { path: 'contact', element: <ContantManagement /> },
             { path: 'banner', element: <BannerManagement /> },
             { path: 'event', element: <EventManagement /> },
+            { path: 'changepassword', element: <ChangePassword /> },
         ],
     },
 ];

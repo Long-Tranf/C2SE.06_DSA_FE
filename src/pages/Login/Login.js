@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import './Login.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -12,6 +12,13 @@ function Login() {
     const [errorMessage, setErrorMessage] = useState('');
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
+
+    useEffect(() => {
+        document.body.classList.add('no-padding');
+        return () => {
+            document.body.classList.remove('no-padding');
+        };
+    }, []);
 
     const handleLogin = async () => {
         if (!username || !password) {

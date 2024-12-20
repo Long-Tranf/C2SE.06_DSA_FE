@@ -91,7 +91,6 @@ function Profile() {
     const handleChangePassword = async (e) => {
         e.preventDefault();
 
-        // Kiểm tra mật khẩu xác nhận có khớp không
         if (newPassword !== confirmPassword) {
             setPasswordError('Mật khẩu mới và xác nhận mật khẩu không khớp.');
             return;
@@ -121,10 +120,10 @@ function Profile() {
             alert('Đổi mật khẩu thành công');
             window.location.reload();
         } catch (error) {
-            if (error.response) {
-                console.log(error.response.data.errors);
+            console.log('Error:', error); // Log error for debugging
+            if (error.response && error.response.data.errors) {
                 setPasswordError(error.response.data.errors);
-                alert(error.response.data.message);
+                alert(error.response.data.message || 'Đã xảy ra lỗi');
             } else {
                 alert('Đã xảy ra lỗi');
             }

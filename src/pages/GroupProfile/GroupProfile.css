@@ -63,6 +63,7 @@ p.lead {
 .association_avatar {
     width: 480px;
     height: 300px;
+    margin-bottom: 30px;
 }
 
 .link-association {

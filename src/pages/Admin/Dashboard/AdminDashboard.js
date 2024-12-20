@@ -70,6 +70,7 @@ function AdminDashboard() {
           ]
         : [
               { path: '/dashboardadmin/AssociationProfile', label: 'Profile' },
+              { path: '/dashboardadmin/changepassword', label: 'Đổi Mật Khẩu' },
               { path: '/dashboardadmin/post', label: 'Bài Viết' },
               { path: '/dashboardadmin/post/add', label: 'Thêm Mới Bài Viết' },
               { path: '/dashboardadmin/event', label: 'Sự Kiện' },
