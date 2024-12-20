@@ -32,6 +32,10 @@
     margin: 14px 0;
 }
 
+.contact .contactLeft div {
+    flex: 1;
+}
+
 .contact .inputContact {
     width: 100%;
     outline: none;

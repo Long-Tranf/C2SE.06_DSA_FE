@@ -18,6 +18,12 @@ import Footer from '~/components/Layout/components/Footer/footer';
 function Profile() {
     const [key, setKey] = useState('general');
     const [user, setUser] = useState(null);
+    const [loading, setLoading] = useState(false);
+    const [errors, setErrors] = useState({});
+    const [currentPassword, setCurrentPassword] = useState('');
+    const [newPassword, setNewPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
+    const [passwordError, setPasswordError] = useState('');
 
     const fetchUserData = async () => {
         const token = localStorage.getItem('accessToken');
@@ -36,14 +42,95 @@ function Profile() {
                     },
                 },
             );
-            setUser(response.data.user); // Lưu thông tin người dùng vào state
+            setUser(response.data.user);
         } catch (error) {
             console.error('Token không hợp lệ hoặc lỗi hệ thống:', error);
-            setUser(null); // Token không hợp lệ
+            setUser(null);
         }
     };
 
-    // Gọi hàm fetchUserData khi component được render lần đầu
+    const handleUpdate = async (e) => {
+        e.preventDefault();
+        setLoading(true);
+
+        const token = localStorage.getItem('accessToken');
+        if (!token) {
+            alert('User not authorized');
+            setLoading(false);
+            return;
+        }
+
+        try {
+            const response = await axios.put(
+                `http://127.0.0.1:8000/api/member/update/${user.id}`,
+                {
+                    user_name: user.user_name,
+                    full_name: user.full_name,
+                    subscriber_email: user.subscriber_email,
+                    phone_number: user.phone_number,
+                    address: user.address,
+                },
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                },
+            );
+
+            setUser(response.data.member);
+            alert('Cập nhật thông tin thành công');
+            window.location.reload();
+        } catch (error) {
+            setErrors(error.response.data.errors);
+            alert('Cập nhật thất bại');
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleChangePassword = async (e) => {
+        e.preventDefault();
+
+        // Kiểm tra mật khẩu xác nhận có khớp không
+        if (newPassword !== confirmPassword) {
+            setPasswordError('Mật khẩu mới và xác nhận mật khẩu không khớp.');
+            return;
+        }
+
+        const token = localStorage.getItem('accessToken');
+        if (!token) {
+            alert('User not authorized');
+            return;
+        }
+
+        try {
+            const response = await axios.put(
+                `http://127.0.0.1:8000/api/member/${user.id}/change-password`,
+                {
+                    current_password: currentPassword,
+                    new_password: newPassword,
+                    new_password_confirmation: confirmPassword,
+                },
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                },
+            );
+
+            alert('Đổi mật khẩu thành công');
+            window.location.reload();
+        } catch (error) {
+            if (error.response) {
+                console.log(error.response.data.errors);
+                setPasswordError(error.response.data.errors);
+                alert(error.response.data.message);
+            } else {
+                alert('Đã xảy ra lỗi');
+            }
+        }
+    };
+
     useEffect(() => {
         fetchUserData();
     }, []);
@@ -82,7 +169,7 @@ function Profile() {
                                 active={key === 'general'}
                                 className="account-settings-general"
                             >
-                                <Form>
+                                <Form onSubmit={handleUpdate}>
                                     <Form.Group className="mb-3 text-center">
                                         <Image
                                             src={
@@ -107,6 +194,11 @@ function Profile() {
                                             readOnly
                                             className="account-settings-username"
                                         />
+                                        {errors.user_name && (
+                                            <p className="error-message">
+                                                {errors.user_name[0]}
+                                            </p>
+                                        )}
                                     </Form.Group>
                                     <Form.Group className="mb-3">
                                         <Form.Label className="account-settings-form-control-label">
@@ -123,13 +215,18 @@ function Profile() {
                                             }
                                             className="account-settings-full-name"
                                         />
+                                        {errors.full_name && (
+                                            <p className="error-message">
+                                                {errors.full_name[0]}
+                                            </p>
+                                        )}
                                     </Form.Group>
                                     <Form.Group className="mb-3">
                                         <Form.Label className="account-settings-form-control-label">
                                             Email
                                         </Form.Label>
                                         <Form.Control
-                                            type="email"
+                                            type="text"
                                             value={user.subscriber_email || ''}
                                             onChange={(e) =>
                                                 setUser({
@@ -140,6 +237,11 @@ function Profile() {
                                             }
                                             className="account-settings-email"
                                         />
+                                        {errors.subscriber_email && (
+                                            <p className="error-message">
+                                                {errors.subscriber_email[0]}
+                                            </p>
+                                        )}
                                     </Form.Group>
                                     <Form.Group className="mb-3">
                                         <Form.Label className="account-settings-form-control-label">
@@ -157,22 +259,11 @@ function Profile() {
                                             }
                                             className="account-settings-phone-number"
                                         />
-                                    </Form.Group>
-                                    <Form.Group className="mb-3">
-                                        <Form.Label className="account-settings-form-control-label">
-                                            Birthdate
-                                        </Form.Label>
-                                        <Form.Control
-                                            type="date"
-                                            value={user.birthdate || ''}
-                                            onChange={(e) =>
-                                                setUser({
-                                                    ...user,
-                                                    birthdate: e.target.value,
-                                                })
-                                            }
-                                            className="account-settings-birthdate"
-                                        />
+                                        {errors.phone_number && (
+                                            <p className="error-message">
+                                                {errors.phone_number[0]}
+                                            </p>
+                                        )}
                                     </Form.Group>
                                     <Form.Group className="mb-3">
                                         <Form.Label className="account-settings-form-control-label">
@@ -189,14 +280,20 @@ function Profile() {
                                             }
                                             className="account-settings-address"
                                         />
+                                        {errors.address && (
+                                            <p className="error-message">
+                                                {errors.address[0]}
+                                            </p>
+                                        )}
                                     </Form.Group>
 
                                     <Button
                                         variant="primary"
                                         type="submit"
                                         className="account-settings-save-button"
+                                        disabled={loading}
                                     >
-                                        Save Changes
+                                        {loading ? 'Saving...' : 'Save Changes'}
                                     </Button>
                                 </Form>
                             </Tab.Pane>
@@ -212,8 +309,22 @@ function Profile() {
                                         </Form.Label>
                                         <Form.Control
                                             type="password"
-                                            className="account-settings-current-password"
+                                            value={currentPassword}
+                                            onChange={(e) =>
+                                                setCurrentPassword(
+                                                    e.target.value,
+                                                )
+                                            }
+                                            className="account-settings-current-password  current-pasword"
                                         />
+                                        {passwordError.current_password && (
+                                            <p className="error-message">
+                                                {
+                                                    passwordError
+                                                        .current_password[0]
+                                                }
+                                            </p>
+                                        )}
                                     </Form.Group>
                                     <Form.Group className="mb-3">
                                         <Form.Label className="account-settings-form-control-label">
@@ -221,8 +332,17 @@ function Profile() {
                                         </Form.Label>
                                         <Form.Control
                                             type="password"
+                                            value={newPassword}
+                                            onChange={(e) =>
+                                                setNewPassword(e.target.value)
+                                            }
                                             className="account-settings-new-password"
                                         />
+                                        {passwordError.new_password && (
+                                            <p className="error-message">
+                                                {passwordError.new_password[0]}
+                                            </p>
+                                        )}
                                     </Form.Group>
                                     <Form.Group className="mb-3">
                                         <Form.Label className="account-settings-form-control-label">
@@ -230,13 +350,28 @@ function Profile() {
                                         </Form.Label>
                                         <Form.Control
                                             type="password"
+                                            value={confirmPassword}
+                                            onChange={(e) =>
+                                                setConfirmPassword(
+                                                    e.target.value,
+                                                )
+                                            }
                                             className="account-settings-confirm-password"
                                         />
+                                        {passwordError.new_password_confirmation && (
+                                            <p className="error-message">
+                                                {
+                                                    passwordError
+                                                        .new_password_confirmation[0]
+                                                }
+                                            </p>
+                                        )}
                                     </Form.Group>
                                     <Button
                                         variant="primary"
                                         type="submit"
                                         className="account-settings-change-password-button"
+                                        onClick={handleChangePassword}
                                     >
                                         Change Password
                                     </Button>

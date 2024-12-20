@@ -1,3 +1,4 @@
+import React, { useEffect } from 'react';
 import {
     BrowserRouter as Router,
     Routes,
@@ -5,6 +6,7 @@ import {
     Navigate,
 } from 'react-router-dom';
 import { publicRoutes, privateRoutes, privateRoutesAdmin } from '~/routes';
+import ScrollToTopButton from './components/Layout/components/ScrollToTopButton/ScrollToTopButton';
 
 function App() {
     var isAuthenticatedMember = false;
@@ -20,6 +22,28 @@ function App() {
         isAuthenticatedAdmin = true;
     }
     console.log(isAuthenticatedAdmin);
+
+    useEffect(() => {
+        const updateVisitCount = async () => {
+            try {
+                const response = await fetch(
+                    'http://127.0.0.1:8000/api/tracking',
+                    {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                    },
+                );
+                const data = await response.json();
+                console.log('Total visit count updated:', data.visit_count);
+            } catch (error) {
+                console.error('Error updating visit count:', error);
+            }
+        };
+
+        updateVisitCount();
+    }, []);
 
     return (
         <Router>
@@ -79,6 +103,7 @@ function App() {
                         </Route>
                     ))}
                 </Routes>
+                <ScrollToTopButton />
             </div>
         </Router>
     );

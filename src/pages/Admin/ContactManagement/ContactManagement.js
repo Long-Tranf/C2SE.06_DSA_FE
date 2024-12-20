@@ -66,7 +66,6 @@ function ContantManagement() {
                         <th>Nội dung</th>
                         <th>Tên người gửi</th>
                         <th>Email</th>
-                        <th>Tình trạng</th>
                         <th>Hành động</th>
                     </tr>
                 </thead>
@@ -78,7 +77,6 @@ function ContantManagement() {
                             <td>{content.content}</td>
                             <td>{content.sender_name}</td>
                             <td>{content.email_sender}</td>
-                            <td>{content.status}</td>
                             <td>
                                 <button
                                     onClick={() => openViewModal(content)}
@@ -187,15 +185,6 @@ function ContantManagement() {
                                 type="email"
                                 className="form-control"
                                 value={currentContent.email_sender}
-                                readOnly
-                            />
-                        </div>
-                        <div className="form-group">
-                            <label>Tình trạng</label>
-                            <input
-                                type="text"
-                                className="form-control"
-                                value={currentContent.status}
                                 readOnly
                             />
                         </div>

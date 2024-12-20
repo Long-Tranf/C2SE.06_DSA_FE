@@ -41,16 +41,18 @@ function Banner() {
                     <img src={banners.banner1.image} alt="Banner 1" />
                 </div>
             )}
-            {banners.banner2 && (
-                <div className="banner banner-small">
-                    <img src={banners.banner2.image} alt="Banner 2" />
-                </div>
-            )}
-            {banners.banner3 && (
-                <div className="banner banner-small">
-                    <img src={banners.banner3.image} alt="Banner 3" />
-                </div>
-            )}
+            <div className="inner-banner">
+                {banners.banner2 && (
+                    <div className="banner banner-small">
+                        <img src={banners.banner2.image} alt="Banner 2" />
+                    </div>
+                )}
+                {banners.banner3 && (
+                    <div className="banner banner-small">
+                        <img src={banners.banner3.image} alt="Banner 3" />
+                    </div>
+                )}
+            </div>
         </div>
     );
 }

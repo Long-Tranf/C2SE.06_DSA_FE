@@ -4,10 +4,12 @@ import Header from '~/components/Layout/components/Header/header';
 import Footer from '~/components/Layout/components/Footer/footer';
 import Breadcrumb from '~/components/Layout/components/Breadcrumb/Breadcumb';
 import NewSidebar from '~/components/Layout/components/ContentHomePage/NewSidebar/NewSidebar';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
+import axios from 'axios';
 
 const Post = () => {
     const { postId } = useParams();
+    const [relatedPosts, setRelatedPosts] = useState([]);
     const [post, setPost] = useState(null);
 
     useEffect(() => {
@@ -18,14 +20,26 @@ const Post = () => {
                 );
                 const data = await response.json();
                 setPost(data.post);
+
+                axios
+                    .get(
+                        `http://127.0.0.1:8000/api/posts/top-excluding/${postId}`,
+                    )
+                    .then((response) => setRelatedPosts(response.data))
+                    .catch((error) => {
+                        console.error(
+                            'Lỗi khi lấy danh sách bài viết liên quan:',
+                            error,
+                        );
+                    });
             } catch (error) {
                 console.error('Lỗi khi tải bài viết:', error);
             }
         };
-
         fetchPost();
     }, [postId]);
     console.log(post);
+    console.log(relatedPosts);
 
     if (!post) {
         return <div>Loading...</div>;
@@ -51,24 +65,43 @@ const Post = () => {
             <div className="content-container">
                 <div className="post-content">
                     <h1>{post.title}</h1>
-                    <div className="meta-list">
-                        <div className="meta-info">
-                            <i className="fas fa-calendar-alt meta-info-icon"></i>
-                            <p>
-                                {new Date(post.created_at).toLocaleDateString()}
-                            </p>
+                    <div className="meta-container">
+                        <div className="meta-list">
+                            <div className="meta-info">
+                                <i className="fas fa-calendar-alt meta-info-icon"></i>
+                                <p>
+                                    {new Date(
+                                        post.created_at,
+                                    ).toLocaleDateString()}
+                                </p>
+                            </div>
+                            <div className="meta-info">
+                                <i className="fas fa-clock meta-info-icon"></i>
+                                <p>
+                                    {new Date(
+                                        post.created_at,
+                                    ).toLocaleTimeString()}
+                                </p>
+                            </div>
+                            <div className="meta-info">
+                                <i className="fas fa-eye meta-info-icon"></i>
+                                <p>{post.view}</p>
+                            </div>
                         </div>
-                        <div className="meta-info">
-                            <i className="fas fa-clock meta-info-icon"></i>
-                            <p>
-                                {new Date(post.created_at).toLocaleTimeString()}
-                            </p>
-                        </div>
-                        <div className="meta-info">
-                            <i className="fas fa-eye meta-info-icon"></i>
-                            <p>{post.view}</p>
+                        <div className="association-info">
+                            <Link to={`/association/${post.association.id}`}>
+                                <img
+                                    src={post.association.avatar}
+                                    alt="Association"
+                                    className="association-image"
+                                />
+                                <p className="association-name">
+                                    {post.association.company_name}
+                                </p>
+                            </Link>
                         </div>
                     </div>
+
                     <div className="post-body">
                         <div
                             className="content-output"
@@ -84,18 +117,22 @@ const Post = () => {
                     <div className="related-posts-news">
                         <h3>Bài viết liên quan</h3>
                         <div className="related-post-list">
-                            <div className="related-post-new-item">
-                                <img src="image1.jpg" alt="Related 1" />
-                                <p>Bài viết 1</p>
-                            </div>
-                            <div className="related-post-new-item">
-                                <img src="image2.jpg" alt="Related 2" />
-                                <p>Bài viết 2</p>
-                            </div>
-                            <div className="related-post-new-item">
-                                <img src="image3.jpg" alt="Related 3" />
-                                <p>Bài viết 3</p>
-                            </div>
+                            {relatedPosts.map((post) => {
+                                return (
+                                    <div
+                                        className="related-post-new-item"
+                                        key={post.id}
+                                    >
+                                        <img src={post.image} alt="Related 1" />
+                                        <Link
+                                            to={`/post/${post.id}`}
+                                            className="related-post-new-title"
+                                        >
+                                            {post.title}
+                                        </Link>
+                                    </div>
+                                );
+                            })}
                         </div>
                     </div>
                 </div>

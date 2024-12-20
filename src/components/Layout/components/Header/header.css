@@ -104,6 +104,7 @@
 .notification-link {
     color: #000;
     display: block;
+    margin-bottom: 8px;
 }
 
 .notif-item:hover {
@@ -152,6 +153,26 @@
     transform: translateY(3px);
 }
 
+/* --- menu icon respon --- */
+.menu-btn {
+    display: none;
+    width: 44px;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    opacity: 1;
+    transition: opacity ease 0.3s;
+}
+
+.menu-btn:hover {
+    opacity: 0.6;
+}
+
+.menu-icon {
+    font-size: 18px;
+    color: #000;
+}
+
 .menu-list-item {
     display: flex;
     font-size: 16px;
@@ -164,6 +185,36 @@
     line-height: 30px;
     width: 100%;
     padding: 10px;
+}
+
+.home-item {
+    display: none;
+    font-size: 16px;
+    position: relative;
+    width: 200px;
+    cursor: pointer;
+    height: auto;
+    flex: 1 1;
+    line-height: 30px;
+    width: 100%;
+    padding: 10px;
+    justify-content: center;
+    background-color: #ececec;
+    padding: 6px;
+}
+
+.active {
+    display: flex;
+}
+
+.home-item a {
+    color: #000;
+}
+
+.home-link {
+    color: #000;
+    padding: 10px 12px;
+    display: block;
 }
 
 .sub-menu-list .menu-list-item a {
@@ -182,7 +233,7 @@
 /* Sub Menu*/
 .sub-menu-list {
     position: absolute;
-    top: 32px;
+    top: 100%;
     left: 0;
     right: 0;
     padding: 0;
@@ -193,10 +244,10 @@
     z-index: 10;
     flex-direction: column;
     align-items: flex-start;
-    animation: slideDown 0.3s ease-in-out;
-    opacity: 0;
-    transform: translateY(-10px);
-    transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+    /* animation: slideDown 0.3s ease-in-out; */
+    /* opacity: 0; */
+    /* transform: translateY(-10px);
+    transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out; */
 }
 
 .menu-link {
@@ -272,7 +323,7 @@
     object-fit: cover;
 }
 
-/* Animation xổ xuống */
+/* animation xổ xuống */
 @keyframes slideDown {
     from {
         transform: translateY(-10px);
@@ -288,6 +339,7 @@
     display: flex;
     opacity: 1;
     transform: translateY(0);
+    padding: 0;
 }
 
 .menu-list-item .menu-item-icon {

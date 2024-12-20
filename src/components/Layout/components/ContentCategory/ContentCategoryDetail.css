@@ -53,6 +53,12 @@
     padding: 0 20px 20px;
 }
 
+.img-post-caterogy {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
 /* Pagination */
 .pagination-wrapper {
     display: flex;
@@ -85,8 +91,9 @@
 }
 
 .post-image {
-    width: 376px;
+    width: 300px;
     margin-right: 20px;
+    height: 200px;
 }
 
 .post-details {
@@ -97,12 +104,105 @@
     font-size: 20px;
     font-weight: 600;
     color: var(--title-color);
-    margin: 10px 0 10px 14px;
+    margin: 10px 0;
     display: block;
 }
 
+.desc-post-title {
+    font-size: 20px;
+    font-weight: 600;
+    color: #616161;
+    margin: 10px 0;
+    display: block;
+}
+
+.category-post-container {
+    height: 110px;
+}
+
 .category-post-content {
-    font-size: 16px;
+    font-size: 14px;
     width: 762px;
     font-weight: 300;
+}
+
+.category-post-view {
+    display: flex;
+    align-items: center;
+}
+
+.desc-post-content {
+    width: 1158px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    margin-top: 20px;
+    color: #333;
+    word-wrap: break-word;
+    font-size: 14px;
+}
+
+.desc-post-content img {
+    max-width: 1158px;
+}
+
+/* các class đã được định nghĩa trong ReactQuill */
+
+.content-output {
+    background-color: #ffffff;
+    border-radius: 8px;
+    margin-top: 20px;
+    color: #333;
+    word-wrap: break-word;
+    font-size: 14px;
+}
+
+.content-output p {
+    margin: 10px 0;
+    text-align: left;
+}
+
+.content-output .ql-align-center {
+    text-align: center !important;
+}
+
+.content-output .ql-align-right {
+    text-align: right !important;
+}
+
+.content-output .ql-align-justify {
+    text-align: justify !important;
+}
+
+.content-output img {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 100%;
+    height: auto;
+}
+
+.content-output h1,
+.content-output h2 {
+    margin-bottom: 10px;
+}
+
+.content-output ul,
+.content-output ol {
+    margin-left: 20px;
+}
+
+.ql-font-Times-New-Roman {
+    font-family: 'Times New Roman', Times, serif;
+}
+
+.ql-font-sans-serif {
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.ql-font-serif {
+    font-family: 'Times New Roman', Times, serif;
+}
+
+.ql-font-monospace {
+    font-family: 'Courier New', Courier, monospace;
 }

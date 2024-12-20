@@ -17,8 +17,8 @@ const Contact = () => {
         status: 'pending',
     });
 
-    const [errors, setErrors] = useState({}); // Lưu lỗi từ backend
-    const [statusMessage, setStatusMessage] = useState('');
+    const [errors, setErrors] = useState({});
+    //const [statusMessage, setStatusMessage] = useState('');
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -27,10 +27,8 @@ const Contact = () => {
 
     const handleSubmit = async () => {
         const { title, content, sender_name, email_sender, status } = formData;
-
-        // Reset lỗi trước khi gửi
         setErrors({});
-        setStatusMessage('');
+        //setStatusMessage('');
 
         try {
             const response = await axios.post(
@@ -40,11 +38,11 @@ const Contact = () => {
                     content,
                     sender_name,
                     email_sender,
-                    status: 'pending', // Hoặc giá trị khác hợp lệ
+                    status: 'pending',
                 },
             );
             console.log('Response:', response.data);
-            setStatusMessage('Gửi liên hệ thành công!');
+            alert('Gửi liên hệ thành công!');
             setFormData({
                 title: '',
                 sender_name: '',
@@ -56,7 +54,7 @@ const Contact = () => {
             if (error.response && error.response.status === 422) {
                 setErrors(error.response.data.errors || {});
             } else {
-                setStatusMessage('Có lỗi xảy ra, vui lòng thử lại.');
+                alert('Có lỗi xảy ra, vui lòng thử lại.');
                 console.error('Error:', error.response?.data || error.message);
             }
         }
@@ -132,9 +130,9 @@ const Contact = () => {
                             >
                                 GỬI
                             </button>
-                            {statusMessage && (
+                            {/* {statusMessage && (
                                 <p className="statusMessage">{statusMessage}</p>
-                            )}
+                            )} */}
                         </div>
                         <div className="contactRight">
                             <p className="contactRight-title">

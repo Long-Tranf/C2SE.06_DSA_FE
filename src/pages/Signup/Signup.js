@@ -10,6 +10,7 @@ function Signup() {
     const [formData, setFormData] = useState({
         user_name: '',
         password: '',
+        password_confirmation: '',
         avatar: 'http://example.com/avatar.jpg',
         full_name: '',
         address: '',
@@ -36,6 +37,7 @@ function Signup() {
                 {
                     user_name: formData.user_name,
                     password: formData.password,
+                    password_confirmation: formData.password_confirmation,
                     avatar: formData.avatar,
                     full_name: formData.full_name,
                     address: formData.address,
@@ -227,8 +229,8 @@ function Signup() {
                                         type="password"
                                         className="form-control form-control-lg fs-6"
                                         placeholder="Confirm Password"
-                                        name="confirmPassword"
-                                        value={formData.confirmPassword}
+                                        name="password_confirmation"
+                                        value={formData.password_confirmation}
                                         onChange={handleInputChange}
                                     />
                                 </div>

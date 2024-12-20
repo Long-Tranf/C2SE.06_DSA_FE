@@ -84,10 +84,10 @@ function UserManagement() {
     const handleFileChange = (e) => {
         const file = e.target.files[0];
         if (file) {
-            const imageUrl = URL.createObjectURL(file);
+            //const imageUrl = URL.createObjectURL(file);
             setFormData((prevState) => ({
                 ...prevState,
-                avatar: imageUrl,
+                avatar: file,
             }));
         }
     };
@@ -115,9 +115,19 @@ function UserManagement() {
 
     const handleAddUser = async () => {
         try {
+            const data = new FormData();
+            // Thêm tất cả các trường vào FormData
+            Object.keys(formData).forEach((key) => {
+                data.append(key, formData[key]);
+            });
             const response = await axios.post(
                 'http://127.0.0.1:8000/api/member/create',
-                formData,
+                data,
+                {
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                    },
+                },
             );
             setUsers([...users, response.data]);
             closeModal();
@@ -190,7 +200,12 @@ function UserManagement() {
                             <td>{user.address}</td>
                             <td>
                                 <img
-                                    src={user.avatar}
+                                    src={
+                                        user.avatar &&
+                                        user.avatar.startsWith('http')
+                                            ? user.avatar
+                                            : `http://127.0.0.1:8000/storage/${user.avatar}`
+                                    }
                                     alt="avatar"
                                     width="50"
                                     height="50"
@@ -292,7 +307,7 @@ function UserManagement() {
                         <div className="form-group">
                             <label>Mật Khẩu</label>
                             <input
-                                type="text"
+                                type="password"
                                 className="form-control"
                                 name="password"
                                 value={formData.password}
@@ -372,6 +387,11 @@ function UserManagement() {
                                 name="avatar"
                                 onChange={handleFileChange}
                             />
+                            {errors.avatar && (
+                                <p className="error-message">
+                                    {errors.avatar[0]}
+                                </p>
+                            )}
                         </div>
                         <div className="form-group">
                             <label>Trạng thái</label>

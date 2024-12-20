@@ -91,7 +91,7 @@ function EventManagement() {
             event_date: '',
             end_date: '',
             location: '',
-            status: 'pending',
+            status: '',
         });
         setShowModal(true);
     };

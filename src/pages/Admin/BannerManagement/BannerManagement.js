@@ -7,6 +7,8 @@ function BannerManagement() {
     const [banners, setBanners] = useState([]);
     const [showModal, setShowModal] = useState(false);
     const [currentBanner, setCurrentBanner] = useState(null);
+    const [errors, setErrors] = useState({});
+
     const [formData, setFormData] = useState({
         priority: 0,
         is_open: 1,
@@ -85,7 +87,13 @@ function BannerManagement() {
                 fetchBanners();
                 closeModal();
             } catch (error) {
-                console.error('Error updating banner:', error);
+                console.log(error);
+                if (error.response && error.response.data) {
+                    setErrors(error.response.data.errors);
+                    console.log(errors);
+                } else {
+                    alert('Không thể lưu banner. Vui lòng thử lại!');
+                }
             }
         } else {
             try {
@@ -96,7 +104,13 @@ function BannerManagement() {
                 fetchBanners();
                 closeModal();
             } catch (error) {
-                console.error('Error creating banner:', error);
+                console.log(error);
+                if (error.response && error.response.data) {
+                    setErrors(error.response.data.errors);
+                    console.log(errors);
+                } else {
+                    alert('Không thể thêm banner. Vui lòng thử lại!');
+                }
             }
         }
     };
@@ -104,7 +118,7 @@ function BannerManagement() {
     const handleDelete = async (id) => {
         try {
             await axios.delete(
-                `http://127.0.0.1:8000/api/ConfigBanners/delete/${id}`,
+                `http://127.0.0.1:8000/api/ConfigBanners/delete${id}`,
             );
             fetchBanners();
         } catch (error) {
@@ -268,26 +282,18 @@ function BannerManagement() {
                                 value={formData.image}
                                 onChange={handleInputChange}
                             />
-                            {formData.image && (
-                                <div className="mt-2">
-                                    <img
-                                        src={formData.image}
-                                        alt="uploaded"
-                                        style={{
-                                            width: '50px',
-                                            height: '50px',
-                                        }}
-                                    />
-                                </div>
-                            )}
                         </div>
                         <div className="form-group">
-                            <label>Hình ảnh (Tải lên từ máy tính)</label>
                             <input
                                 type="file"
                                 className="form-control"
                                 onChange={handleFileChange}
                             />
+                            {errors.image && (
+                                <p className="error-message">
+                                    {errors.image[0]}
+                                </p>
+                            )}
                             {formData.image && (
                                 <div className="mt-2">
                                     <img

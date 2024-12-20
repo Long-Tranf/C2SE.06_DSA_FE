@@ -1,54 +1,57 @@
-/* Đặt lại một số thuộc tính cho thư viện */
 .library-container {
-    padding: 20px;
-    text-align: center;
+    /* padding: 20px; */
+    /* text-align: center; */
 }
 
-/* Bố trí các hình ảnh bằng CSS Grid */
+.library-heading {
+    font-size: 30px;
+    margin: 40px 0 20px 10px;
+}
+
+.library-list {
+    margin: 20px;
+}
+
 .image-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr); /* 4 cột */
-    gap: 3px; /* Khoảng cách giữa các hình ảnh */
+    grid-template-columns: repeat(4, 1fr);
+    gap: 3px;
     justify-items: center;
     margin-top: 20px;
 }
 
-/* Định dạng cho mỗi hình ảnh */
 .image-item {
     position: relative;
     overflow: hidden;
-    border-radius: 8px; /* Thêm bo góc cho hình ảnh */
+    border-radius: 8px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s ease-in-out; /* Chuyển động mượt mà khi hover */
+    transition: transform 0.3s ease-in-out;
     cursor: pointer;
 }
 
-/* Cố định kích thước hình ảnh và đảm bảo chúng có tỷ lệ phù hợp */
 .image-item img {
-    width: 100%; /* Chiều rộng hình ảnh chiếm hết không gian của div */
-    height: 230px; /* Chiều cao cố định, tạo tỷ lệ hình chữ nhật */
-    object-fit: cover; /* Cắt hình ảnh nếu cần để vừa với kích thước */
+    width: 100%;
+    height: 230px;
+    object-fit: cover;
     transition: transform 0.3s ease;
 }
 
 .image-item:hover img {
-    transform: scale(1.1); /* Phóng to hình ảnh khi hover */
+    transform: scale(1.1);
 }
 
-/* Tiêu đề trang */
 .library-container h2 {
     font-size: 2em;
     margin-bottom: 20px;
 }
 
-/* Modal - Lớp phủ */
 .modal-overlay {
     position: fixed;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(0, 0, 0, 0.7); /* Lớp phủ đen */
+    background: rgba(0, 0, 0, 0.7);
     display: flex;
     justify-content: center;
     align-items: center;

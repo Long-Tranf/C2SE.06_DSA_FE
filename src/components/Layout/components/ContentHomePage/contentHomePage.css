@@ -25,3 +25,21 @@
     gap: 8px;
     width: 20%;
 }
+
+.contentHomePage .news .wrappRight {
+    display: flex;
+    gap: 20px;
+    width: 40%;
+}
+
+.contentHomePage .news .wrappRight .newSidebar {
+    flex: 1;
+}
+
+.contentHomePage .news .wrappRight .logoSidebar {
+    display: flex;
+    flex-wrap: wrap;
+    height: min-content;
+    gap: 8px;
+    flex: 1;
+}

@@ -105,12 +105,15 @@ function AssociationManagement() {
 
     const handleUpdateAssociation = () => {
         axios
-            .put(`http://127.0.0.1:8000/api/Association/update`, formData)
-            .then((response) => {
+            .put(`http://127.0.0.1:8000/api/associations/update`, {
+                id: currentAssociation.id,
+                ...formData,
+            })
+            .then(() => {
                 setAssociations(
                     associations.map((association) =>
                         association.id === currentAssociation.id
-                            ? { ...association, ...response.data }
+                            ? { ...association, ...formData }
                             : association,
                     ),
                 );
@@ -140,10 +143,17 @@ function AssociationManagement() {
     };
 
     const handleDeleteAssociation = (id) => {
-        const newAssociations = associations.filter(
-            (association) => association.id !== id,
-        );
-        setAssociations(newAssociations);
+        axios
+            .delete(`http://127.0.0.1:8000/api/Association/delete${id}`)
+            .then(() => {
+                setAssociations(
+                    associations.filter((association) => association.id !== id),
+                );
+            })
+            .catch((error) => {
+                console.error('Error deleting association:', error);
+                alert('Không thể xóa hiệp hội. Vui lòng thử lại!');
+            });
     };
 
     const [currentPage, setCurrentPage] = useState(1);

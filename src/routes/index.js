@@ -3,6 +3,7 @@ import Login from '~/pages/Login/Login';
 import Signup from '~/pages/Signup/Signup';
 import Search from '~/pages/Search/Search';
 import Profile from '~/pages/Profile/Profile';
+import EventList from '~/pages/EventList/EventList';
 import CategoryDetail from '~/pages/CategoryDetail/CategoryDetail';
 import Post from '~/pages/Post/Post';
 import Library from '~/pages/LibraryPage/Library';
@@ -57,6 +58,10 @@ const publicRoutes = [
     {
         path: '/library',
         element: <Library />,
+    },
+    {
+        path: '/event',
+        element: <EventList />,
     },
 ];
 

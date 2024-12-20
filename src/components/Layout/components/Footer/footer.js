@@ -94,6 +94,7 @@ function Footer() {
                     </div>
                 </div>
             </div>
+            <div className="tracking"></div>
             <div className="footer__bottom">
                 <div className="grid wide">
                     <p className="footer__text">

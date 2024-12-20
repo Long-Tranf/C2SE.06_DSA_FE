@@ -12,6 +12,10 @@
     margin: 0 auto;
 }
 
+.current-pasword {
+    font-size: 1.5rem;
+}
+
 .account-settings-avatar {
     display: block;
     margin: 10px auto 0;

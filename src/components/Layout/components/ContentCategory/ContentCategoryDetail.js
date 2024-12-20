@@ -103,73 +103,76 @@ function ContentCategoryDetail() {
                 </div>
 
                 <div className="main-content">
-                    <div className="posts-list">
-                        {currentPosts.map(
-                            (post) =>
-                                post.is_open === 1 && (
-                                    <div
-                                        key={post.id}
-                                        className="post-item d-flex"
-                                    >
-                                        <div className="post-image">
-                                            <img
-                                                src={post.image}
-                                                alt={post.title}
-                                                className="img-fluid"
-                                            />
+                    {posts.length === 1 ? (
+                        <div key={posts[0].id} className="post-item d-flex">
+                            <div className="post-details">
+                                <h2 className="desc-post-title">
+                                    {posts[0].title}
+                                </h2>
+                                <div
+                                    className="desc-post-content"
+                                    dangerouslySetInnerHTML={{
+                                        __html: posts[0].content,
+                                    }}
+                                ></div>
+                            </div>
+                        </div>
+                    ) : (
+                        <div className="posts-list">
+                            {currentPosts.map(
+                                (post) =>
+                                    post.is_open === 1 && (
+                                        <div
+                                            key={post.id}
+                                            className="post-item d-flex"
+                                        >
+                                            <div className="post-image">
+                                                <img
+                                                    src={post.image}
+                                                    alt={post.title}
+                                                    className="img-fluid img-post-caterogy"
+                                                />
+                                            </div>
+                                            <div className="post-details">
+                                                <Link
+                                                    to={`/post/${post.id}`}
+                                                    className="category-post-title"
+                                                >
+                                                    {post.title}
+                                                </Link>
+                                                <div className="category-post-container">
+                                                    <p
+                                                        className="category-post-content"
+                                                        dangerouslySetInnerHTML={{
+                                                            __html: removeImagesFromContent(
+                                                                truncateText(
+                                                                    post.content,
+                                                                    350,
+                                                                ),
+                                                            ),
+                                                        }}
+                                                    ></p>
+                                                </div>
+                                                <div className="category-post-view">
+                                                    <i className="fas fa-eye meta-info-icon"></i>
+                                                    <p>{post.view}</p>
+                                                </div>
+                                            </div>
                                         </div>
-                                        <div className="post-details">
-                                            <Link
-                                                to={`/post/${post.id}`}
-                                                className="category-post-title"
-                                            >
-                                                {post.title}
-                                            </Link>
-                                            <p
-                                                className="category-post-content"
-                                                dangerouslySetInnerHTML={{
-                                                    __html: removeImagesFromContent(
-                                                        truncateText(
-                                                            post.content,
-                                                            350,
-                                                        ),
-                                                    ),
-                                                }}
-                                            ></p>
-                                        </div>
-                                    </div>
-                                ),
-                        )}
-                    </div>
+                                    ),
+                            )}
+                        </div>
+                    )}
                 </div>
             </div>
 
-            <div className="pagination-wrapper">
-                <nav aria-label="...">
-                    <ul className="pagination justify-content-center">
-                        <li
-                            className={`page-item ${
-                                currentPage === 1 ? 'disabled' : ''
-                            }`} // Disable Previous if on the first page
-                        >
-                            <a
-                                className="page-link"
-                                href="#"
-                                onClick={(e) => {
-                                    e.preventDefault();
-                                    if (currentPage > 1) {
-                                        setCurrentPage(currentPage - 1);
-                                    }
-                                }}
-                            >
-                                Previous
-                            </a>
-                        </li>
-                        {[...Array(totalPages)].map((_, index) => (
+            {posts.length !== 1 && (
+                <div className="pagination-wrapper">
+                    <nav aria-label="...">
+                        <ul className="pagination justify-content-center">
                             <li
-                                key={index}
                                 className={`page-item ${
-                                    currentPage === index + 1 ? 'active' : ''
+                                    currentPage === 1 ? 'disabled' : ''
                                 }`}
                             >
                                 <a
@@ -177,36 +180,60 @@ function ContentCategoryDetail() {
                                     href="#"
                                     onClick={(e) => {
                                         e.preventDefault();
-                                        setCurrentPage(index + 1);
+                                        if (currentPage > 1) {
+                                            setCurrentPage(currentPage - 1);
+                                        }
                                     }}
                                 >
-                                    {index + 1}
+                                    Previous
                                 </a>
                             </li>
-                        ))}
-                        <li
-                            className={`page-item ${
-                                currentPage === totalPages || totalPages === 0
-                                    ? 'disabled'
-                                    : ''
-                            }`} // Disable Next if on the last page
-                        >
-                            <a
-                                className="page-link"
-                                href="#"
-                                onClick={(e) => {
-                                    e.preventDefault();
-                                    if (currentPage < totalPages) {
-                                        setCurrentPage(currentPage + 1);
-                                    }
-                                }}
+                            {[...Array(totalPages)].map((_, index) => (
+                                <li
+                                    key={index}
+                                    className={`page-item ${
+                                        currentPage === index + 1
+                                            ? 'active'
+                                            : ''
+                                    }`}
+                                >
+                                    <a
+                                        className="page-link"
+                                        href="#"
+                                        onClick={(e) => {
+                                            e.preventDefault();
+                                            setCurrentPage(index + 1);
+                                        }}
+                                    >
+                                        {index + 1}
+                                    </a>
+                                </li>
+                            ))}
+                            <li
+                                className={`page-item ${
+                                    currentPage === totalPages ||
+                                    totalPages === 0
+                                        ? 'disabled'
+                                        : ''
+                                }`}
                             >
-                                Next
-                            </a>
-                        </li>
-                    </ul>
-                </nav>
-            </div>
+                                <a
+                                    className="page-link"
+                                    href="#"
+                                    onClick={(e) => {
+                                        e.preventDefault();
+                                        if (currentPage < totalPages) {
+                                            setCurrentPage(currentPage + 1);
+                                        }
+                                    }}
+                                >
+                                    Next
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            )}
         </div>
     );
 }

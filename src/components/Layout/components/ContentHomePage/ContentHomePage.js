@@ -36,20 +36,26 @@ const ContentHomePage = () => {
                             title="Sự Kiện"
                         />
                     </div>
-                    <div className="newSidebar">
-                        <NewSidebar
-                            title="Bài Viết Mới nhất"
-                            apiUrl="http://127.0.0.1:8000/api/posts/latest/12"
-                        />
-                        <NewSidebar
-                            title="Bài Viết Mới nhất"
-                            apiUrl="http://127.0.0.1:8000/api/posts/latest/1"
-                        />
-                    </div>
-                    <div className="logoSidebar">
-                        {avatars.map((item) => (
-                            <LogoSidebar key={item.id} avatar={item.avatar} />
-                        ))}
+                    <div className="wrappRight">
+                        <div className="newSidebar">
+                            <NewSidebar
+                                title="Bài Viết Mới nhất"
+                                apiUrl="http://127.0.0.1:8000/api/posts/latest/12"
+                            />
+                            <NewSidebar
+                                title="Bài Viết Mới nhất"
+                                apiUrl="http://127.0.0.1:8000/api/posts/latest/1"
+                            />
+                        </div>
+                        <div className="logoSidebar">
+                            {avatars.map((item) => (
+                                <LogoSidebar
+                                    key={item.id}
+                                    id={item.id}
+                                    avatar={item.avatar}
+                                />
+                            ))}
+                        </div>
                     </div>
                 </div>
                 <div>

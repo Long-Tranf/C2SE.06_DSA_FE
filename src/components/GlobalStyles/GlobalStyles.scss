@@ -79,3 +79,118 @@ body {
 body.no-padding {
     padding: 0; // Loại bỏ padding cho trang Dashboard
 }
+
+// --------------Responsive----------------
+@media only screen and (max-width: 960px) {
+    .banner-container {
+        display: inline;
+    }
+
+    .home-button {
+        display: none;
+    }
+
+    // menu respon
+    .navigation {
+        position: relative;
+    }
+    .menu-btn {
+        display: flex;
+    }
+
+    .menu-list {
+        display: block;
+        position: absolute;
+        bottom: -42px;
+        width: 100%;
+    }
+
+    .menu-list-item {
+        background-color: #ececec;
+        border-top: 1px solid #999;
+    }
+
+    .inner-banner {
+        margin-top: 10px;
+    }
+
+    .contentHomePage .news {
+        display: inline;
+    }
+
+    .contentHomePage .news .newsMain,
+    .contentHomePage .news .wrappRight {
+        width: 100%;
+    }
+
+    .logoSidebar .imgLogoSidebar {
+        width: 150px;
+    }
+
+    .sidebar-post {
+        width: 100%;
+        padding: 0;
+    }
+}
+
+@media only screen and (max-width: 480px) {
+    .headline-left {
+        width: 90px;
+    }
+    .headline-left::after {
+        left: 82px;
+    }
+
+    .headline-right {
+        width: calc(100% - 106px);
+    }
+
+    .headline-title {
+        font-size: 16px;
+    }
+
+    .contentHomePage .news .wrappRight {
+        display: inline;
+    }
+
+    .contentHomePage .news .wrappRight .logoSidebar {
+        gap: 14px;
+    }
+
+    .logoSidebar .imgLogoSidebar {
+        width: 47%;
+    }
+
+    .content-news-layout {
+        display: inline;
+    }
+
+    .content-news-layout .details {
+        padding: 0 20px;
+    }
+
+    .contact .wrappInputContact {
+        display: inline;
+    }
+
+    .contact .innerContact {
+        padding: 0 12px;
+    }
+
+    .contact .contactLeft {
+        width: 100%;
+        margin-bottom: 30px;
+    }
+
+    .contact .contactRight {
+        width: 100%;
+    }
+
+    .contactRight-title {
+        text-align: center;
+    }
+
+    .inner-banner {
+        display: inline;
+    }
+}

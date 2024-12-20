@@ -9,34 +9,71 @@ const GroupProfile = () => {
     const { id } = useParams();
     const [association, setAssociation] = useState(null);
     const [posts, setPosts] = useState([]);
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        axios
-            .get(`http://127.0.0.1:8000/api/Associations/${id}`)
-            .then((response) => {
-                setAssociation(response.data);
-            })
-            .catch((error) => {
-                console.error('Có lỗi khi gọi API:', error);
-            });
-
-        axios
-            .get(`http://127.0.0.1:8000/api/posts/member/${id}`)
-            .then((response) => {
-                console.log(response);
-                setPosts(response.data.posts);
-                console.log(posts);
-            })
-            .catch((error) => {
-                console.log(
-                    'Có lỗi khi gọi API bài viết theo Association:',
-                    error,
+        const fetchData = async () => {
+            try {
+                // Gọi API lấy thông tin hiệp hội
+                const associationResponse = await axios.get(
+                    `http://127.0.0.1:8000/api/Associations/${id}`,
                 );
-            });
+                setAssociation(associationResponse.data);
+
+                // Kiểm tra accessToken
+                const accessToken = localStorage.getItem('accessToken');
+                if (accessToken) {
+                    try {
+                        // Xác minh token
+                        const verifyResponse = await axios.get(
+                            'http://127.0.0.1:8000/api/kiem-tra-token-member',
+                            {
+                                headers: {
+                                    Authorization: `Bearer ${accessToken}`,
+                                },
+                            },
+                        );
+
+                        if (verifyResponse.data.status) {
+                            setIsLoggedIn(true);
+
+                            // Gọi API lấy bài viết
+                            const postsResponse = await axios.get(
+                                `http://127.0.0.1:8000/api/posts/member/${id}`,
+                                {
+                                    headers: {
+                                        Authorization: `Bearer ${accessToken}`,
+                                    },
+                                },
+                            );
+                            setPosts(postsResponse.data.posts);
+                        } else {
+                            setIsLoggedIn(false);
+                        }
+                    } catch (error) {
+                        setIsLoggedIn(false);
+                        console.error('Error verifying token:', error);
+                    }
+                } else {
+                    setIsLoggedIn(false);
+                }
+            } catch (error) {
+                console.error('Có lỗi khi gọi API:', error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchData();
     }, [id]);
 
+    if (loading) {
+        return <div>Đang tải dữ liệu...</div>;
+    }
+
     if (!association) {
-        return <div>Loading...</div>;
+        return <div>Không tìm thấy thông tin hiệp hội.</div>;
     }
 
     return (
@@ -83,31 +120,41 @@ const GroupProfile = () => {
                     </div>
                 </div>
                 <div className="row mt-4 flex-column align-items-center">
-                    {posts.map((post) => (
-                        <div
-                            key={post.id}
-                            className="col-md-8 mb-4 article-link"
-                        >
-                            <div className="card flex-row">
-                                <img
-                                    src={post.image}
-                                    className="card-img-left img-fluid col-4"
-                                    alt={post.title}
-                                />
-                                <div className="col-8 p-3">
-                                    <Link
-                                        to={`/post/${post.id}`}
-                                        className="card-title"
-                                    >
-                                        {post.title}
-                                    </Link>
-                                    <p className="card-text">
-                                        {post.description}
-                                    </p>
+                    {isLoggedIn ? (
+                        posts.map((post) => (
+                            <div
+                                key={post.id}
+                                className="col-md-8 mb-4 article-link"
+                            >
+                                <div className="card flex-row">
+                                    <img
+                                        src={post.image}
+                                        className="card-img-left img-fluid col-4"
+                                        alt={post.title}
+                                    />
+                                    <div className="col-8 p-3">
+                                        <Link
+                                            to={`/post/${post.id}`}
+                                            className="card-title"
+                                        >
+                                            {post.title}
+                                        </Link>
+                                        <p className="card-text">
+                                            {post.description}
+                                        </p>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    ))}
+                        ))
+                    ) : (
+                        <p className="access-warning">
+                            Bạn cần{' '}
+                            <Link to="/login" className="login-link">
+                                đăng nhập
+                            </Link>{' '}
+                            để xem tất cả bài viết của hội viên này.
+                        </p>
+                    )}
                 </div>
             </div>
             <Footer />

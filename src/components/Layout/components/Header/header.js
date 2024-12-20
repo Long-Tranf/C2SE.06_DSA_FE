@@ -10,6 +10,7 @@ import {
     faUser,
     faBell,
     faHome,
+    faBars,
 } from '@fortawesome/free-solid-svg-icons';
 import Search from '~/components/Layout/components/Search/index';
 import avatarPlaceholder from '~/assets/image/no-img.png';
@@ -18,11 +19,15 @@ import 'tippy.js/themes/light.css';
 import { Link } from 'react-router-dom';
 
 function Header() {
+    require('moment/locale/vi');
+    moment.locale('vi');
     const [curr, setCurr] = useState(moment());
     const [user, setUser] = useState(null);
     const [notifications, setNotifications] = useState([]);
     const [categories, setCategories] = useState([]);
+    const [showHiddenMenu, setshowHiddenMenu] = useState(true);
     const formattedDate = curr.format('DD MMMM YYYY HH:mm:ss');
+    const [active, setActive] = useState('');
 
     useEffect(() => {
         async function fetchUserData() {
@@ -46,7 +51,7 @@ function Header() {
                 setUser(response.data.user);
 
                 const eventsResponse = await axios.get(
-                    'http://127.0.0.1:8000/api/Events/data',
+                    'http://127.0.0.1:8000/api/events/latest',
                     {
                         headers: {
                             Authorization: `Bearer ${token}`,
@@ -54,11 +59,8 @@ function Header() {
                     },
                 );
 
-                const eventsData = eventsResponse.data.events;
-
-                setNotifications(eventsData);
-            } catch (error) {
-                console.error('Token không hợp lệ hoặc lỗi hệ thống:', error);
+                setNotifications(eventsResponse.data);
+            } catch {
                 setUser(null);
             }
         }
@@ -85,16 +87,19 @@ function Header() {
                     };
                 });
                 setCategories(categoryMap);
-            })
-            .catch((error) =>
-                console.error('Error fetching categories:', error),
-            );
+            });
 
         const time = setInterval(() => {
             setCurr(moment());
         }, 1000);
+
         return () => clearInterval(time);
     }, []);
+
+    const handleShowHiddenMenu = () => {
+        setshowHiddenMenu(!showHiddenMenu);
+        setActive('active');
+    };
 
     return (
         <div className="header-container">
@@ -131,14 +136,20 @@ function Header() {
                                         </a>
                                     </div>
                                 }
-                                interactive={true}
+                                interactive
                                 placement="bottom-start"
                                 offset={[-70, 10]}
                                 delay={[0, 200]}
                                 theme="light"
                             >
                                 <img
-                                    src={user.avatar || avatarPlaceholder}
+                                    src={
+                                        (user.avatar &&
+                                        user.avatar.startsWith('http')
+                                            ? user.avatar
+                                            : `http://127.0.0.1:8000/storage/${user.avatar}`) ||
+                                        avatarPlaceholder
+                                    }
                                     className="avatar"
                                     alt="User Avatar"
                                 />
@@ -148,32 +159,28 @@ function Header() {
                                 content={
                                     <div className="notification-popover">
                                         <ul>
-                                            {notifications.map(
-                                                (notif, index) => (
-                                                    <li
-                                                        key={index}
-                                                        className="notif-item"
+                                            {notifications.map((notif) => (
+                                                <li
+                                                    key={notif.id}
+                                                    className="notif-item"
+                                                >
+                                                    <Link
+                                                        to={`/event`}
+                                                        className="notification-link"
                                                     >
-                                                        <Link
-                                                            to={`/event/${
-                                                                index + 1
-                                                            }`}
-                                                            className="notification-link"
-                                                        >
-                                                            {`${notif.association.registrant_name} đã đăng sự kiện "${notif.title}"`}
-                                                        </Link>
-                                                        <span className="notification-date">
-                                                            {new Date(
-                                                                notif.created_at,
-                                                            ).toLocaleDateString()}
-                                                        </span>
-                                                    </li>
-                                                ),
-                                            )}
+                                                        {`Sự kiện ${notif.title} đang diễn ra`}
+                                                    </Link>
+                                                    <span className="notification-date">
+                                                        {`Ngày kết thúc : ${new Date(
+                                                            notif.event_date,
+                                                        ).toLocaleDateString()}`}
+                                                    </span>
+                                                </li>
+                                            ))}
                                         </ul>
                                     </div>
                                 }
-                                interactive={true}
+                                interactive
                                 placement="bottom-start"
                                 offset={[20, 10]}
                                 delay={[0, 200]}
@@ -201,39 +208,68 @@ function Header() {
                 <img src={banner} alt="banner" className="banner-img" />
             </div>
             <div className="navigation">
+                <div className="menu-btn" onClick={handleShowHiddenMenu}>
+                    <FontAwesomeIcon icon={faBars} className="menu-icon" />
+                </div>
                 <div className="home-button">
-                    <Link to="/" className="menu-link">
+                    <Link to="/" className="home-link">
                         <FontAwesomeIcon icon={faHome} className="home-icon" />
                     </Link>
                 </div>
-                <ul className="menu-list">
-                    {categories.map((category) => (
-                        <li key={category.id} className="menu-list-item">
-                            <h2>{category.category_name}</h2>
+                {showHiddenMenu && (
+                    <ul className="menu-list">
+                        <li className={`home-item ${active}`}>
+                            <Link to="/" className="">
+                                Home
+                            </Link>
+                        </li>
+                        {categories.map((category) => (
+                            <li key={category.id} className="menu-list-item">
+                                <h2>{category.category_name}</h2>
+                                <FontAwesomeIcon
+                                    icon={faAngleDown}
+                                    className="menu-item-icon"
+                                />
+                                {category.subMenu.length > 0 && (
+                                    <ul className="sub-menu-list">
+                                        {category.subMenu.map((subCategory) => (
+                                            <li
+                                                key={subCategory.id}
+                                                className="sub-menu-item"
+                                            >
+                                                <Link
+                                                    to={`/category/${subCategory.id}`}
+                                                    className="menu-link"
+                                                >
+                                                    {subCategory.category_name}
+                                                </Link>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                )}
+                            </li>
+                        ))}
+                        <li className="menu-list-item">
+                            <h2>Dành Cho Hội Viên</h2>
                             <FontAwesomeIcon
                                 icon={faAngleDown}
                                 className="menu-item-icon"
                             />
-                            {category.subMenu.length > 0 && (
-                                <ul className="sub-menu-list">
-                                    {category.subMenu.map((subCategory) => (
-                                        <li
-                                            key={subCategory.id}
-                                            className="sub-menu-item"
-                                        >
-                                            <Link
-                                                to={`/category/${subCategory.id}`}
-                                                className="menu-link"
-                                            >
-                                                {subCategory.category_name}
-                                            </Link>
-                                        </li>
-                                    ))}
-                                </ul>
-                            )}
+                            <ul className="sub-menu-list">
+                                <li className="sub-menu-item">
+                                    <Link to="/event" className="menu-link">
+                                        Sự Kiện
+                                    </Link>
+                                </li>
+                                <li className="sub-menu-item">
+                                    <Link to="/library" className="menu-link">
+                                        Thư Viện Ảnh
+                                    </Link>
+                                </li>
+                            </ul>
                         </li>
-                    ))}
-                </ul>
+                    </ul>
+                )}
                 <Search className="search" />
             </div>
         </div>

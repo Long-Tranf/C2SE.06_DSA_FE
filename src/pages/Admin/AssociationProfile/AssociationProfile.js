@@ -8,9 +8,14 @@ function AssociationProfile() {
         avatar: '',
         registrant_name: '',
         website: '',
-        phoneNumber: '',
+        phone_number: '',
+        registered_phone_number: '',
+        company_name: '',
+        company_email: '',
+        subscriber_email: '',
         address: '',
     });
+    const [errors, setErrors] = useState({});
 
     console.log(JSON.parse(localStorage.getItem('id_user')));
 
@@ -25,8 +30,13 @@ function AssociationProfile() {
                         avatar: data.avatar || '',
                         registrant_name: data.registrant_name || '',
                         website: data.website || '',
-                        phoneNumber: data.phone_number || '',
+                        phone_number: data.phone_number || '',
+                        registered_phone_number:
+                            data.registered_phone_number || '',
                         address: data.address || '',
+                        company_email: data.company_email || '',
+                        subscriber_email: data.subscriber_email || '',
+                        company_name: data.company_name || '',
                     });
                 })
                 .catch((error) => {
@@ -54,15 +64,24 @@ function AssociationProfile() {
         const idUser = localStorage.getItem('id_user');
         if (idUser) {
             axios
-                .put(`http://127.0.0.1:8000/api/Association/update`, formData)
+                .put(
+                    `http://127.0.0.1:8000/api/Associations/update/${idUser}`,
+                    formData,
+                )
                 .then((response) => {
                     console.log('Dữ liệu đã được cập nhật:', response.data);
                     alert('Cập nhật thành công!');
                 })
                 .catch((error) => {
                     console.error('Lỗi khi cập nhật profile:', error);
-                    alert('Có lỗi xảy ra, vui lòng thử lại.');
+                    if (error.response && error.response.data.errors) {
+                        setErrors(error.response.data.errors);
+                    } else {
+                        alert('Có lỗi xảy ra, vui lòng thử lại.');
+                    }
                 });
+        } else {
+            alert('Không tìm thấy ID user!');
         }
     };
 
@@ -93,19 +112,24 @@ function AssociationProfile() {
                     <div className="profile-edit__form-group">
                         <label
                             className="profile-edit__label"
-                            htmlFor="nameDisplay"
+                            htmlFor="registrant_name"
                         >
                             Tên Hiển Thị
                         </label>
                         <input
                             type="text"
-                            id="nameDisplay"
-                            name="nameDisplay"
+                            id="registrant_name"
+                            name="registrant_name"
                             value={formData.registrant_name}
                             onChange={handleChange}
                             className="profile-edit__input"
                             placeholder="Nhập Tên Hiển Thị"
                         />
+                        {errors.registrant_name && (
+                            <p className="error-message">
+                                {errors.registrant_name[0]}
+                            </p>
+                        )}
                     </div>
                     <div className="profile-edit__form-group">
                         <label
@@ -123,6 +147,9 @@ function AssociationProfile() {
                             className="profile-edit__input"
                             placeholder="Nhập đường dẫn website"
                         />
+                        {errors.website && (
+                            <p className="error-message">{errors.website[0]}</p>
+                        )}
                     </div>
                 </div>
 
@@ -130,19 +157,116 @@ function AssociationProfile() {
                     <div className="profile-edit__form-group">
                         <label
                             className="profile-edit__label"
-                            htmlFor="phoneNumber"
+                            htmlFor="subscriber_email"
+                        >
+                            Email Đăng Ký
+                        </label>
+                        <input
+                            type="text"
+                            id="subscriber_email"
+                            name="subscriber_email"
+                            value={formData.subscriber_email}
+                            onChange={handleChange}
+                            className="profile-edit__input"
+                            placeholder="Nhập Email Đăng Ký"
+                        />
+                        {errors.subscriber_email && (
+                            <p className="error-message">
+                                {errors.subscriber_email[0]}
+                            </p>
+                        )}
+                    </div>
+                    <div className="profile-edit__form-group">
+                        <label
+                            className="profile-edit__label"
+                            htmlFor="company_email"
+                        >
+                            Email Hiệp Hội
+                        </label>
+                        <input
+                            id="company_email"
+                            name="company_email"
+                            value={formData.company_email}
+                            onChange={handleChange}
+                            className="profile-edit__input"
+                            placeholder="Nhập Email Hiệp Hội"
+                        />
+                        {errors.company_email && (
+                            <p className="error-message">
+                                {errors.company_email[0]}
+                            </p>
+                        )}
+                    </div>
+                </div>
+
+                <div className="profile-edit__form-row">
+                    <div className="profile-edit__form-group">
+                        <label
+                            className="profile-edit__label"
+                            htmlFor="phone_number"
                         >
                             Số Điện Thoại
                         </label>
                         <input
                             type="tel"
-                            id="phoneNumber"
-                            name="phoneNumber"
-                            value={formData.phoneNumber}
+                            id="phone_nnumber"
+                            name="phone_number"
+                            value={formData.phone_number}
                             onChange={handleChange}
                             className="profile-edit__input"
                             placeholder="Nhập số điện thoại"
                         />
+                        {errors.phone_number && (
+                            <p className="error-message">
+                                {errors.phone_number[0]}
+                            </p>
+                        )}
+                    </div>
+                    <div className="profile-edit__form-group">
+                        <label
+                            className="profile-edit__label"
+                            htmlFor="registered_phone_number"
+                        >
+                            Số Điện Thoại Đăng ký
+                        </label>
+                        <input
+                            id="registered_phone_number"
+                            name="registered_phone_number"
+                            value={formData.registered_phone_number}
+                            onChange={handleChange}
+                            className="profile-edit__input"
+                            placeholder="Nhập Số Điện Thoại Đăng Ký"
+                        />
+                        {errors.registered_phone_number && (
+                            <p className="error-message">
+                                {errors.registered_phone_number[0]}
+                            </p>
+                        )}
+                    </div>
+                </div>
+
+                <div className="profile-edit__form-row">
+                    <div className="profile-edit__form-group">
+                        <label
+                            className="profile-edit__label"
+                            htmlFor="company_name"
+                        >
+                            Tên Hiệp Hội
+                        </label>
+                        <input
+                            type="text"
+                            id="company_name"
+                            name="company_name"
+                            value={formData.company_name}
+                            onChange={handleChange}
+                            className="profile-edit__input"
+                            placeholder="Nhập tên hiệp hội"
+                        />
+                        {errors.company_name && (
+                            <p className="error-message">
+                                {errors.company_name[0]}
+                            </p>
+                        )}
                     </div>
                     <div className="profile-edit__form-group">
                         <label
@@ -159,6 +283,9 @@ function AssociationProfile() {
                             className="profile-edit__input"
                             placeholder="Nhập địa chỉ"
                         />
+                        {errors.address && (
+                            <p className="error-message">{errors.address[0]}</p>
+                        )}
                     </div>
                 </div>
 
