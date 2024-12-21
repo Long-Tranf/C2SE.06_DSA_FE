@@ -28,11 +28,10 @@ function Header() {
     const [showHiddenMenu, setshowHiddenMenu] = useState(true);
     const formattedDate = curr.format('DD MMMM YYYY HH:mm:ss');
     const [active, setActive] = useState('');
+    const token = localStorage.getItem('accessToken');
 
     useEffect(() => {
         async function fetchUserData() {
-            const token = localStorage.getItem('accessToken');
-
             if (!token) {
                 setUser(null);
                 return;
@@ -118,7 +117,7 @@ function Header() {
                                 content={
                                     <div className="profile">
                                         <Link
-                                            to="/profile"
+                                            to={token ? '/profile' : '/login'}
                                             className="profile-item"
                                         >
                                             <FontAwesomeIcon icon={faUser} />

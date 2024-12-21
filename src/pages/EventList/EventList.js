@@ -11,7 +11,7 @@ const EventList = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [selectedEvent, setSelectedEvent] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [sortOption, setSortOption] = useState('happening'); // "happening" for ongoing, "upcoming" for upcoming events
+    const [sortOption, setSortOption] = useState('happening');
     const resultsPerPage = 6;
     const breadcrumbItems = [
         { name: 'Home', link: '/' },
@@ -29,7 +29,7 @@ const EventList = () => {
         };
 
         checkAccessToken();
-    }, [sortOption]); // Reload events when sortOption changes
+    }, [sortOption]);
 
     const fetchEvents = async (accessToken, sortOption) => {
         try {
@@ -56,7 +56,7 @@ const EventList = () => {
 
     const handleSortChange = (option) => {
         setSortOption(option);
-        setCurrentPage(1); // Reset pagination when changing sort
+        setCurrentPage(1);
     };
 
     const handleOpenModal = (event) => {
@@ -110,42 +110,53 @@ const EventList = () => {
                 ) : (
                     <div>
                         <div className="event-content">
-                            {currentResults.map((event) => (
-                                <div key={event.id} className="event-item">
-                                    <img
-                                        className="event-image"
-                                        src={event.image}
-                                        alt={event.title}
-                                    />
-                                    <div className="event-info">
-                                        <h3
-                                            className="event-title"
-                                            onClick={() =>
-                                                handleOpenModal(event)
-                                            }
-                                        >
-                                            {event.title}
-                                        </h3>
-                                        <p className="event-meta">
-                                            <strong>Thời gian:</strong>{' '}
-                                            {new Date(
-                                                event.event_date,
-                                            ).toLocaleString()}{' '}
-                                            -{' '}
-                                            {new Date(
-                                                event.end_date,
-                                            ).toLocaleString()}
-                                            <br />
-                                            <strong>Địa điểm:</strong>{' '}
-                                            {event.location}
-                                            <br />
-                                            <strong>Người tổ chức:</strong>{' '}
-                                            {event.association?.company_name ||
-                                                'Không rõ'}
-                                        </p>
+                            {events.length === 0 ? (
+                                <p className="no-events">
+                                    {sortOption === 'happening'
+                                        ? 'Hiện tại không có sự kiện nào đang diễn ra.'
+                                        : 'Không có sự kiện nào sắp tới.'}
+                                </p>
+                            ) : (
+                                currentResults.map((event) => (
+                                    <div key={event.id} className="event-item">
+                                        <img
+                                            className="event-image"
+                                            src={event.image}
+                                            alt={event.title}
+                                        />
+                                        <div className="event-info">
+                                            <h3
+                                                className="event-title"
+                                                onClick={() =>
+                                                    handleOpenModal(event)
+                                                }
+                                            >
+                                                {event.title}
+                                            </h3>
+                                            <p className="event-meta">
+                                                <strong>Thời gian:</strong>{' '}
+                                                {new Date(
+                                                    event.event_date,
+                                                ).toLocaleString()}{' '}
+                                                -{' '}
+                                                {new Date(
+                                                    event.end_date,
+                                                ).toLocaleString()}
+                                                <br />
+                                                <strong>Địa điểm:</strong>{' '}
+                                                {event.location}
+                                                <br />
+                                                <strong>
+                                                    Người tổ chức:
+                                                </strong>{' '}
+                                                {event.association
+                                                    ?.company_name ||
+                                                    'Không rõ'}
+                                            </p>
+                                        </div>
                                     </div>
-                                </div>
-                            ))}
+                                ))
+                            )}
                         </div>
 
                         {events.length > resultsPerPage && (

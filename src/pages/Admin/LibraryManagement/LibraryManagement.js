@@ -119,7 +119,7 @@ function PhotoLibraryManagement() {
     const handleDelete = async (id) => {
         try {
             await axios.delete(
-                `http://127.0.0.1:8000/api/PhotoLibrary/delete/${id}`,
+                `http://127.0.0.1:8000/api/PhotoLibrary/delete${id}`,
             );
             fetchPhotos();
         } catch (error) {

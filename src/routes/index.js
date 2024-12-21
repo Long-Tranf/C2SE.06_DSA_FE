@@ -23,6 +23,8 @@ import Statistic from '~/pages/Admin/Statistics/Statistics';
 import AssociationProfile from '~/pages/Admin/AssociationProfile/AssociationProfile';
 import ChangePassword from '~/pages/Admin/ChangePassword/ChangePassword';
 
+const accessToken = localStorage.getItem('accessToken');
+
 const publicRoutes = [
     {
         path: '/',
@@ -70,6 +72,7 @@ const privateRoutes = [
     {
         path: '/profile',
         element: <Profile />,
+        accessToken,
     },
 ];
 

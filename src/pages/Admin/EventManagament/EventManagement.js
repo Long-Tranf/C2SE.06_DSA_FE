@@ -38,34 +38,41 @@ function EventManagement() {
                 }
 
                 const response = await axios.get(apiUrl);
-                console.log(response);
-                if (isMaster === 0) {
-                    const fetchedEvents = response.data.map((event) => ({
+                console.log(response.data);
+                const check = response.data.map((e) => e.association);
+                console.log(check);
+                //if (isMaster === 0) {
+                const fetchedEvents = response.data.map((event) => {
+                    console.log('event', event);
+                    return {
                         id: event.id,
                         title: event.title,
-                        organizer_id: event.association.id,
-                        association_name: event.association.registrant_name,
+                        organizer_id: event?.association?.id,
+                        association_name: event?.association?.registrant_name,
                         image: event.image,
                         content: event.content,
                         event_date: event.event_date.split(' ')[0],
                         end_date: event.end_date.split(' ')[0],
                         status: event.status,
-                    }));
-                    setEvents(fetchedEvents);
-                } else if (isMaster === 1) {
-                    const fetchedEvents = response.data.events.map((event) => ({
-                        id: event.id,
-                        title: event.title,
-                        organizer_id: event.association.id,
-                        association_name: event.association.registrant_name,
-                        image: event.image,
-                        content: event.content,
-                        event_date: event.event_date.split(' ')[0],
-                        end_date: event.end_date.split(' ')[0],
-                        status: event.status,
-                    }));
-                    setEvents(fetchedEvents);
-                }
+                    };
+                });
+                console.log(fetchedEvents, 'ssss');
+                setEvents(fetchedEvents);
+                // } else if (isMaster === 1) {
+                //     console.log(response.data.events);
+                //     const fetchedEvents = response.data.events.map((event) => ({
+                //         id: event.id,
+                //         title: event.title,
+                //         organizer_id: event.association.id,
+                //         association_name: event.association.registrant_name,
+                //         image: event.image,
+                //         content: event.content,
+                //         event_date: event.event_date.split(' ')[0],
+                //         end_date: event.end_date.split(' ')[0],
+                //         status: event.status,
+                //     }));
+                //     setEvents(fetchedEvents);
+                // }
             } catch (error) {
                 console.error('Error fetching events:', error);
             }
@@ -73,6 +80,7 @@ function EventManagement() {
 
         fetchEvents();
     }, []);
+    console.log(events);
 
     const openEditModal = (event) => {
         setCurrentEvent(event);
@@ -181,7 +189,8 @@ function EventManagement() {
     const indexOfFirstEvent = indexOfLastEvent - eventsPerPage;
 
     const currentEvents = events.slice(indexOfFirstEvent, indexOfLastEvent);
-
+    console.log('ssss', currentEvents);
+    console.log(events);
     const totalPages = Math.ceil(events.length / eventsPerPage);
 
     return (

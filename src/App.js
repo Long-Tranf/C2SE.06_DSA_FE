@@ -1,3 +1,4 @@
+import axios from 'axios';
 import React, { useEffect } from 'react';
 import {
     BrowserRouter as Router,
@@ -17,31 +18,41 @@ function App() {
 
     if (accessToken) {
         isAuthenticatedMember = true;
+        console.log('Access token: ', accessToken);
     }
     if (token) {
         isAuthenticatedAdmin = true;
     }
-    console.log(isAuthenticatedAdmin);
+    console.log(isAuthenticatedMember);
 
     useEffect(() => {
         const updateVisitCount = async () => {
             try {
-                const response = await fetch(
-                    'http://127.0.0.1:8000/api/tracking',
+                const response = await axios.get(
+                    'http://127.0.0.1:8000/api/tracking/today',
+                    {},
                     {
-                        method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
                         },
                     },
                 );
-                const data = await response.json();
-                console.log('Total visit count updated:', data.visit_count);
+                console.log(
+                    'Total visit count updated:',
+                    response.data.visit_count,
+                );
             } catch (error) {
                 console.error('Error updating visit count:', error);
             }
         };
 
+        // const pathRoute = privateRoutes.map((route) => {
+        //     return route.path;
+        // });
+
+        // if (pathRoute === '/profile' && accessToken) {
+        //     isAuthenticatedMember = true;
+        // }
         updateVisitCount();
     }, []);
 
@@ -71,11 +82,12 @@ function App() {
                             key={index}
                             path={route.path}
                             element={
-                                isAuthenticatedMember ? (
-                                    route.element
-                                ) : (
-                                    <Navigate to="/login" replace />
-                                )
+                                // route.accessToken ? (
+                                //     route.element
+                                // ) : (
+                                //     <Navigate to="/login" replace />
+                                // )
+                                route.element
                             }
                         />
                     ))}

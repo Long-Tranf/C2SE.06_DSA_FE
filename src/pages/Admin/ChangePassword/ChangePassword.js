@@ -27,16 +27,14 @@ const ChangePassword = ({ userId }) => {
                 return;
             }
 
-            // Lấy id từ người dùng (hoặc thông qua context, props, v.v...)
             const userId = localStorage.getItem('id_user');
 
-            // Gửi thêm `new_password_confirmation` vào request
             const response = await axios.post(
                 `http://127.0.0.1:8000/api/Associations/${userId}/change-password`,
                 {
                     current_password: currentPassword,
                     new_password: newPassword,
-                    new_password_confirmation: confirmPassword, // Trường này thêm vào request
+                    new_password_confirmation: confirmPassword,
                 },
                 {
                     headers: {
@@ -73,7 +71,7 @@ const ChangePassword = ({ userId }) => {
                         value={currentPassword}
                         onChange={(e) => setCurrentPassword(e.target.value)}
                     />
-                    {errors.current_password && (
+                    {errors?.current_password && (
                         <p className="error-message">
                             {errors.current_password[0]}
                         </p>

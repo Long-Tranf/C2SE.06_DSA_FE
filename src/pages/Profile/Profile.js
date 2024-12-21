@@ -24,6 +24,7 @@ function Profile() {
     const [newPassword, setNewPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [passwordError, setPasswordError] = useState('');
+    const [errorMessage, setErrorMessage] = useState('');
 
     const fetchUserData = async () => {
         const token = localStorage.getItem('accessToken');
@@ -120,10 +121,13 @@ function Profile() {
             alert('Đổi mật khẩu thành công');
             window.location.reload();
         } catch (error) {
-            console.log('Error:', error); // Log error for debugging
-            if (error.response && error.response.data.errors) {
+            console.log('Error:', error);
+            if (
+                (error.response && error.response.data.errors) ||
+                error.response.data.message
+            ) {
                 setPasswordError(error.response.data.errors);
-                alert(error.response.data.message || 'Đã xảy ra lỗi');
+                setErrorMessage(error.response.data.message);
             } else {
                 alert('Đã xảy ra lỗi');
             }
@@ -366,6 +370,11 @@ function Profile() {
                                             </p>
                                         )}
                                     </Form.Group>
+                                    {errorMessage && (
+                                        <p className="error-message">
+                                            {errorMessage}
+                                        </p>
+                                    )}
                                     <Button
                                         variant="primary"
                                         type="submit"

@@ -83,6 +83,7 @@ function UserManagement() {
 
     const handleFileChange = (e) => {
         const file = e.target.files[0];
+        console.log(e);
         if (file) {
             //const imageUrl = URL.createObjectURL(file);
             setFormData((prevState) => ({
@@ -93,6 +94,8 @@ function UserManagement() {
     };
 
     const handleUpdateUser = () => {
+        console.log(formData);
+
         axios
             .put('http://127.0.0.1:8000/api/member/update', {
                 id: currentUser.id,
@@ -116,10 +119,11 @@ function UserManagement() {
     const handleAddUser = async () => {
         try {
             const data = new FormData();
-            // Thêm tất cả các trường vào FormData
+            console.log(formData);
             Object.keys(formData).forEach((key) => {
                 data.append(key, formData[key]);
             });
+            console.log(data);
             const response = await axios.post(
                 'http://127.0.0.1:8000/api/member/create',
                 data,

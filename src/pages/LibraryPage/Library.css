@@ -27,10 +27,11 @@
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s ease-in-out;
     cursor: pointer;
+    margin-bottom: 20px;
 }
 
 .image-item img {
-    width: 100%;
+    width: 345px;
     height: 230px;
     object-fit: cover;
     transition: transform 0.3s ease;

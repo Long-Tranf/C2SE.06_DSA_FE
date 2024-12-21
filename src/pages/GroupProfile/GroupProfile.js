@@ -11,21 +11,21 @@ const GroupProfile = () => {
     const [posts, setPosts] = useState([]);
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [loading, setLoading] = useState(true);
+    const [currentPage, setCurrentPage] = useState(1); // Default to page 1
+    //const [totalPages, setTotalPages] = useState(1); // To hold total number of pages
+    const resultsPerPage = 6; // Number of posts per page
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                // Gọi API lấy thông tin hiệp hội
                 const associationResponse = await axios.get(
                     `http://127.0.0.1:8000/api/Associations/${id}`,
                 );
                 setAssociation(associationResponse.data);
 
-                // Kiểm tra accessToken
                 const accessToken = localStorage.getItem('accessToken');
                 if (accessToken) {
                     try {
-                        // Xác minh token
                         const verifyResponse = await axios.get(
                             'http://127.0.0.1:8000/api/kiem-tra-token-member',
                             {
@@ -37,17 +37,7 @@ const GroupProfile = () => {
 
                         if (verifyResponse.data.status) {
                             setIsLoggedIn(true);
-
-                            // Gọi API lấy bài viết
-                            const postsResponse = await axios.get(
-                                `http://127.0.0.1:8000/api/posts/member/${id}`,
-                                {
-                                    headers: {
-                                        Authorization: `Bearer ${accessToken}`,
-                                    },
-                                },
-                            );
-                            setPosts(postsResponse.data.posts);
+                            fetchPosts(accessToken);
                         } else {
                             setIsLoggedIn(false);
                         }
@@ -66,7 +56,29 @@ const GroupProfile = () => {
         };
 
         fetchData();
-    }, [id]);
+    }, [id, currentPage]);
+
+    const fetchPosts = async (accessToken) => {
+        try {
+            const postsResponse = await axios.get(
+                `http://127.0.0.1:8000/api/posts/member/${id}?page=${currentPage}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${accessToken}`,
+                    },
+                },
+            );
+            setPosts(postsResponse.data.posts);
+            //setTotalPages(postsResponse.data.total_pages); // Assuming the API provides total number of pages
+        } catch (error) {
+            console.error('Error fetching posts:', error);
+        }
+    };
+
+    // Handle pagination on client side
+    const indexOfLastResult = currentPage * resultsPerPage;
+    const indexOfFirstResult = indexOfLastResult - resultsPerPage;
+    const currentResults = posts.slice(indexOfFirstResult, indexOfLastResult);
 
     if (loading) {
         return <div>Đang tải dữ liệu...</div>;
@@ -121,7 +133,7 @@ const GroupProfile = () => {
                 </div>
                 <div className="row mt-4 flex-column align-items-center">
                     {isLoggedIn ? (
-                        posts.map((post) => (
+                        currentResults.map((post) => (
                             <div
                                 key={post.id}
                                 className="col-md-8 mb-4 article-link"
@@ -155,6 +167,89 @@ const GroupProfile = () => {
                             để xem tất cả bài viết của hội viên này.
                         </p>
                     )}
+                </div>
+
+                {/* Pagination Controls */}
+                <div className="pagination-controls">
+                    <nav aria-label="Page navigation">
+                        <ul className="pagination justify-content-center">
+                            <li
+                                className={`page-item ${
+                                    currentPage === 1 && 'disabled'
+                                }`}
+                            >
+                                <button
+                                    className="page-link"
+                                    onClick={() =>
+                                        setCurrentPage(currentPage - 1)
+                                    }
+                                    disabled={currentPage === 1}
+                                >
+                                    Previous
+                                </button>
+                            </li>
+                            {Array.from(
+                                {
+                                    length: Math.ceil(
+                                        posts.length / resultsPerPage,
+                                    ),
+                                },
+                                (_, index) => {
+                                    // const pageNumber = index + 1;
+                                    // // Optionally, limit how many pages you show (e.g., around the current page)
+                                    // if (
+                                    //     pageNumber >= currentPage - 2 &&
+                                    //     pageNumber <= currentPage + 2
+                                    // )
+                                    {
+                                        return (
+                                            <li
+                                                key={index + 1}
+                                                className={`page-item ${
+                                                    currentPage === index + 1
+                                                        ? 'active'
+                                                        : ''
+                                                }`}
+                                            >
+                                                <button
+                                                    className="page-link"
+                                                    onClick={() =>
+                                                        setCurrentPage(
+                                                            index + 1,
+                                                        )
+                                                    }
+                                                >
+                                                    {index + 1}
+                                                </button>
+                                            </li>
+                                        );
+                                    }
+                                    //return null;
+                                },
+                            )}
+                            <li
+                                className={`page-item ${
+                                    currentPage ===
+                                        Math.ceil(
+                                            posts.length / resultsPerPage,
+                                        ) && 'disabled'
+                                }`}
+                            >
+                                <button
+                                    className="page-link"
+                                    onClick={() =>
+                                        setCurrentPage(currentPage + 1)
+                                    }
+                                    disabled={
+                                        currentPage ===
+                                        Math.ceil(posts.length / resultsPerPage)
+                                    }
+                                >
+                                    Next
+                                </button>
+                            </li>
+                        </ul>
+                    </nav>
                 </div>
             </div>
             <Footer />
