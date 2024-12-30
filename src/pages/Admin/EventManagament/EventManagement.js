@@ -18,7 +18,7 @@ function EventManagement() {
         event_date: '',
         end_date: '',
         location: '',
-        status: '',
+        status: 'active',
     });
 
     useEffect(() => {
@@ -38,11 +38,11 @@ function EventManagement() {
                 }
 
                 const response = await axios.get(apiUrl);
-                console.log(response.data);
-                const check = response.data.map((e) => e.association);
-                console.log(check);
+                console.log(response);
+                //const check = response.data.map((e) => e.association);
+                //console.log(check);
                 //if (isMaster === 0) {
-                const fetchedEvents = response.data.map((event) => {
+                const fetchedEvents = response.data.events.map((event) => {
                     console.log('event', event);
                     return {
                         id: event.id,
@@ -53,7 +53,7 @@ function EventManagement() {
                         content: event.content,
                         event_date: event.event_date.split(' ')[0],
                         end_date: event.end_date.split(' ')[0],
-                        status: event.status,
+                        status: 'active',
                     };
                 });
                 console.log(fetchedEvents, 'ssss');
@@ -99,7 +99,7 @@ function EventManagement() {
             event_date: '',
             end_date: '',
             location: '',
-            status: '',
+            status: 'active',
         });
         setShowModal(true);
     };
@@ -114,7 +114,8 @@ function EventManagement() {
         if (name === 'status') {
             setFormData((prevState) => ({
                 ...prevState,
-                [name]: value === 'active' ? 'active' : 'inactive',
+                [name]: value === 'active',
+                //? 'active' : 'inactive',
             }));
         } else {
             setFormData((prevState) => ({
@@ -210,10 +211,10 @@ function EventManagement() {
                         <th>Tên sự kiện</th>
                         <th>Tên hội viên</th>
                         <th>Hình ảnh</th>
-                        <th>Nội dung</th>
+                        {/* <th>Nội dung</th> */}
                         <th>Ngày bắt đầu</th>
                         <th>Ngày kết thúc</th>
-                        <th>Trạng thái</th>
+                        {/* <th>Trạng thái</th> */}
                         <th>Hành động</th>
                     </tr>
                 </thead>
@@ -230,14 +231,16 @@ function EventManagement() {
                                     width="50"
                                 />
                             </td>
-                            <td>{event.content}</td>
+                            {/* <td className="event-content-dashboard">
+                                {event.content}
+                            </td> */}
                             <td>{event.event_date}</td>
                             <td>{event.end_date}</td>
-                            <td>
+                            {/* <td>
                                 {event.status === 'active'
                                     ? 'Hoạt động'
                                     : 'Không hoạt động'}
-                            </td>
+                            </td> */}
                             <td>
                                 <button
                                     onClick={() => openEditModal(event)}
@@ -337,13 +340,13 @@ function EventManagement() {
                             <label>{formData.association_name}</label>
                         </div>
                         <div className="form-group">
-                            <label>Hình ảnh</label>
+                            <label>Hình ảnh(URL)</label>
                             <input
-                                type="file"
+                                type="text"
                                 className="form-control"
                                 name="image"
                                 accept="image/*"
-                                onChange={handleFileChange}
+                                onChange={handleInputChange}
                             />
                         </div>
 
@@ -418,7 +421,7 @@ function EventManagement() {
                                 </p>
                             )}
                         </div>
-                        <div className="form-group">
+                        {/* <div className="form-group">
                             <label>Trạng thái</label>
                             <select
                                 className="form-control"
@@ -431,7 +434,7 @@ function EventManagement() {
                                     Không hoạt động
                                 </option>
                             </select>
-                        </div>
+                        </div> */}
                         <div className="form-group">
                             <button
                                 type="button"

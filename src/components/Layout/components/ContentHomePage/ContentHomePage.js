@@ -28,23 +28,23 @@ const ContentHomePage = () => {
                     <div className="newsMain">
                         <NewsMain />
                         <NewsLayout
-                            apiUrl="http://127.0.0.1:8000/api/posts/latest/12"
-                            title="Sự Kiện"
+                            apiUrl="http://127.0.0.1:8000/api/posts/latest/9"
+                            title="Đào Tạo"
                         />
                         <NewsLayout
-                            apiUrl="http://127.0.0.1:8000/api/posts/latest/1"
-                            title="Sự Kiện"
+                            apiUrl="http://127.0.0.1:8000/api/posts/latest/11"
+                            title="Xã Hội"
                         />
                     </div>
                     <div className="wrappRight">
                         <div className="newSidebar">
                             <NewSidebar
                                 title="Bài Viết Mới nhất"
-                                apiUrl="http://127.0.0.1:8000/api/posts/latest/12"
+                                apiUrl="http://127.0.0.1:8000/api/Posts/latest-five"
                             />
                             <NewSidebar
-                                title="Bài Viết Mới nhất"
-                                apiUrl="http://127.0.0.1:8000/api/posts/latest/1"
+                                title="Hỗ Trợ Doanh Nghiệp"
+                                apiUrl="http://127.0.0.1:8000/api/posts/latest/10"
                             />
                         </div>
                         <div className="logoSidebar">

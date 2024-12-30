@@ -130,6 +130,9 @@
     display: flex;
     align-items: center;
 }
+.category-post-view p {
+    margin-bottom: 0;
+}
 
 .desc-post-content {
     width: 1158px;
@@ -147,7 +150,7 @@
 
 /* các class đã được định nghĩa trong ReactQuill */
 
-.content-output {
+.desc-post-content {
     background-color: #ffffff;
     border-radius: 8px;
     margin-top: 20px;
@@ -156,24 +159,24 @@
     font-size: 14px;
 }
 
-.content-output p {
+.desc-post-content p {
     margin: 10px 0;
     text-align: left;
 }
 
-.content-output .ql-align-center {
+.desc-post-content .ql-align-center {
     text-align: center !important;
 }
 
-.content-output .ql-align-right {
+.desc-post-content .ql-align-right {
     text-align: right !important;
 }
 
-.content-output .ql-align-justify {
+.desc-post-content .ql-align-justify {
     text-align: justify !important;
 }
 
-.content-output img {
+.desc-post-content img {
     display: block;
     margin-left: auto;
     margin-right: auto;
@@ -181,13 +184,13 @@
     height: auto;
 }
 
-.content-output h1,
-.content-output h2 {
+.desc-post-content h1,
+.desc-post-content h2 {
     margin-bottom: 10px;
 }
 
-.content-output ul,
-.content-output ol {
+.desc-post-content ul,
+.desc-post-content ol {
     margin-left: 20px;
 }
 

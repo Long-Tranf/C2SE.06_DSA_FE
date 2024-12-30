@@ -103,9 +103,9 @@ function Footer() {
                     </div>
                 </div>
             </div>
-            <div className="tracking">
+            {/* <div className="tracking">
                 <h4>Lượt truy cập hôm nay: {tracking}</h4>
-            </div>
+            </div> */}
             <div className="footer__bottom">
                 <div className="grid wide">
                     <p className="footer__text">

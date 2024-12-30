@@ -51,9 +51,6 @@ const Post = () => {
         fetchPost();
     }, [postId]);
 
-    console.log(post);
-    console.log(relatedPosts);
-
     if (!post) {
         return <div>Loading...</div>;
     }
@@ -67,7 +64,27 @@ const Post = () => {
         { name: post.title, active: true },
     ];
 
-    console.log(post.category.id);
+    // Kiểm tra nếu bài viết bị ẩn
+    if (post.is_open === 0) {
+        return (
+            <div className="wrapper">
+                <Header />
+                <div className="breadcrumb-container bredcrumb-post">
+                    <Breadcrumb items={breadcrumbItems} />
+                </div>
+                <div className="content-container">
+                    <div className="post-content">
+                        <h1>Bài viết tạm thời bị ẩn</h1>
+                        <p>
+                            Bài viết này hiện không khả dụng. Vui lòng quay lại
+                            sau.
+                        </p>
+                    </div>
+                </div>
+                <Footer />
+            </div>
+        );
+    }
 
     return (
         <div className="wrapper">
@@ -136,22 +153,20 @@ const Post = () => {
                                     : ''
                             }`}
                         >
-                            {relatedPosts.map((post) => {
-                                return (
-                                    <div
-                                        className="related-post-new-item"
-                                        key={post.id}
+                            {relatedPosts.map((post) => (
+                                <div
+                                    className="related-post-new-item"
+                                    key={post.id}
+                                >
+                                    <img src={post.image} alt="Related 1" />
+                                    <Link
+                                        to={`/post/${post.id}`}
+                                        className="related-post-new-title"
                                     >
-                                        <img src={post.image} alt="Related 1" />
-                                        <Link
-                                            to={`/post/${post.id}`}
-                                            className="related-post-new-title"
-                                        >
-                                            {post.title}
-                                        </Link>
-                                    </div>
-                                );
-                            })}
+                                        {post.title}
+                                    </Link>
+                                </div>
+                            ))}
                         </div>
                     </div>
                 </div>

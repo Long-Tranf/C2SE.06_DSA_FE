@@ -9,18 +9,18 @@ function Banner() {
         banner3: null,
     });
 
-    // Fetch banners từ API
     useEffect(() => {
         const fetchBanners = async () => {
             try {
                 const response = await axios.get(
-                    'http://127.0.0.1:8000/api/ConfigBanners/data',
+                    'http://127.0.0.1:8000/api/banners/top',
                 );
-                const filteredBanners = response.data.configbanners
-                    .filter((banner) => banner.priority > 0) // Chỉ lấy banner có priority > 0
-                    .sort((a, b) => a.priority - b.priority); // Sắp xếp theo priority tăng dần
+                console.log(response);
 
-                // Gán các banner vào state
+                const filteredBanners = response.data.data
+                    .filter((banner) => banner.priority > 0)
+                    .sort((a, b) => a.priority - b.priority);
+
                 setBanners({
                     banner1: filteredBanners[0] || null,
                     banner2: filteredBanners[1] || null,
@@ -33,6 +33,8 @@ function Banner() {
 
         fetchBanners();
     }, []);
+
+    console.log(banners);
 
     return (
         <div className="banner-container">
